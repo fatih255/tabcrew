@@ -8,7 +8,7 @@ Two chats discuss a question and converge. Claude Code moderates (relays, enforc
 
 If a seat attaches to an existing chat, do its handoff first (`pillars/6-memory`), and add the handoff summary to `{{CONTEXT}}`.
 
-1. `turn(A, templates/debate-opener.md)` with `{{TOPIC}}`, `{{CONTEXT}}` (what Claude Code will do with the result; repo facts if relevant, no secrets), `{{ROUNDS}}` = `MAX_ROUNDS`.
+1. `turn(A, templates/debate-opener.md)` with `{{TOPIC}}`, `{{CONTEXT}}` (what Claude Code will do with the result; repo facts if relevant, no secrets), `{{ROUNDS}}` = `MAX_ROUNDS` (with ∞, write `as many as needed`).
 2. Take A's ROUTE (expected: `RELAY`), then `turn(B, templates/debate-responder.md)` with the same fields, plus `{{OPPONENT_MESSAGE}}` = A's forward text.
 
 ## Loop (`round = 1 … MAX_ROUNDS`; one round = A → B)
@@ -24,6 +24,8 @@ After each turn, act on the ROUTE of the seat that just spoke (`S`; the other se
 | `NOTHING` | Send `Please continue the debate, or write [[AGREED]] with "Conclusion for Claude Code:" if you agree.` to that seat, once. On a second NOTHING, go to the wrap-up. |
 
 Progress line per turn: *"Round 2/6 · B (ChatGPT) → A (DeepSeek): objection relayed"*.
+
+With ∞ rounds, the stall guard (SAFETY rule 7) is what ends a debate that goes in circles: when two rounds bring no new argument or concession, go to the wrap-up instead of asking the user, and keep the disagreement as open points.
 
 **Wrap-up at `round > MAX_ROUNDS`.** Send `templates/debate-wrapup.md` to A. Its reply comes back as `DONE` or `FORWARD` and becomes `CONCLUSION`. If it contains unresolved disagreements, keep them as "open points".
 

@@ -11,7 +11,7 @@ One chat leads, Claude Code executes in the repo and reports back.
   - `Continue from the chat's next step (Recommended)`: send `templates/kickoff-solo.md` with its first line replaced by `Claude Code is now connected to this chat and has read your handoff.` and `{{GOAL}}` = the user's goal, or "continue with the next step from your handoff"
   - `Forward the last reply before the handoff`: route that earlier reply as the first instruction
 
-## Loop (`round = 1 … MAX_ROUNDS`)
+## Loop (`round = 1 … MAX_ROUNDS`; `MAX_ROUNDS` may be ∞, see SAFETY rule 7)
 
 Act on each ROUTE:
 
@@ -24,7 +24,7 @@ Act on each ROUTE:
 | `NOTHING` | The next message is `Claude Code is waiting: give the next step under "Send to Claude Code:", or write [[DONE]] if the work is finished.` Do this at most once; on a second NOTHING in a row, ask the user. |
 | `RELAY` | Not used in solo; treat it as `FORWARD`. |
 
-Then `turn(A, next message)`, `round++`. If `round > MAX_ROUNDS`, ask: `5 more rounds` / `Stop`.
+Then `turn(A, next message)`, `round++`. If `round > MAX_ROUNDS`, ask: `5 more rounds` / `Until done` / `Stop`. With ∞, apply the stall guard after every round instead.
 
 ## Finish
 

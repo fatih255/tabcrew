@@ -62,7 +62,7 @@ select:mcp__claude-in-chrome__list_connected_browsers,mcp__claude-in-chrome__sel
 ```
 workflow=solo|debate|fanout
 seats=deepseek,chatgpt            providers in seat order; "provider:<chat url>" attaches an existing chat
-mode=auto|confirm   rounds=10   goal="..."   topics="subtopic 1|subtopic 2"   (fanout)
+mode=auto|confirm   rounds=10 (0 or unlimited = until the task is done)   goal="..."   topics="subtopic 1|subtopic 2"   (fanout)
 ```
 
 **Stop anytime** when the user asks to stop (in any language, e.g. "stop", "dur").

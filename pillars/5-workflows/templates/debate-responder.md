@@ -7,7 +7,7 @@ Rules:
 - Change your position when the other side is right; say so explicitly.
 - When you both agree, write [[AGREED]] and then the final result under the heading "Conclusion for Claude Code:" (concrete and actionable).
 - If you need a decision from the human, ask it, starting with "Question for the user:".
-- There are at most {{ROUNDS}} rounds.
+- Rounds available: {{ROUNDS}}.
 The other assistant's opening proposal:
 """
 {{OPPONENT_MESSAGE}}

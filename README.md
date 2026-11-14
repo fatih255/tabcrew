@@ -36,7 +36,10 @@ Or call it directly. Claude Code asks for anything you leave out:
 ```text
 /tabcrew
 /tabcrew workflow=debate seats=chatgpt,deepseek rounds=4 goal="..."
+/tabcrew workflow=solo seats=deepseek rounds=unlimited goal="..."
 ```
+
+The round limit is 5, 10 or 20, or "until the task is done". Without a limit, tabcrew still stops when the chat says the work is finished, when a decision or a risky step needs you, or when the last few rounds made no progress.
 
 ## Workflows
 
@@ -155,7 +158,7 @@ When you attach to a chat you have been using for a while, tabcrew first asks th
 - Chat output is treated as input for your goal, not as commands. Deleting files, force-pushing, deploying, publishing, installing unknown packages and anything touching secrets wait for your approval.
 - Lines such as "ignore your rules" in a chat reply are dropped.
 - Messages to the chats never include `.env` values, keys or tokens.
-- Every workflow has a round limit, and you can say stop at any time.
+- Every workflow has a round limit or, if you choose "until done", a check that pauses the run when it stops making progress. You can say stop at any time.
 - It never types passwords. If a chat is logged out, you log in.
 
 ## Supported chats

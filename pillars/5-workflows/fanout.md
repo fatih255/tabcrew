@@ -22,7 +22,7 @@ Send each reply to its own seat agent (they route in parallel). Flexible shortcu
 
 Progress line: *"Fan-out round 1 · A ✅ B ✅ C ⏳"*.
 
-## Follow-up (optional, max `MAX_ROUNDS - 1` rounds)
+## Follow-up (optional, max `MAX_ROUNDS - 1` rounds; with ∞, until nothing important is missing)
 
 If the findings are thin, conflicting or miss something the goal needs, send one targeted follow-up per seat that needs it (`templates/fanout-followup.md`). Seats that are fine get no message. Run again as a parallel turn. Stop following up when nothing important is missing.
 
