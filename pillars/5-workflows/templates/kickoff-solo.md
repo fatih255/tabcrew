@@ -4,6 +4,6 @@ Project: {{PROJECT}}
 Rules:
 - Write the work you want Claude Code to do under the heading "Send to Claude Code:", inside one code block. Give one clear step at a time.
 - If you need a decision from me (the human), ask it explicitly, starting with "Question for the user:".
-- When the work is finished, write only <<DONE>>.
+- When the work is finished, write only [[DONE]].
 - After every step Claude Code will report the result to you (changed files, test output).
 Give the first step.

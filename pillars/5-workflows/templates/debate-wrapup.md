@@ -1,0 +1,1 @@
+The debate has reached its round limit. Write the best final result now: start with [[AGREED]], then the heading "Conclusion for Claude Code:" (concrete and actionable), then a short list "Open points:" for anything you and the other assistant still disagree on.

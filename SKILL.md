@@ -1,17 +1,17 @@
 ---
-name: chat-pair
-description: Pair Claude Code with an AI web chat (DeepSeek now; ChatGPT etc. pluggable) running in the user's own local Chrome via Claude in Chrome — ends copy-paste between the chat and Claude Code. Asks for the provider and a chat URL (new or existing), verifies the local browser connection and login, then loops — Claude Code works in the repo and reports to the chat, a parallel router agent extracts the part of each chat reply meant for Claude Code (any language), Claude Code executes it. Use when the user says "deepseek ile çalış", "chatgpt ile çalış", "chat pair", "deepseek'e bağlan", "web chat ile beraber çalış", "kopyala yapıştır yapmayalım", "/chat-pair", or wants Claude Code to work together with a browser AI chat.
+name: tabcrew
+description: Run the AI chats in the user's own local Chrome (DeepSeek, ChatGPT; pluggable) as a crew of agents orchestrated by Claude Code via Claude in Chrome — no copy-paste. Workflows - solo (one chat leads, Claude Code executes in the repo), debate (two chats discuss and converge, then hand the conclusion to Claude Code), fanout (several chats research subtopics in parallel, Claude Code synthesizes and acts). A parallel router agent extracts, in any language, the part of each chat reply meant for Claude Code or for the other chat. Use when the user says "deepseek ile çalış", "chatgpt ile çalış", "chatgpt ile deepseek tartışsın", "iki chat açıp araştırsın", "tabcrew", "/tabcrew", "copy-paste between chat and Claude Code", or wants browser AI chats to work together with Claude Code.
 ---
 
-# Chat Pair
+# tabcrew
 
-Claude Code ↔ browser AI chat bridge. The user stops copy-pasting.
+Browser AI chats become a crew of agents; Claude Code is the orchestrator.
 
 ```
-Claude Code (works in repo) ──report──▶ Web chat tab (provider adapter)
-        ▲                                        │ reply
-        │ only the part meant for Claude Code    ▼
-        └──────────── ROUTER agent (parallel, stays alive)
+                 ┌──── seat A: DeepSeek tab ────┐
+Claude Code ◀──▶ │  (send / wait_read ops)      │ ◀── ROUTER agent decides: to Claude Code?
+(orchestrator)   ├──── seat B: ChatGPT tab  ────┤      to the other seat? ask the user? done?
+                 └──── seat N: …           ─────┘
 ```
 
 Talk to the user **in the language they write in**, in short, plain sentences. All skill files are in English; translate the wording when you speak to the user.
@@ -19,33 +19,35 @@ Talk to the user **in the language they write in**, in short, plain sentences. A
 ## Tree
 
 ```
-chat-pair/
-├── SKILL.md                 ← you are here: orchestrator (flow + pillar map)
-├── README.md                ← for humans: structure, how to add a provider
+tabcrew/
+├── SKILL.md                     ← orchestrator: flow + map (you are here)
+├── README.md                    ← for humans: diagrams, how to extend
 ├── pillars/
-│   ├── 1-connection/CONNECTION.md   local-Chrome-only preflight
-│   ├── 2-session/SESSION.md         provider + URL + mode questions, open tab, verify login
-│   ├── 3-routing/ROUTING.md         parallel ROUTER agent (+ router-prompt.md)
-│   ├── 4-relay/RELAY.md             the send → wait → route → act → report loop (+ templates)
-│   └── 5-safety/SAFETY.md           hard rules (read first, always apply)
-└── providers/
-    ├── CONTRACT.md          adapter interface every provider implements
-    ├── deepseek/            status: ready (tested)
-    └── chatgpt/             status: planned (stub)
+│   ├── 0-safety/SAFETY.md       hard rules (read first, always apply)
+│   ├── 1-connection/            local-Chrome-only preflight
+│   ├── 2-crew/CREW.md           workflow + seats + mode questions; open tabs; verify logins
+│   ├── 3-routing/               parallel ROUTER agent (+ router-prompt.md)
+│   ├── 4-turn/TURN.md           primitive: one turn with one seat; parallel turns
+│   └── 5-workflows/             solo.md · debate.md · fanout.md · templates/
+├── providers/
+│   ├── CONTRACT.md              adapter interface (status / send / wait_read / toggle)
+│   ├── deepseek/                ready
+│   └── chatgpt/                 ready
+└── tools/fill_op.py             fills an op's placeholder from a file (safe escaping)
 ```
 
-## Flow (read each pillar file when you reach its step — paths are relative to this file's folder)
+## Flow (read each file when you reach its step; paths are relative to this file's folder)
 
-| Step | Pillar | Output |
+| Step | File | Output |
 |---|---|---|
-| 0 | `pillars/5-safety/SAFETY.md` — read first | rules in mind |
-| 1 | `pillars/1-connection/CONNECTION.md` | local browser selected, own `TAB` |
-| 2 | `pillars/2-session/SESSION.md` | `PROVIDER`, `URL`, `MODE`, `MAX_ROUNDS`, `GOAL`; chat open; login verified |
-| 3 | `pillars/3-routing/ROUTING.md` | `ROUTER` agent id |
-| 4 | `pillars/4-relay/RELAY.md` | the loop until DONE / max rounds / user stop |
-| 5 | `RELAY.md` § Finish | summary to the user |
+| 0 | `pillars/0-safety/SAFETY.md` | rules in mind |
+| 1 | `pillars/1-connection/CONNECTION.md` | local browser selected |
+| 2 | `pillars/2-crew/CREW.md` | `WORKFLOW`, `SEATS[]` (each: id, provider, tab, url, role), `MODE`, `MAX_ROUNDS`, `GOAL`; tabs open, logins verified |
+| 3 | `pillars/3-routing/ROUTING.md` | one shared `ROUTER` agent |
+| 4 | `pillars/5-workflows/<WORKFLOW>.md` | the workflow; it uses `pillars/4-turn/TURN.md` for every exchange |
+| 5 | the workflow's § Finish | summary to the user |
 
-All browser actions go through the provider adapter: `providers/<PROVIDER>/PROVIDER.md` and its `.js` operations (`status`, `send`, `wait_read`, `toggle`), as defined in `providers/CONTRACT.md`. Pillars never hard-code provider selectors.
+Browser actions on a chat always go through its provider adapter (`providers/<provider>/*.js`, run as described in `providers/CONTRACT.md`). Pillars and workflows never hard-code selectors. Build every `send` with `python -I tools/fill_op.py …` (run it from this skill's folder) instead of hand-escaping the message.
 
 Load all tools in ONE ToolSearch call at the start:
 
@@ -53,6 +55,12 @@ Load all tools in ONE ToolSearch call at the start:
 select:mcp__claude-in-chrome__list_connected_browsers,mcp__claude-in-chrome__select_browser,mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in-chrome__tabs_create_mcp,mcp__claude-in-chrome__navigate,mcp__claude-in-chrome__javascript_tool,mcp__claude-in-chrome__computer,mcp__claude-in-chrome__browser_batch,SendMessage
 ```
 
-**Skill args** (optional, skip the matching questions): `provider=deepseek url=<chat url> mode=auto|confirm rounds=10 goal="..."`.
+**Skill args** (optional; each one skips its question):
+
+```
+workflow=solo|debate|fanout
+seats=deepseek,chatgpt            providers in seat order; "provider:<chat url>" attaches an existing chat
+mode=auto|confirm   rounds=10   goal="..."   topics="subtopic 1|subtopic 2"   (fanout)
+```
 
 **Stop anytime** when the user asks to stop (in any language, e.g. "stop", "dur").

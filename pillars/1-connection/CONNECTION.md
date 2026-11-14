@@ -1,6 +1,6 @@
 # Pillar 1 — Connection (local Chrome only)
 
-Goal: a Claude-in-Chrome browser **on this computer** is selected, and you own a tab `TAB`. This runs automatically; involve the user only when something is wrong.
+Goal: a Claude-in-Chrome browser **on this computer** is selected. This runs automatically; involve the user only when something is wrong. The seat tabs are created later in `pillars/2-crew`.
 
 ## Steps
 
@@ -14,7 +14,7 @@ Goal: a Claude-in-Chrome browser **on this computer** is selected, and you own a
 | 1, not in use | `select_browser {deviceId}`. |
 | 2+ | `AskUserQuestion` with one option per **local** browser (label = name, `(deviceId)` in the description), then `select_browser`. |
 
-3. `tabs_context_mcp {createIfEmpty:true}`, then `tabs_create_mcp`. Save the new tab id as `TAB`.
+3. `tabs_context_mcp {createIfEmpty:true}` (this creates the tab group).
 4. If any browser tool says `Browser extension is not connected`, treat it as the "0" row.
 
 ## Warning message
