@@ -57,7 +57,7 @@ flowchart LR
     subgraph CC[Claude Code, the orchestrator]
         direction TB
         W[Workflow: solo, debate or fanout]
-        T[Turn: send, wait, read]
+        T[Turn: context check, send, wait, read]
         W --> T
     end
 
@@ -81,6 +81,8 @@ flowchart LR
 ```
 
 Each seat is a chat tab with a role, such as lead, proposer, critic or researcher. Each one gets a small background agent with a name, an emoji and a color, for example `🟣🐋 Skeptic (DeepSeek · critic)`. The agent reads its chat's replies in any language and returns, word for word, the part meant for Claude Code or for the other seat. It also flags risky steps.
+
+A chat only sees its own conversation. It does not see your repo or the other seats. Before each message, Claude Code checks what that chat is missing, such as the code it asked about, a test failure, another seat's finding or an earlier decision. It adds only those parts. When a chat's answer rests on a wrong guess about the project, its seat agent says so, and the next message corrects it.
 
 ### Debate in detail
 
@@ -116,6 +118,22 @@ flowchart LR
 ```
 
 All seats generate at the same time. In testing, Claude Code ran the seats' example claims in real Python, caught two that were wrong, and had that seat correct itself before writing the notes.
+
+## What has been tested
+
+Each run below was a fresh `claude -p` session in an empty folder, driving real chat tabs, and ended with Claude Code writing code and running its tests.
+
+| Workflow | Seats | Task | Result |
+|---|---|---|---|
+| solo | DeepSeek | todo CLI with JSON storage | 13 tests pass |
+| solo | ChatGPT | `slugify()` with Turkish and German letters | 12 tests pass |
+| solo, existing chat | DeepSeek | continue an old chat via its handoff, add `count_vowels()` | 21 tests pass |
+| debate | ChatGPT vs DeepSeek | palindrome rules for punctuation and Unicode | 11 tests pass |
+| debate | DeepSeek vs DeepSeek | retry and backoff for a urllib `fetch_json()` | 19 tests pass |
+| debate | ChatGPT vs ChatGPT | API of an LRU cache with TTL | 26 tests pass |
+| fanout | DeepSeek + ChatGPT | Unicode edge cases, written up as NOTES.md | 9 checks pass |
+| fanout | DeepSeek ×3 | password strength checker | 23 tests pass |
+| fanout | ChatGPT ×2 + DeepSeek | aligned Markdown tables with CJK and emoji | 18 tests pass |
 
 ## Memory
 

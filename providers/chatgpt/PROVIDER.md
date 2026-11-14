@@ -21,7 +21,7 @@ tested: 2026-11-15, Turkish UI, logged-in account, Chrome on Windows
 | Message unit | `[data-content-search-unit-key]`. The value ends in `:user` or `:assistant` (e.g. `fallback-turn-2:1:assistant`) |
 | Turn + state | `[data-talvt-turn-state]` wraps one user + assistant pair. Its value is `complete` when the reply is finished; anything else means generating |
 | Reply body | `[data-response-body]` inside the assistant unit (its `innerText` has no "ChatGPT said:" prefix) |
-| Code blocks | `pre` **or** an element with `data-language` whose lines are `div`s. The language label is in the block header ("Python", "Bash") |
+| Code blocks | `pre` **or** an element with `data-language` whose lines are `div`s. The language label is in the block header ("Python", "Bash"). Blocks without a language get a localized label ("Düz metin" = plain text); anything that is not a plain identifier is dropped |
 | Rendered markdown | mostly semantic HTML (`H2`, `UL/OL/LI`, `BLOCKQUOTE`, `A`, `STRONG`, `EM`, `CODE`, `TABLE`) with `data-d-component` (`text`, `title`, `divider`, `table`…) |
 | Sent-message marker | `send` sets `data-tp-old` on all existing units and stores `window.__tabpair = {head}` |
 | New chat | sending from `https://chatgpt.com/` changes the URL to `/c/local-chatgpt%3A<uuid>` first, then to `/c/<id>`. Read the final URL from `status` at the end |
@@ -41,6 +41,8 @@ ChatGPT's Copy button ignores synthetic clicks. It needs a trusted user gesture,
 - A reply with a `data-language="python"` code block and a table → a fenced `python` block and a markdown table.
 - Sending identical text twice returned the two different new replies (no stale read).
 - Parallel: a DeepSeek seat and a ChatGPT seat generated at the same time; both were read correctly.
+- A code reply containing `?q=1&page=2` and `sid=abc; path=/`: the raw string is blanked by the browser tool, the `pct3` chunks arrive intact.
+- End to end (fresh sessions): solo, debate vs DeepSeek, debate ChatGPT vs ChatGPT, fanout with two ChatGPT seats plus DeepSeek.
 
 ## Quirks
 

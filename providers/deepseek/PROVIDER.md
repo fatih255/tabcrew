@@ -38,7 +38,8 @@ Hashed class names (`_63c77b1`, `d29f3d7d`…) change between builds. Do not use
 - DeepThink on: `text` contains only the final answer, without the reasoning.
 - Attaching to an existing chat URL: the history loads; `wait_read('last')` returns the newest reply.
 - **Virtualized long chat** (10 messages, only the last 6 in the DOM): after `send`, `wait_read('after_send')` returns the right reply. Sending the identical text twice returned the two different new replies (no stale read). The older count-based version failed here in the first end-to-end run.
-- Full end-to-end run in a fresh Claude Code session: 4 rounds, router forwarded each step, `[[DONE]]` detected, repo tests 6/6 green.
+- End to end (fresh sessions): solo (twice, plus attaching to an old chat with a handoff), debate DeepSeek vs DeepSeek and vs ChatGPT, fanout with three DeepSeek seats.
+- "A message is being generated, please try again later" (busy) during a three-seat fanout: one resend after 15 s worked.
 
 ## Quirks
 
