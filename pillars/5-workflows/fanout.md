@@ -12,7 +12,7 @@ For every seat, build `templates/fanout-kickoff.md` with `{{GOAL}}`, `{{SUBTOPIC
 
 ## Collect
 
-Send each reply to its own seat agent (they route in parallel). For each seat's ROUTE:
+Send each reply to its own seat agent (they route in parallel). Flexible shortcut: when a reply is plainly all findings (it has "Findings for Claude Code:", ends with [[DONE]], and asks the user nothing), you may route it yourself as `FORWARD` and skip that agent for this round, which saves a large copy. The agent stays available for follow-ups. For each seat's ROUTE:
 
 | ROUTE | Do |
 |---|---|

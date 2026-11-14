@@ -55,9 +55,12 @@ action: FORWARD | RELAY | ASK_USER | DONE | NOTHING
 risk: low | high
 lang: <code>
 note: <why>
+context_request: <optional: what this chat needs to see next time>
 ---
 <forward text, verbatim>
 ```
+
+`context_request` feeds the context check before the next message to that seat (`pillars/4-turn` step 0).
 
 What each action means is defined by the workflow file (`pillars/5-workflows/*.md`).
 

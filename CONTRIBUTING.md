@@ -19,7 +19,7 @@ tabcrew/
 │   ├── CONTRACT.md             what every adapter must do
 │   ├── deepseek/
 │   └── chatgpt/
-└── tools/fill_op.py            builds a runnable op from a message file
+└── tools/                      fill_op.py builds a runnable op; join_reply.py decodes a reply
 ```
 
 Pillars and workflows never contain site selectors. Everything site-specific lives in `providers/<id>/`.
@@ -39,7 +39,7 @@ Read `providers/CONTRACT.md` first. It defines the return shapes and the rules t
 
 - Never find a reply by counting messages. Long threads get virtualized and old messages leave the DOM. Mark what was there before sending and look for the reply after your own message.
 - Never depend on focus, hover or a real mouse click. Seats run in background tabs at the same time.
-- Return the reply in chunks of at most 900 characters. The browser tool truncates longer strings.
+- Return the reply in chunks of at most 900 code points, `pct3`-encoded (`%`, `&`, `;`). The browser tool truncates longer strings and blanks out anything that looks like cookie or query-string data. Reuse the `ch()` helper from an existing `wait_read.js`.
 - Do not use hashed class names or localized labels (aria-labels change with the UI language).
 
 Then:

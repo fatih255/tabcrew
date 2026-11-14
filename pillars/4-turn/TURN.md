@@ -4,12 +4,18 @@ Every workflow is built from **turns**. A turn = send one message to one seat �
 
 ## turn(seat, message) → ROUTE
 
+0. **Context check (always think about it, add only when it helps).** A chat sees nothing but its own conversation: not the repo, not the other seats, not your memory files. Before every message, ask yourself:
+   - What does this seat need to answer *well* that it does not have yet? Typical cases: the code it is asking about, an error or test output, a file's current state after your edits, another seat's finding, a decision from `.tabcrew/` memory, the user's answer.
+   - What does it already have? Do not resend what is in its chat already, and do not paste whole files when 20 relevant lines do the job.
+   - Did its last reply rest on a wrong assumption about the project? If yes, correct it with the facts.
+
+   If something is needed, add a short `Context:` block to the message with exactly those parts (excerpts with file names and line numbers, trimmed logs). Say what you left out, so the chat can ask for it ("Full file available on request."). If nothing is needed, send the message as it is. Never include secrets (SAFETY rule 4). The seat agent's `context_request` line (see `pillars/3-routing`) is a strong hint for this step.
 1. **Send.** Write the message to a temp file in your scratchpad. Build the op with `python -I tools/fill_op.py providers/<provider>/send.js --msg-file <file>`, and run its output in `seat.tab`. Handle the result:
    - `ok:true`: go on.
    - `still_generating`: run `wait_read` with `'last'` until it is done, then send again.
    - `value_mismatch`, `send_disabled` or `send_not_confirmed`: take a screenshot. If the chat refuses the length (a "message too long" notice, or the send button stays disabled), split the message (see below). Otherwise retry once, then tell the user.
 2. **Wait.** Run `wait_read` with `MODE = 'after_send'`. If it returns `no_send_in_this_page` (the tab was reloaded), use `'last'`. Repeat while `status` is `generating` or `waiting` (each call waits ≤ 30 s). After 20 calls (~10 min), ask the user whether to keep waiting.
-   - **Join `chunks` in order** → `text`. The joined length must equal `len`. Save `text` to a file (`<scratchpad>/seat-<id>-round-<N>.md`): relays and memory read it from there, so nothing is retyped.
+   - Save the `done` result (the JSON with `len`, `enc`, `chunks`) to `<scratchpad>/seat-<id>-round-<N>.json` and run `python -I tools/join_reply.py <that file> <scratchpad>/seat-<id>-round-<N>.md`. The `.md` file is the exact reply `text` (decoded, length-checked). Relays and memory read it from there, so nothing is retyped. If the helper reports `[BLOCKED` or a length mismatch, run `wait_read('last')` again.
    - A very short reply that looks like a server error (`busy`, `try again`, `rate limit`, `something went wrong`, or the same in the UI language, e.g. `meşgul`, `服务器繁忙`): wait ~15 s (`computer` → `wait`), then resend the same message once. Still failing: tell the user.
    - The page says the chat is too long or the context limit is reached: tell the user and offer a new chat for that seat that starts with a handoff summary (`pillars/6-memory`).
 3. **Route.** Send `text` to the seat's agent (`pillars/3-routing`). Return the `ROUTE`.

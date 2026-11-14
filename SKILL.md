@@ -9,7 +9,7 @@ Browser AI chats become a crew of agents; Claude Code is the orchestrator.
 
 ```
                  ┌──── seat A: DeepSeek tab ────┐
-Claude Code ◀──▶ │  (send / wait_read ops)      │ ◀── ROUTER agent decides: to Claude Code?
+Claude Code ◀──▶ │  (send / wait_read ops)      │ ◀── each seat's agent decides: to Claude Code?
 (orchestrator)   ├──── seat B: ChatGPT tab  ────┤      to the other seat? ask the user? done?
                  └──── seat N: …           ─────┘
 ```
@@ -21,12 +21,12 @@ Talk to the user **in the language they write in**, in short, plain sentences. A
 ```
 tabcrew/
 ├── SKILL.md                     ← orchestrator: flow + map (you are here)
-├── README.md                    ← for humans: diagrams, how to extend
+├── README.md · CONTRIBUTING.md  ← for humans (users · contributors)
 ├── pillars/
 │   ├── 0-safety/SAFETY.md       hard rules (read first, always apply)
 │   ├── 1-connection/            local-Chrome-only preflight
 │   ├── 2-crew/CREW.md           workflow + seats + mode questions; open tabs; verify logins
-│   ├── 3-routing/               parallel ROUTER agent (+ router-prompt.md)
+│   ├── 3-routing/               one named background agent per seat (+ router-prompt.md)
 │   ├── 4-turn/TURN.md           primitive: one turn with one seat; parallel turns
 │   ├── 5-workflows/             solo.md · debate.md · fanout.md · templates/
 │   └── 6-memory/MEMORY.md       dated project wiki in .tabcrew/ (read at start, write each round)
@@ -34,7 +34,7 @@ tabcrew/
 │   ├── CONTRACT.md              adapter interface (status / send / wait_read / toggle)
 │   ├── deepseek/                ready
 │   └── chatgpt/                 ready
-└── tools/fill_op.py             fills an op's placeholder from a file (safe escaping)
+└── tools/                       fill_op.py (build an op from a file) · join_reply.py (decode a reply)
 ```
 
 ## Flow (read each file when you reach its step; paths are relative to this file's folder)
@@ -49,7 +49,7 @@ tabcrew/
 | 5 | `pillars/5-workflows/<WORKFLOW>.md` | the workflow; it uses `pillars/4-turn/TURN.md` for every exchange and appends to memory each round |
 | 6 | the workflow's § Finish | memory written, summary to the user |
 
-Browser actions on a chat always go through its provider adapter (`providers/<provider>/*.js`, run as described in `providers/CONTRACT.md`). Pillars and workflows never hard-code selectors. Build every `send` with `python -I tools/fill_op.py …` (run it from this skill's folder) instead of hand-escaping the message.
+Browser actions on a chat always go through its provider adapter (`providers/<provider>/*.js`, run as described in `providers/CONTRACT.md`). Pillars and workflows never hard-code selectors. Build every `send` with `python -I tools/fill_op.py …` and turn every `wait_read` result into text with `python -I tools/join_reply.py …` (run both from this skill's folder). Never hand-escape or hand-decode.
 
 Load all tools in ONE ToolSearch call at the start:
 
