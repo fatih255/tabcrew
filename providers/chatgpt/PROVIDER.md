@@ -1,6 +1,7 @@
 ```
 id: chatgpt
 name: ChatGPT
+emoji: 🤖
 status: ready
 url_new: https://chatgpt.com/
 url_pattern: ^https://chatgpt\.com/((g/[^/]+/)?c/[\w%:.-]+)?/?$

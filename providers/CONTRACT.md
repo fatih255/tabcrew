@@ -40,8 +40,10 @@ Rules every op must follow:
 |---|---|
 | `status` | `{url, title, loggedIn, ready, generating, assistantCount, messages, toggles:[{name,on}]}` |
 | `send` | `{ok:true, len, url}` or `{ok:false, err:'no_textarea'│'still_generating'│'value_mismatch'│'send_disabled'│'send_not_confirmed'}` |
-| `wait_read` | `{status:'done', text, source:'copy'│'markdown'│'innerText', secs}` or `{status:'generating'│'waiting', partialLen}` or `{status:'error', err:'no_send_in_this_page'}` |
+| `wait_read` | `{status:'done', len, chunks:[…], source:'copy'│'markdown'│'innerText', secs}` or `{status:'generating'│'waiting', partialLen}` or `{status:'error', err:'no_send_in_this_page'}` |
 | `toggle` | `{ok, name, on}` or `{ok:false, err:'toggle_not_found'}` |
+
+**No size limit.** The browser tool truncates any single returned string at about 1000 characters, so `wait_read` returns the whole reply as `chunks` (strings of at most 900 characters). Join them in order to get the reply text `text` (check that the joined length equals `len`). It also keeps the full text in `window.__tabpair.lastText`.
 
 `text` must be the assistant's **final answer only**, never its hidden reasoning or "thinking" section. Return markdown if possible. Use `copy` when the chat's own Copy button can be captured with a synthetic click, or `markdown` when the adapter converts the rendered DOM itself. Use `innerText` only as a fallback.
 

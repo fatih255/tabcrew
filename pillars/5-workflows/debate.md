@@ -6,6 +6,8 @@ Two chats discuss a question and converge. Claude Code moderates (relays, enforc
 
 ## Kickoff
 
+If a seat attaches to an existing chat, do its handoff first (`pillars/6-memory`), and add the handoff summary to `{{CONTEXT}}`.
+
 1. `turn(A, templates/debate-opener.md)` with `{{TOPIC}}`, `{{CONTEXT}}` (what Claude Code will do with the result; repo facts if relevant, no secrets), `{{ROUNDS}}` = `MAX_ROUNDS`.
 2. Take A's ROUTE (expected: `RELAY`), then `turn(B, templates/debate-responder.md)` with the same fields, plus `{{OPPONENT_MESSAGE}}` = A's forward text.
 
@@ -32,4 +34,4 @@ Progress line per turn: *"Round 2/6 · B (ChatGPT) → A (DeepSeek): objection r
    - If the goal asks Claude Code to implement something, do it in the repo. The same SAFETY rules apply, and `risk: high` or `MODE = confirm` means ask first.
    - If the goal is a decision or research only, write the result where the user asked (or just report it).
 3. Optional, only if the goal says so or the user wants it: one review turn. Send `templates/report.md` to A, and handle its reply like solo.
-4. Final summary: rounds, conclusion, what Claude Code changed, open points, both chat URLs (from `status`).
+4. Write memory (`pillars/6-memory`, Finish). Then the final summary: rounds, conclusion, what Claude Code changed, open points, both chat URLs (from `status`), and the memory file.

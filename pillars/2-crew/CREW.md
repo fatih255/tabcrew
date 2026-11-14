@@ -5,7 +5,8 @@ Output: `WORKFLOW`, `SEATS[]`, `MODE` (`auto` | `confirm`), `MAX_ROUNDS`, `GOAL`
 A **seat** is one chat tab acting as one agent:
 
 ```
-{ id: "A", provider: "deepseek", tab: <tabId>, url: "<chat url>", role: "<short role>" }
+{ id: "A", provider: "deepseek", tab: <tabId>, url: "<chat url>", role: "<short role>",
+  name: "🟣🐋 Skeptic (DeepSeek · critic)", agent: <seat agent id> }
 ```
 
 Seat ids are `A`, `B`, `C`… in order. Two seats may use the same provider (two DeepSeek tabs are fine).
@@ -44,7 +45,7 @@ Add a second question in the same call: **"New chats or existing ones?"** (heade
 - debate: *"What should they debate? (question/decision + what Claude Code should do with the result)"*
 - fanout: *"What is the research goal?"* Then propose a split into one subtopic per seat. Show it with `AskUserQuestion`: `Use this split (Recommended)` / `I will write the topics` (Other).
 
-**Roles** (set them yourself, then show them in the status line):
+**Roles and names** (set them yourself; the display name rules are in `pillars/3-routing/ROUTING.md` § Identity):
 - solo: A = `lead`.
 - debate: A = `proposer`, B = `critic`.
 - fanout: each seat = `researcher: <its subtopic>`.
@@ -61,7 +62,7 @@ For each seat:
    - `generating:true`: that chat is still writing. `pillars/4-turn` waits before sending.
 
 Then give one status line per seat, for example:
-*"Seat A · DeepSeek · proposer · login ✅ · DeepThink: off"*
-*"Seat B · ChatGPT · critic · login ✅"*
+*"🔵🐋 Architect (DeepSeek · proposer) · login ✅ · DeepThink: off"*
+*"🟣🤖 Skeptic (ChatGPT · critic) · login ✅"*
 
 Do not change the toggles unless the user asks (provider **toggle** op).

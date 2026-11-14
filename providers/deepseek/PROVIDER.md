@@ -1,6 +1,7 @@
 ```
 id: deepseek
 name: DeepSeek
+emoji: 🐋
 status: ready
 url_new: https://chat.deepseek.com/
 url_pattern: ^https://chat\.deepseek\.com/(a/chat/s/[\w-]+)?/?$

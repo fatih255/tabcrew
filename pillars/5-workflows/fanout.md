@@ -6,11 +6,13 @@ Several chats research different subtopics **in parallel**. Claude Code synthesi
 
 ## Kickoff (parallel)
 
+If a seat attaches to an existing chat, do its handoff first (`pillars/6-memory`).
+
 For every seat, build `templates/fanout-kickoff.md` with `{{GOAL}}`, `{{SUBTOPIC}}`, `{{OTHER_SUBTOPICS}}` (so the seats do not overlap) and `{{OUTPUT_HINT}}` (what Claude Code needs: e.g. "a ranked list with one-line reasons", "code-ready API facts"). Then run a **parallel turn** (`pillars/4-turn` § Parallel turns).
 
 ## Collect
 
-Route all replies in one SendMessage. For each seat's ROUTE:
+Send each reply to its own seat agent (they route in parallel). For each seat's ROUTE:
 
 | ROUTE | Do |
 |---|---|
@@ -30,4 +32,4 @@ A cross-check is useful when two seats disagree: send seat X's claim to seat Y a
 
 1. **Synthesize** `FINDINGS` into one result: merge, de-duplicate, and mark conflicts and which seat said what.
 2. **Act** within `GOAL`: write the file / implement / decide, as the goal says (SAFETY rules apply).
-3. Tell the user: the synthesis (short), what Claude Code did, conflicts or open points, and every seat's chat URL.
+3. Write memory (`pillars/6-memory`, Finish). Then tell the user: the synthesis (short), what Claude Code did, conflicts or open points, every seat's chat URL, and the memory file.

@@ -1,187 +1,157 @@
+<p align="center">
+  <img src="assets/banner.png" alt="tabcrew: AI chat tabs, working as one crew" width="100%">
+</p>
+
 # tabcrew
 
-**Turn the AI chats already open in your browser into a crew of agents that Claude Code orchestrates.**
+tabcrew is a Claude Code skill that lets Claude Code drive the AI chats you already have open in Chrome. DeepSeek and ChatGPT tabs become seats in a crew. Claude Code sends them messages, waits for their answers, passes the right parts between them, and does the actual work in your repo.
 
-Stop copy-pasting between ChatGPT, DeepSeek and Claude Code. With tabcrew, Claude Code drives the chat tabs in *your own* Chrome (your accounts, your models, no API keys). It sends messages, waits for the replies, extracts what matters, and acts on it in your repo.
+If you copy prompts from a chat into Claude Code and paste the results back, this does that loop for you.
+
+It runs on your own browser sessions. No API keys, no extra subscriptions.
+
+## Install
+
+Tell Claude Code:
 
 ```text
-you:  /tabcrew workflow=debate seats=chatgpt,deepseek goal="Postgres or SQLite for this CLI? Then implement it."
-      → ChatGPT and DeepSeek argue it out in two tabs
-      → they agree; Claude Code gets the conclusion and writes the code
+Install the skill from https://github.com/fatih255/tabcrew
+```
+
+You also need the [Claude in Chrome](https://claude.ai/chrome) extension, signed in with the same account as Claude Code, and you need to be logged in to the chat sites you want to use.
+
+## Use it
+
+Describe what you want in plain words:
+
+```text
+Use DeepSeek to plan a CSV export feature for this repo and build it step by step.
+Let ChatGPT and DeepSeek debate SQLite vs Postgres for this CLI, then implement the winner.
+Have two DeepSeek chats research rate limits and pricing for the Stripe API, then write NOTES.md.
+Continue my DeepSeek chat https://chat.deepseek.com/a/chat/s/<id> from where we left off.
+```
+
+Or call it directly. Claude Code asks for anything you leave out:
+
+```text
+/tabcrew
+/tabcrew workflow=debate seats=chatgpt,deepseek rounds=4 goal="..."
 ```
 
 ## Workflows
 
-| Workflow | What happens | Good for |
+| Workflow | Seats | What happens |
 |---|---|---|
-| **solo** | One chat leads, Claude Code executes in the repo and reports back, round after round | Using a chat model as the planner/reviewer while Claude Code does the work |
-| **debate** | Two chats (any mix of providers) discuss until they agree, then Claude Code acts on the conclusion | Design decisions, trade-offs, "is this a good idea?" |
-| **fanout** | N chats research different subtopics **in parallel**, then Claude Code synthesizes and acts | Research, comparisons, gathering facts before coding |
+| solo | 1 | One chat leads. Claude Code carries out each step in the repo and reports back, round after round. |
+| debate | 2 | Two chats argue a question until both agree on one written conclusion. Claude Code then acts on it. |
+| fanout | 2 or more | Each chat researches its own subtopic at the same time. Claude Code checks the claims, merges the findings and acts. |
+
+Seats can mix providers or repeat one: three DeepSeek tabs, two ChatGPT tabs plus a DeepSeek tab, or anything else.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    U([You]) -->|goal + workflow| CC
+    U([You]) -->|goal| CC
 
-    subgraph CC[Claude Code — orchestrator]
+    subgraph CC[Claude Code, the orchestrator]
         direction TB
-        W[Workflow<br/>solo · debate · fanout]
-        T[Turn primitive<br/>send → wait → route]
+        W[Workflow: solo, debate or fanout]
+        T[Turn: send, wait, read]
         W --> T
     end
 
-    subgraph R[Router agent — runs in parallel]
-        RD{{"Where does this reply go?<br/>FORWARD · RELAY · ASK_USER · DONE"}}
+    subgraph Chrome[Your Chrome, this computer only]
+        A[Seat A: DeepSeek tab]
+        B[Seat B: ChatGPT tab]
+        N[Seat N: another tab]
     end
 
-    subgraph Chrome[Your Chrome — this computer only]
-        A[Seat A<br/>DeepSeek tab]
-        B[Seat B<br/>ChatGPT tab]
-        N[Seat N<br/>… tab]
+    subgraph Agents[One background agent per seat]
+        RA[Seat agent A]
+        RB[Seat agent B]
     end
 
-    T -- "provider adapter<br/>(send / wait_read)" --> A & B & N
-    A & B & N -- reply --> T
-    T -- reply --> RD
-    RD -- "FORWARD: instructions,<br/>conclusion, findings" --> CC
-    RD -- "RELAY: argument<br/>for the other seat" --> T
-    RD -- ASK_USER --> U
+    T -->|message| A & B & N
+    A & B & N -->|reply| T
+    T --> RA & RB
+    RA & RB -->|"for Claude Code / for the other seat / question for you / done"| CC
     CC -->|edits, tests, commands| Repo[(Your repo)]
+    CC -->|dated notes| Mem[(.tabcrew memory)]
 ```
 
-- **Seats.** Each chat tab is a seat with a provider and a role (lead, proposer, critic, researcher…). Two seats can be the same provider.
-- **Provider adapters.** Small JS operations (`status`, `send`, `wait_read`, `toggle`) per chat site. They are the *only* code that knows a site's DOM.
-- **Router agent.** A separate Claude agent reads every reply **by intent, in any language** ("Send to Claude Code:", "Claude Code'a şunu ilet", "给Claude Code"…). It returns the relevant part **verbatim** and flags risky steps (deletes, force-push, deploys) so you approve them.
+Each seat is a chat tab with a role, such as lead, proposer, critic or researcher. Each one gets a small background agent with a name, an emoji and a color, for example `🟣🐋 Skeptic (DeepSeek · critic)`. The agent reads its chat's replies in any language and returns, word for word, the part meant for Claude Code or for the other seat. It also flags risky steps.
 
-### solo
+### Debate in detail
 
 ```mermaid
 sequenceDiagram
+    participant A as Seat A (proposer)
     participant CC as Claude Code
-    participant A as Seat A (chat)
-    participant R as Router
-    CC->>A: kickoff (goal, rules)
-    loop until DONE or max rounds
-        A-->>CC: reply
-        CC->>R: route reply
-        R-->>CC: FORWARD "next step" (risk: low)
-        CC->>CC: do the work in the repo
-        CC->>A: report (changed files, test output)
-    end
-    R-->>CC: DONE
-```
-
-### debate
-
-```mermaid
-sequenceDiagram
-    participant A as Seat A — proposer (e.g. ChatGPT)
-    participant CC as Claude Code (moderator)
-    participant B as Seat B — critic (e.g. DeepSeek)
-    CC->>A: topic + rules
+    participant B as Seat B (critic)
+    CC->>A: topic and rules
     A-->>CC: proposal
-    CC->>B: topic + rules + proposal
-    loop until [[AGREED]] or max rounds
+    CC->>B: topic, rules and the proposal
+    loop until both agree or the round limit
         B-->>CC: critique
-        CC->>A: relay
+        CC->>A: relayed word for word
         A-->>CC: revised proposal
-        CC->>B: relay
+        CC->>B: relayed word for word
     end
-    CC->>B: confirm the exact conclusion?
+    CC->>B: do you agree with this exact conclusion?
     B-->>CC: [[AGREED]]
-    CC->>CC: implement the conclusion in the repo
+    CC->>CC: implement the conclusion and run the tests
 ```
 
-### fanout
+### Fanout in detail
 
 ```mermaid
 flowchart LR
     CC[Claude Code] -->|subtopic 1| A[Seat A]
     CC -->|subtopic 2| B[Seat B]
     CC -->|subtopic 3| C[Seat C]
-    A -->|findings| S[Synthesis]
-    B -->|findings| S
-    C -->|findings| S
-    S -->|optional follow-ups / cross-checks| CC
-    S --> Act[Claude Code acts:<br/>writes file · implements · decides]
+    A & B & C -->|findings| S[Claude Code checks and merges]
+    S -->|follow-up questions when something is thin or wrong| A & B & C
+    S --> Out[NOTES.md, code or a decision]
 ```
 
-All seats generate **at the same time**. Claude Code polls them one by one.
+All seats generate at the same time. In testing, Claude Code ran the seats' example claims in real Python, caught two that were wrong, and had that seat correct itself before writing the notes.
 
-## Requirements
+## Memory
 
-- [Claude Code](https://claude.com/claude-code)
-- The [Claude in Chrome](https://claude.ai/chrome) extension, signed in with the same account as Claude Code
-- You are logged in to the chat sites you want to use, in that Chrome
-
-## Install
-
-```bash
-git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew
-```
-
-Restart Claude Code, then:
+Every session leaves dated notes in your project:
 
 ```text
-/tabcrew
+.tabcrew/
+├── INDEX.md            one line per session, newest first
+├── sessions/           goal, seats, decisions, what changed, open items, next step
+└── chats/              each chat's own summary of the conversation, by date
 ```
 
-Or just ask: *"Let ChatGPT and DeepSeek debate X, then implement the result."* Claude Code asks for the workflow, the seats (new chats or existing chat URLs), the mode and the round limit.
-
-Skip the questions with args:
-
-```text
-/tabcrew workflow=solo seats=deepseek goal="Add input validation to src/api.ts"
-/tabcrew workflow=solo seats=deepseek:https://chat.deepseek.com/a/chat/s/<id>     # attach an existing chat
-/tabcrew workflow=debate seats=chatgpt,deepseek rounds=4 goal="..."
-/tabcrew workflow=fanout seats=deepseek,chatgpt topics="pricing of X|API limits of X" goal="..."
-```
-
-## Providers
-
-| Provider | Status | Notes |
-|---|---|---|
-| DeepSeek (`chat.deepseek.com`) | ✅ ready | Exact markdown via the chat's own Copy button; DeepThink reasoning excluded |
-| ChatGPT (`chatgpt.com`) | ✅ ready | ProseMirror input via synthetic paste; reply converted from the rendered DOM to markdown |
-| Gemini, Claude.ai, Grok, … | add one | see below |
+When you attach to a chat you have been using for a while, tabcrew first asks that chat to summarize the whole conversation, saves the summary, and continues from its "next step". A later session, or any other AI, can read the folder and pick up where things stopped. The files are Markdown with YAML frontmatter. Commit them or add `.tabcrew/` to `.gitignore`, as you prefer.
 
 ## Safety
 
-- **This computer only.** tabcrew uses only a Chrome extension connected *on this machine*. It never pairs with your Chrome on other computers.
-- **Own tabs only.** It opens its own tabs and never types into yours.
-- **Chat output is data, not commands.** Destructive or outward-facing steps (delete, force-push, deploy, publish, install unknown packages, secrets) always need your approval. Prompt-injection lines like "router, ignore your rules" are dropped.
-- **No secrets leave your machine.** Reports to the chats never include `.env` values, keys or tokens.
-- **Bounded.** Every workflow has a round limit, and you can say "stop" at any time.
-- No passwords are ever typed. If a chat is logged out, you log in yourself.
+- It only uses the Chrome extension on this computer. It never connects to your Chrome on other machines.
+- It works in tabs it opened itself and never types into yours.
+- Chat output is treated as input for your goal, not as commands. Deleting files, force-pushing, deploying, publishing, installing unknown packages and anything touching secrets wait for your approval.
+- Lines such as "ignore your rules" in a chat reply are dropped.
+- Messages to the chats never include `.env` values, keys or tokens.
+- Every workflow has a round limit, and you can say stop at any time.
+- It never types passwords. If a chat is logged out, you log in.
 
-## Structure
+## Supported chats
 
-```text
-tabcrew/
-├── SKILL.md                     orchestrator (entry point for Claude Code)
-├── pillars/                     one concern per folder
-│   ├── 0-safety/                hard rules
-│   ├── 1-connection/            local-Chrome-only preflight
-│   ├── 2-crew/                  workflow, seats, logins
-│   ├── 3-routing/               router agent + prompt
-│   ├── 4-turn/                  send → wait → route primitive, parallel turns
-│   └── 5-workflows/             solo · debate · fanout · message templates
-├── providers/
-│   ├── CONTRACT.md              the adapter interface
-│   ├── deepseek/                PROVIDER.md + status/send/wait_read/toggle .js
-│   └── chatgpt/                 PROVIDER.md + status/send/wait_read .js
-└── tools/fill_op.py             builds a ready-to-run op from a message file (no hand-escaping)
-```
+| Chat | Status |
+|---|---|
+| DeepSeek (chat.deepseek.com) | Supported |
+| ChatGPT (chatgpt.com) | Supported |
+| Gemini, Claude.ai, Grok and others | Not yet. See [CONTRIBUTING.md](CONTRIBUTING.md) to add one. |
 
-## Add a provider
+## Contributing
 
-1. Copy `providers/deepseek/` to `providers/<id>/`.
-2. Open the chat in Chrome with Claude in Chrome. Find these signals: input, send, "generating" state, reply body (without reasoning), message roles, logged-out state.
-3. Rewrite `status.js`, `send.js`, `wait_read.js` (and optionally `toggle.js`). Keep the placeholders and return shapes from [`providers/CONTRACT.md`](providers/CONTRACT.md). Never find replies by counting messages (chat UIs virtualize long threads). Never depend on focus, hover or real clicks (seats run in background tabs).
-4. Test live: a multi-line message with special characters, a long message (>5k characters), a reply with code and a table, attaching to an existing chat, sending identical text twice, and two seats at the same time.
-5. Fill in the DOM map in `PROVIDER.md`, then set `status: ready` and `tested: <date>`.
+Adapters for more chat sites and new workflows are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) explains the layout, the adapter contract and how to test.
 
-## Add a workflow
+## License
 
-See [`pillars/5-workflows/WORKFLOWS.md`](pillars/5-workflows/WORKFLOWS.md). A workflow is one markdown file (seats, kickoff, loop in terms of `turn()` + router actions, finish) plus its message templates.
+MIT

@@ -1,6 +1,6 @@
 ---
 name: tabcrew
-description: Run the AI chats in the user's own local Chrome (DeepSeek, ChatGPT; pluggable) as a crew of agents orchestrated by Claude Code via Claude in Chrome — no copy-paste. Workflows - solo (one chat leads, Claude Code executes in the repo), debate (two chats discuss and converge, then hand the conclusion to Claude Code), fanout (several chats research subtopics in parallel, Claude Code synthesizes and acts). A parallel router agent extracts, in any language, the part of each chat reply meant for Claude Code or for the other chat. Use when the user says "deepseek ile çalış", "chatgpt ile çalış", "chatgpt ile deepseek tartışsın", "iki chat açıp araştırsın", "tabcrew", "/tabcrew", "copy-paste between chat and Claude Code", or wants browser AI chats to work together with Claude Code.
+description: Run the AI chats in the user's own local Chrome (DeepSeek, ChatGPT; pluggable) as a crew of agents orchestrated by Claude Code via Claude in Chrome — no copy-paste. Workflows - solo (one chat leads, Claude Code executes in the repo), debate (two chats discuss and converge, then hand the conclusion to Claude Code), fanout (several chats research subtopics in parallel, Claude Code synthesizes and acts). One named background agent per seat extracts, in any language, the part of each chat reply meant for Claude Code or for the other chat. Use when the user says "deepseek ile çalış", "chatgpt ile çalış", "chatgpt ile deepseek tartışsın", "iki chat açıp araştırsın", "tabcrew", "/tabcrew", "copy-paste between chat and Claude Code", or wants browser AI chats to work together with Claude Code.
 ---
 
 # tabcrew
@@ -28,7 +28,8 @@ tabcrew/
 │   ├── 2-crew/CREW.md           workflow + seats + mode questions; open tabs; verify logins
 │   ├── 3-routing/               parallel ROUTER agent (+ router-prompt.md)
 │   ├── 4-turn/TURN.md           primitive: one turn with one seat; parallel turns
-│   └── 5-workflows/             solo.md · debate.md · fanout.md · templates/
+│   ├── 5-workflows/             solo.md · debate.md · fanout.md · templates/
+│   └── 6-memory/MEMORY.md       dated project wiki in .tabcrew/ (read at start, write each round)
 ├── providers/
 │   ├── CONTRACT.md              adapter interface (status / send / wait_read / toggle)
 │   ├── deepseek/                ready
@@ -43,9 +44,10 @@ tabcrew/
 | 0 | `pillars/0-safety/SAFETY.md` | rules in mind |
 | 1 | `pillars/1-connection/CONNECTION.md` | local browser selected |
 | 2 | `pillars/2-crew/CREW.md` | `WORKFLOW`, `SEATS[]` (each: id, provider, tab, url, role), `MODE`, `MAX_ROUNDS`, `GOAL`; tabs open, logins verified |
-| 3 | `pillars/3-routing/ROUTING.md` | one shared `ROUTER` agent |
-| 4 | `pillars/5-workflows/<WORKFLOW>.md` | the workflow; it uses `pillars/4-turn/TURN.md` for every exchange |
-| 5 | the workflow's § Finish | summary to the user |
+| 3 | `pillars/6-memory/MEMORY.md` § When to read | earlier sessions and chat handoffs as context; session file created |
+| 4 | `pillars/3-routing/ROUTING.md` | one named seat agent per seat (emoji + color + persona) |
+| 5 | `pillars/5-workflows/<WORKFLOW>.md` | the workflow; it uses `pillars/4-turn/TURN.md` for every exchange and appends to memory each round |
+| 6 | the workflow's § Finish | memory written, summary to the user |
 
 Browser actions on a chat always go through its provider adapter (`providers/<provider>/*.js`, run as described in `providers/CONTRACT.md`). Pillars and workflows never hard-code selectors. Build every `send` with `python -I tools/fill_op.py …` (run it from this skill's folder) instead of hand-escaping the message.
 

@@ -7,9 +7,9 @@ One chat leads, Claude Code executes in the repo and reports back.
 ## Kickoff
 
 - **New chat:** `turn(A, kickoff-solo)` with `templates/kickoff-solo.md`. Fill in `{{GOAL}}` and `{{PROJECT}}` (repo name, stack, relevant files — short, no secrets).
-- **Existing chat:** run `wait_read('last')` on A, then ask the user:
-  - `Forward the last reply to Claude Code (Recommended)`: route that reply
-  - `Send the rules first`: send `templates/kickoff-solo.md` with its first line replaced by `Claude Code is now connected to this chat.`
+- **Existing chat:** first the **handoff** (`pillars/6-memory`). Send `templates/handoff.md` to A, wait for the reply, save it to `.tabcrew/chats/…` and read it carefully: it is the chat's own summary of everything so far. Do not route the handoff reply (its `[[DONE]]` only ends the summary). Show the user a 3-line digest, then ask:
+  - `Continue from the chat's next step (Recommended)`: send `templates/kickoff-solo.md` with its first line replaced by `Claude Code is now connected to this chat and has read your handoff.` and `{{GOAL}}` = the user's goal, or "continue with the next step from your handoff"
+  - `Forward the last reply before the handoff`: route that earlier reply as the first instruction
 
 ## Loop (`round = 1 … MAX_ROUNDS`)
 
@@ -28,4 +28,4 @@ Then `turn(A, next message)`, `round++`. If `round > MAX_ROUNDS`, ask: `5 more r
 
 ## Finish
 
-Tell the user: number of rounds, files changed, test status, open items, and the chat URL (from `status`). Leave the tab open.
+Write memory (`pillars/6-memory` § When to write → Finish). Then tell the user: number of rounds, files changed, test status, open items, the chat URL (from `status`), and the memory file. Leave the tab open.
