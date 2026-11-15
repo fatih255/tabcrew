@@ -56,6 +56,18 @@ See `pillars/5-workflows/WORKFLOWS.md`. A workflow is one Markdown file (seats, 
 
 ## Testing a change end to end
 
+The quickest check runs a small matrix (one solo per chat, a debate and a three-chat fanout) as parallel fresh sessions and writes a summary:
+
+```bash
+bash tools/e2e.sh            # all tests, about 10 minutes; or: bash tools/e2e.sh /tmp/out solo-gemini fanout-all3
+```
+
+Read `SUMMARY.md` at the end. `none` in the "Adapter signals" column means no op reported an error, retry or `warn`. Run it after you change an adapter and whenever a chat site looks different.
+
+To test how an adapter handles a site error, fail the site's chat request inside the page (find its URL with `performance.getEntriesByType('resource')` while sending), for example by wrapping `XMLHttpRequest.prototype.open` to point that request at a missing path (an HTTP error) or at `https://127.0.0.1:1/` (a network error), or by returning `new Response('{}', {status: 429})` from a wrapped `fetch`. Then check that `send` or `wait_read` returns `site_error` instead of waiting.
+
+### A single test by hand
+
 Run the skill in a fresh, non-interactive Claude Code session in a throwaway folder, so nothing from your current session helps it:
 
 ```bash
