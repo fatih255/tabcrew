@@ -139,6 +139,9 @@ Each run below was a fresh `claude -p` session in an empty folder, driving real 
 | fanout | DeepSeek + ChatGPT | Unicode edge cases, written up as NOTES.md | 9 checks pass |
 | fanout | DeepSeek ×3 | password strength checker | 23 tests pass |
 | fanout | ChatGPT ×2 + DeepSeek | aligned Markdown tables with CJK and emoji | 18 tests pass |
+| solo, auto mode | DeepSeek | disk-cached downloader; the chat asked 6 design questions first | all answered by Claude Code, 0 asked to the user, 14 tests pass |
+| fanout, auto mode | ChatGPT + DeepSeek | file encoding fixer; each seat asked a clarifying question | all answered by Claude Code, 0 asked to the user, 28 tests pass |
+| solo, auto mode | ChatGPT | Slack deploy notifier with dry run, no real message sent | format and retry questions answered by Claude Code, webhook read from an env var, 24 tests pass |
 
 ## Memory
 

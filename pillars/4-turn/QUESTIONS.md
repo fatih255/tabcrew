@@ -33,6 +33,10 @@ When you must ask, ask **only** the user-only part, and keep working on everythi
 
 Ask the user every question (that is what confirm mode is for). Offer your recommended answer as the first option.
 
+## Tested (2026-11-15)
+
+Three fresh auto-mode sessions in which the chats asked design and clarifying questions (6, 2 and 2 questions): Claude Code answered every one itself, logged them as `(auto)` decisions, asked the user nothing, and finished the code (14, 28 and 24 tests passing).
+
 ## The seat agent's hint
 
 For `ASK_USER` routes the seat agent adds `user_only: yes|no` and a one-line reason. It is a hint. You make the final call with the table above.
