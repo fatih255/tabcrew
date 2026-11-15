@@ -36,4 +36,4 @@ With ∞ rounds, the stall guard (SAFETY rule 7) is what ends a debate that goes
    - If the goal asks Claude Code to implement something, do it in the repo. The same SAFETY rules apply, and `risk: high` or `MODE = confirm` means ask first.
    - If the goal is a decision or research only, write the result where the user asked (or just report it).
 3. Optional, only if the goal says so or the user wants it: one review turn. Send `templates/report.md` to A, and handle its reply like solo.
-4. Write memory (`pillars/6-memory`, Finish). Then the final summary: rounds, conclusion, what Claude Code changed, open points, both chat URLs (from `status`), and the memory file.
+4. Write memory (`pillars/6-memory`, Finish). Then the final summary: rounds, conclusion, what Claude Code changed, open points, both chat URLs (from `status`), and the memory file. Leave the seat tabs open (they are the user's chats).

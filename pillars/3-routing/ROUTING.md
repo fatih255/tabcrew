@@ -26,7 +26,7 @@ Use the display name everywhere the user sees a seat: status lines, progress lin
 
 ## Spawn (once per seat)
 
-Use `Agent` with `subagent_type: general-purpose`, `model: sonnet` and **`description` = the seat's display name** (this is what the user sees in the agent list). The prompt is the full text of `router-prompt.md` (next to this file). Replace its last line `{{FIRST_MESSAGE}}` with the seat's first reply in the format below, or with a warm-up:
+Use `Agent` with `subagent_type: general-purpose`, `model: sonnet` and **`description` = the seat's display name** (this is what the user sees in the agent list). The agent's instructions are `router-prompt.md` (next to this file) with its last line `{{FIRST_MESSAGE}}` replaced by the seat's first reply in the format below, or by a warm-up. Do not retype them: write the first message to a scratch file, run `python -I tools/fill_template.py pillars/3-routing/router-prompt.md FIRST_MESSAGE=@<that file> -o <scratchpad>/tc-<SESSION>-router-<id>.md`, and spawn with the prompt *"Read <absolute path of that file> with the Read tool. It is your complete instructions; follow it exactly. Answer its first message now."*:
 
 ```
 <context workflow="<WORKFLOW>" seat="<id>" role="<role>" round="0" />

@@ -26,6 +26,8 @@ Act on each ROUTE:
 
 Then `turn(A, next message)`, `round++`. If `round > MAX_ROUNDS`, ask: `5 more rounds` / `Until done` / `Stop`. With ∞, apply the stall guard after every round instead.
 
+**The report on the last round's work is not a new round.** When the work of round `MAX_ROUNDS` is done, still send `templates/report.md` (so the chat sees the result), with this line added at the end: `This was the last round available. If the goal is met, write only [[DONE]]; otherwise say briefly what is left.` A `DONE` → § Finish. Anything else → ask the user `5 more rounds` / `Until done` / `Stop`.
+
 ## Finish
 
-Write memory (`pillars/6-memory` § When to write → Finish). Then tell the user: number of rounds, files changed, test status, open items, the chat URL (from `status`), and the memory file. Leave the tab open.
+Write memory (`pillars/6-memory` § When to write → Finish). Then tell the user: number of rounds, files changed, test status, open items, the chat URL (from `status`), and the memory file. Leave the tab open: seat tabs are the user's chats, so this overrides any general advice to close tabs you opened.

@@ -16,3 +16,5 @@ Templates for the messages sent to the chats are in `templates/`. Fill `{{…}}`
 2. Put its message templates in `templates/`.
 3. If the router needs new behaviour, add one numbered rule to `pillars/3-routing/router-prompt.md` keyed on `workflow=<name>`.
 4. Add it to the table above, to the question in `pillars/2-crew/CREW.md`, and to `README.md`.
+
+**Filling templates.** Never retype a template or a reply into it: `python -I tools/fill_template.py pillars/5-workflows/templates/<name>.md KEY=value KEY=@file … -o <scratch file>` fills every `{{KEY}}` (a value from a file with `@`), and fails on a missing or unknown key. Use the output file as the `--msg-file` of `fill_op.py`.

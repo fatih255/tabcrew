@@ -32,4 +32,4 @@ A cross-check is useful when two seats disagree: send seat X's claim to seat Y a
 
 1. **Synthesize** `FINDINGS` into one result: merge, de-duplicate, and mark conflicts and which seat said what.
 2. **Act** within `GOAL`: write the file / implement / decide, as the goal says (SAFETY rules apply).
-3. Write memory (`pillars/6-memory`, Finish). Then tell the user: the synthesis (short), what Claude Code did, conflicts or open points, every seat's chat URL, and the memory file.
+3. Write memory (`pillars/6-memory`, Finish). Then tell the user: the synthesis (short), what Claude Code did, conflicts or open points, every seat's chat URL, and the memory file. Leave the seat tabs open (they are the user's chats).

@@ -49,7 +49,7 @@ wait
 {
   python -I "$HERE/e2e_summary.py" "$OUT"
   if [ "$(snap | sha1sum)" != "$BEFORE" ]; then
-    echo; echo "**The skill files changed during this run** (a session edited them). Review before you keep it:"
+    echo; echo "**The repo changed during this run** (a test session, or you). Review those changes before you keep them:"
     echo; echo '```'; git -C "$REPO" status --short; echo '```'
   fi
 } | tee "$OUT/SUMMARY.md"

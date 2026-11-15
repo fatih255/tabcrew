@@ -56,8 +56,8 @@ Add a second question in the same call: **"New chats or existing ones?"** (heade
 
 For each seat:
 
-1. Get a tab: for the first seat, use the empty tab that `tabs_context_mcp {createIfEmpty:true}` opened in `pillars/1-connection`; for every other seat, `tabs_create_mcp` → `tab`. `navigate` it to the seat URL (`url_new` for a new chat), then install the provider's ops in it (`python -I tools/fill_op.py --install providers/<provider>`, run with `javascript_tool`).
-2. Run the provider's **status** op (`fill_op.py providers/<provider>/status.js --call`; `providers/CONTRACT.md` says how to run an op). If it fails with "Inspected target navigated or closed", the site redirected while the op ran (DeepSeek sends a logged-out visitor to `/sign_in`): run it again.
+1. Get a tab: for the first seat, use the empty tab that `tabs_context_mcp {createIfEmpty:true}` opened in `pillars/1-connection`; for every other seat, `tabs_create_mcp` → `tab`. `navigate` it to the seat URL (`url_new` for a new chat).
+2. Run the provider's **status** op (`fill_op.py providers/<provider>/status.js --call`; `providers/CONTRACT.md` says how to run an op). If it returns `not_installed`, run the installer once (`python -I tools/fill_op.py --install providers/<provider>`) and run status again; after that the site keeps the ops cached. If it fails with "Inspected target navigated or closed", the site redirected while the op ran (DeepSeek sends a logged-out visitor to `/sign_in`): run it again.
 3. Check:
    - `loggedIn:false`: take a screenshot and tell the user: *"You are not logged in to <Provider> (seat <id>). Log in in the tab I opened, then write 'logged in'."* When they answer, run status again. Never type credentials.
    - Existing chat with `messages: 0`: wrong URL, or not the user's chat. Ask again.

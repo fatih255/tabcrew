@@ -35,7 +35,7 @@ tabcrew/
 │   ├── deepseek/                ready
 │   ├── chatgpt/                 ready
 │   └── gemini/                  ready
-└── tools/                       fill_op.py (install ops in a tab, build short calls) · join_reply.py (decode + verify a reply) · e2e.sh (smoke tests)
+└── tools/                       fill_op.py (install ops, short calls) · fill_template.py (fill templates) · join_reply.py (decode + verify a reply) · e2e.sh (smoke tests)
 ```
 
 ## Flow (read each file when you reach its step; paths are relative to this file's folder)
@@ -50,7 +50,7 @@ tabcrew/
 | 5 | `pillars/5-workflows/<WORKFLOW>.md` | the workflow; it uses `pillars/4-turn/TURN.md` for every exchange and appends to memory each round |
 | 6 | the workflow's § Finish | memory written, summary to the user |
 
-Browser actions on a chat always go through its provider adapter (`providers/<provider>/*.js`, run as described in `providers/CONTRACT.md`). Pillars and workflows never hard-code selectors. Install each provider's ops in its tab once (`python -I tools/fill_op.py --install providers/<id>`), then build every op as a short call with `python -I tools/fill_op.py … --call` and turn every `wait_read` result into text with `python -I tools/join_reply.py …` (run both from this skill's folder). Never hand-escape or hand-decode.
+Browser actions on a chat always go through its provider adapter (`providers/<provider>/*.js`, run as described in `providers/CONTRACT.md`). Pillars and workflows never hard-code selectors. Build every op as a short call with `python -I tools/fill_op.py … --call`; only when a call returns `not_installed`, run the installer (`python -I tools/fill_op.py --install providers/<id>`) once (it caches the ops in the site, see `providers/CONTRACT.md`) and turn every `wait_read` result into text with `python -I tools/join_reply.py …` (run both from this skill's folder). Never hand-escape or hand-decode.
 
 Load all tools in ONE ToolSearch call at the start:
 

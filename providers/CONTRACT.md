@@ -16,13 +16,15 @@ providers/<id>/
 **Install once, then call (use this).** A full op is 3–11 KB; sending it on every poll costs many tokens and invites copy mistakes. Instead, install all of a provider's ops in the tab once, then send short calls:
 
 ```
-python -I tools/fill_op.py --install providers/<id>                          # once per page load
+python -I tools/fill_op.py --install providers/<id>                          # only when a call says not_installed
 python -I tools/fill_op.py providers/<id>/send.js --msg-file <file> --call    # ~130 characters + the message
 python -I tools/fill_op.py providers/<id>/wait_read.js --mode after_send --call
 python -I tools/fill_op.py providers/<id>/status.js --call
 ```
 
-Run each output with `javascript_tool` unchanged. The installer defines `window.__tc` (with a version of the op files). A call returns `{ok:false, status:'error', err:'not_installed'}` when the tab has no install or an older one (after every `navigate` or reload, or after an adapter changed): run the installer, then the same call again. Everything below about placeholders and results applies to both forms.
+Run each output with `javascript_tool` unchanged. The installer defines `window.__tc` (with a version of the op files) and also caches it in that site's `localStorage` (key `__tc_src_<provider>_<version>`, 8–12 KB; older versions are removed). A call reinstalls from that cache by itself when the page lost `window.__tc` (a reload, a navigation, a new tab of the same site), so the installer is needed only the first time on a browser and after an adapter update. A call returns `{ok:false, status:'error', err:'not_installed'}` when there is neither: run the installer, then the same call again.
+
+The chat pages block requests to `localhost` (CSP; checked on all three sites), so a local helper process cannot load the ops or save replies; the `localStorage` cache is the layer that works. Everything below about placeholders and results applies to both forms.
 
 **Full op (fallback).**
 

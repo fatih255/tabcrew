@@ -1,7 +1,7 @@
 """Build a provider op for javascript_tool, so long or tricky messages never get hand-escaped.
 
 Install once per tab, then call (recommended, small):
-  python -I tools/fill_op.py --install providers/<id>                        # once per page load
+  python -I tools/fill_op.py --install providers/<id>                        # when a call says not_installed
   python -I tools/fill_op.py providers/<id>/send.js --msg-file <msg.txt> --call
   python -I tools/fill_op.py providers/<id>/wait_read.js --mode after_send --call
   python -I tools/fill_op.py providers/<id>/status.js --call
@@ -14,10 +14,11 @@ Full op (no install needed, large):
 Prints the JavaScript to stdout. Pass it to javascript_tool unchanged. The output is pure
 ASCII (non-ASCII is \\uXXXX-escaped), so copying it cannot corrupt anything.
 
-The installer defines window.__tc = {v, p, status(), send(msg), wait(mode), toggle(re, on)}.
-A --call checks that the installed version matches the op files on disk and otherwise
-returns {ok:false, status:'error', err:'not_installed'}: install again (a reload or
-navigation clears it; an adapter change makes the version differ).
+The installer defines window.__tc = {v, p, status(), send(msg), wait(mode), toggle(re, on)}
+and caches that definition in the site's localStorage (__tc_src_<provider>_<version>).
+A --call reinstalls from the cache when the page lost window.__tc (reload, new tab), and
+returns {ok:false, status:'error', err:'not_installed'} only when the cache is missing or
+from another adapter version: then run --install once.
 """
 import argparse
 import hashlib
@@ -63,8 +64,21 @@ def installer(provider_dir: pathlib.Path) -> str:
         args = ",".join(params.values())
         parts.append(f"{method}:async({args})=>{{return {first}{sep}{rest}}}")
     v = version(provider_dir)
+    p = provider_dir.name
     body = ",".join(parts)
-    return ascii_js(f"window.__tc={{v:'{v}',p:'{provider_dir.name}',{body}}};({{installed:'{v}',provider:'{provider_dir.name}'}})")
+    define = ascii_js(f"window.__tc={{v:'{v}',p:'{p}',{body}}};")
+    # Run the definition, and cache it in the site's localStorage so that a --call can
+    # reinstall it by itself after a reload or in a new tab of the same site. Older
+    # versions of this provider's cache are removed.
+    key = cache_key(p, v)
+    return (f"(()=>{{const S={json.dumps(define, ensure_ascii=True)};(0,eval)(S);let cached=false;"
+            f"try{{for(const k of Object.keys(localStorage))if(k.startsWith('__tc_src_{p}_')&&k!=='{key}')localStorage.removeItem(k);"
+            f"localStorage.setItem('{key}',S);cached=true}}catch(e){{}}"
+            f"return{{installed:'{v}',provider:'{p}',cached}}}})()")
+
+
+def cache_key(provider: str, v: str) -> str:
+    return f"__tc_src_{provider}_{v}"
 
 
 def main() -> int:
@@ -114,9 +128,12 @@ def main() -> int:
         method, params = OPS[op.name]
         args = ",".join(values[ph] for ph in params)
         v = version(op.parent)
+        key = cache_key(op.parent.name, v)
+        # reinstall from the site's localStorage cache when the page lost window.__tc
         sys.stdout.write(ascii_js(
-            f"await (window.__tc&&window.__tc.v==='{v}'?window.__tc.{method}({args}):"
-            f"{{ok:false,status:'error',err:'not_installed'}})"))
+            f"await (async()=>{{const ok=()=>window.__tc&&window.__tc.v==='{v}';"
+            f"if(!ok()){{try{{const s=localStorage.getItem('{key}');if(s)(0,eval)(s)}}catch(e){{}}}}"
+            f"return ok()?window.__tc.{method}({args}):{{ok:false,status:'error',err:'not_installed'}}}})()"))
         return 0
 
     for ph, val in values.items():
