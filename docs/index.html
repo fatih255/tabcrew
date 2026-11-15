@@ -91,12 +91,15 @@ p{margin:0;text-wrap:pretty}
 .btn.ghost:hover{border-color:var(--ink)}
 
 /* header */
-.header{margin-top:16px;background:var(--alt);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 12px 12px 20px}
+.nav-shell{position:sticky;top:0;z-index:50;padding-top:12px}
+section[id]{scroll-margin-top:72px}
+.header{transition:box-shadow .2s;background:var(--alt);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 12px 12px 20px}
 .brand{display:flex;align-items:center;gap:10px;font:500 26px/1 var(--display);text-decoration:none;letter-spacing:-.01em}
 .brand svg{width:26px;height:26px}
 .nav{display:flex;gap:28px;font-size:15px;color:var(--ink-2)}
 .nav a{text-decoration:none}.nav a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
 .acts{display:flex;gap:8px}
+.nav-shell.scrolled .header{box-shadow:0 0 0 1px var(--line),0 12px 30px -18px rgba(0,0,0,.35)}
 .gh > svg{width:16px;height:16px}
 .stars{display:inline-flex;align-items:center;gap:4px;margin-left:4px;padding-left:10px;border-left:1px solid var(--line);color:var(--ink-2);font-variant-numeric:tabular-nums}
 .stars[hidden]{display:none}
@@ -112,23 +115,15 @@ p{margin:0;text-wrap:pretty}
 .hero .more a{color:var(--ink);font-weight:500;text-underline-offset:4px}
 
 /* install box */
-.install{margin-top:32px;background:var(--inv);color:var(--inv-ink);border-radius:var(--r);overflow:hidden;max-width:560px}
-.install .tabs{display:flex;gap:2px;padding:6px 6px 0}
-.install .tab{background:none;border:0;color:#b9b8bb;font:500 13px/1 var(--body);padding:10px 12px 11px;cursor:pointer;border-radius:6px 6px 0 0}
-.install .tab[aria-selected=true]{color:var(--inv-ink);background:#232223}
-.install .tab:hover{color:var(--inv-ink)}
-.install .tab:focus-visible,.copy:focus-visible{outline-color:var(--inv-ink)}
-.install .pane{display:flex;align-items:flex-start;gap:12px;padding:16px 12px 16px 18px;background:#232223}
-.install .pane[hidden]{display:none}
-.install pre{margin:0;flex:1;min-width:0;font:400 14px/1.6 var(--mono);white-space:pre-wrap;word-break:break-word}
-.install pre code{font-size:1em}
-.install .p{color:#8f8e92;user-select:none}
-.copy{flex:none;display:inline-flex;align-items:center;gap:6px;background:#3a393a;color:var(--inv-ink);border:0;border-radius:6px;padding:7px 10px;font:500 13px/1 var(--body);cursor:pointer}
-.copy:hover{background:#4a494a}
+.install{margin-top:32px;max-width:560px}
+.install .cmd{display:flex;align-items:center;gap:12px;background:var(--alt);border:1px solid var(--line);border-radius:var(--r);padding:12px 10px 12px 16px}
+.install code{flex:1;min-width:0;font:400 14px/1.55 var(--mono);color:var(--ink);word-break:break-word}
+.install .p{color:var(--muted);user-select:none}
+.copy{flex:none;display:inline-flex;align-items:center;gap:6px;background:var(--ground);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:7px 10px;font:500 13px/1 var(--body);cursor:pointer}
+.copy:hover{border-color:var(--ink)}
 .copy svg{width:14px;height:14px}
-.install .foot{padding:10px 18px 12px;font-size:13px;color:#b9b8bb;background:#232223;border-top:1px solid #2f2e2f}
-.install .foot a{color:var(--inv-ink)}
-.install ::selection{background:var(--inv-ink);color:var(--inv)}
+.install .foot{margin-top:10px;font-size:13px;color:var(--muted)}
+.install .foot a{color:var(--ink)}
 
 .hero-fig{margin:0}
 .video-frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--inv);box-shadow:0 24px 48px -28px rgba(0,0,0,.45)}
@@ -236,38 +231,31 @@ footer :focus-visible{outline-color:var(--inv-ink)}
   .hero h1{font-size:50px}
   .acts .ghost{display:none}
   .feat-big li{grid-template-columns:1fr;gap:2px}
-  .install .pane{flex-direction:column}
 }
 </style>
 </head>
 <body>
 
+<div class="nav-shell">
+  <div class="wrap wide">
+    <header class="header">
+      <a class="brand" href="#"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="3" width="24" height="7" rx="2" fill="#131313"/><path d="M4 10 L4 6 h5 l1.5 4z M10.5 10 L10.5 6 h5 l1.5 4z M17 10 L17 6 h5 l1.5 4z" fill="#fcfcfd" opacity=".55"/><path d="M6 10 C6 16 13 15 13 18 M13 10 L13 18 M20 10 C20 16 13 15 13 18" stroke="#131313" stroke-width="1.6" fill="none"/><rect x="8" y="18" width="10" height="7" rx="1.5" fill="#131313"/></svg>tabcrew</a>
+      <nav class="nav" aria-label="Main"><a href="#about">How it works</a><a href="#features">Workflows</a><a href="#faq">FAQ</a><a href="https://github.com/fatih255/tabcrew/blob/main/CONTRIBUTING.md">Contribute</a></nav>
+      <div class="acts"><a class="btn ghost gh" href="https://github.com/fatih255/tabcrew" aria-label="tabcrew on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub<span class="stars" data-stars hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 .8l2.2 4.6 5 .7-3.6 3.5.9 5L8 12.2l-4.5 2.4.9-5L.8 6.1l5-.7z"/></svg><b></b></span></a><a class="btn primary" href="#install">Install</a></div>
+    </header>
+  </div>
+</div>
+
 <div class="wrap wide">
-  <header class="header">
-    <a class="brand" href="#"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="3" width="24" height="7" rx="2" fill="#131313"/><path d="M4 10 L4 6 h5 l1.5 4z M10.5 10 L10.5 6 h5 l1.5 4z M17 10 L17 6 h5 l1.5 4z" fill="#fcfcfd" opacity=".55"/><path d="M6 10 C6 16 13 15 13 18 M13 10 L13 18 M20 10 C20 16 13 15 13 18" stroke="#131313" stroke-width="1.6" fill="none"/><rect x="8" y="18" width="10" height="7" rx="1.5" fill="#131313"/></svg>tabcrew</a>
-    <nav class="nav" aria-label="Main"><a href="#about">How it works</a><a href="#features">Workflows</a><a href="#faq">FAQ</a><a href="https://github.com/fatih255/tabcrew/blob/main/CONTRIBUTING.md">Contribute</a></nav>
-    <div class="acts"><a class="btn ghost gh" href="https://github.com/fatih255/tabcrew" aria-label="tabcrew on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub<span class="stars" data-stars hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 .8l2.2 4.6 5 .7-3.6 3.5.9 5L8 12.2l-4.5 2.4.9-5L.8 6.1l5-.7z"/></svg><b></b></span></a><a class="btn primary" href="#install">Install</a></div>
-  </header>
 
   <section class="hero">
     <div>
       <h1>Your AI chat tabs, working as one crew</h1>
       <p class="intro">tabcrew is a Claude Code skill. It writes to the DeepSeek, ChatGPT and Gemini chats you already have open in Chrome, passes the right parts between them, and does the work in your repo.</p>
 
-      <div class="install" data-install>
-        <div class="tabs" role="tablist" aria-label="Install method">
-          <button class="tab" role="tab" aria-selected="true" data-tab="0">Claude Code</button>
-          <button class="tab" role="tab" aria-selected="false" data-tab="1">Terminal</button>
-        </div>
-        <div class="pane" role="tabpanel" data-pane="0">
-          <pre><code><span class="p">&gt; </span>Install the skill from https://github.com/fatih255/tabcrew</code></pre>
-          <button class="copy" type="button" data-copy="Install the skill from https://github.com/fatih255/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button>
-        </div>
-        <div class="pane" role="tabpanel" data-pane="1" hidden>
-          <pre><code><span class="p">$ </span>git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew</code></pre>
-          <button class="copy" type="button" data-copy="git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button>
-        </div>
-        <p class="foot">Needs the <a href="https://claude.ai/chrome">Claude in Chrome</a> extension, signed in with your Claude Code account.</p>
+      <div class="install">
+        <div class="cmd"><code><span class="p">&gt; </span>Install the skill from https://github.com/fatih255/tabcrew</code><button class="copy" type="button" data-copy="Install the skill from https://github.com/fatih255/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button></div>
+        <p class="foot">Paste it into Claude Code. Needs the <a href="https://claude.ai/chrome">Claude in Chrome</a> extension.</p>
       </div>
 
       <p class="more"><a href="https://github.com/fatih255/tabcrew">Read the docs on GitHub →</a><span>Free and open source (MIT) · No API keys</span></p>
@@ -492,19 +480,9 @@ footer :focus-visible{outline-color:var(--inv-ink)}
   <div class="wrap cta">
     <h2>Put your chat tabs to work</h2>
     <p>Tell Claude Code to install it, log in to a chat site, and describe the job.</p>
-    <div class="install" data-install>
-      <div class="tabs" role="tablist" aria-label="Install method">
-        <button class="tab" role="tab" aria-selected="true" data-tab="0">Claude Code</button>
-        <button class="tab" role="tab" aria-selected="false" data-tab="1">Terminal</button>
-      </div>
-      <div class="pane" role="tabpanel" data-pane="0">
-        <pre><code><span class="p">&gt; </span>Install the skill from https://github.com/fatih255/tabcrew</code></pre>
-        <button class="copy" type="button" data-copy="Install the skill from https://github.com/fatih255/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button>
-      </div>
-      <div class="pane" role="tabpanel" data-pane="1" hidden>
-        <pre><code><span class="p">$ </span>git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew</code></pre>
-        <button class="copy" type="button" data-copy="git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button>
-      </div>
+    <div class="install">
+      <div class="cmd"><code><span class="p">&gt; </span>Install the skill from https://github.com/fatih255/tabcrew</code><button class="copy" type="button" data-copy="Install the skill from https://github.com/fatih255/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button></div>
+      <p class="foot">Paste it into Claude Code. Needs the <a href="https://claude.ai/chrome">Claude in Chrome</a> extension.</p>
     </div>
     <p class="note">Then try: “Use DeepSeek to plan a CSV export feature for this repo and build it step by step.”</p>
   </div>
@@ -524,18 +502,14 @@ footer :focus-visible{outline-color:var(--inv-ink)}
 </footer>
 
 <script>
+(function () {
+  var shell = document.querySelector('.nav-shell');
+  var on = function () { shell.classList.toggle('scrolled', window.scrollY > 8); };
+  on(); window.addEventListener('scroll', on, { passive: true });
+})();
 document.querySelectorAll('.video-frame video').forEach(function (v) {
   if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; }
   v.addEventListener('click', function () { if (v.paused) v.play(); else v.pause(); });
-});
-document.querySelectorAll('[data-install]').forEach(function (box) {
-  var tabs = box.querySelectorAll('[data-tab]'), panes = box.querySelectorAll('[data-pane]');
-  tabs.forEach(function (t) {
-    t.addEventListener('click', function () {
-      tabs.forEach(function (x) { x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
-      panes.forEach(function (p) { p.hidden = p.dataset.pane !== t.dataset.tab; });
-    });
-  });
 });
 document.querySelectorAll('[data-copy]').forEach(function (b) {
   b.addEventListener('click', function () {
