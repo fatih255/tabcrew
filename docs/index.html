@@ -102,20 +102,15 @@ section[id]{scroll-margin-top:72px}
 .nav a{text-decoration:none}.nav a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
 .acts{display:flex;gap:8px}
 .nav-shell.scrolled .header{box-shadow:0 0 0 1px var(--line),0 12px 30px -18px rgba(0,0,0,.35)}
-.gh-star{--rainbow:linear-gradient(90deg,hsl(0,100%,63%),hsl(90,100%,63%),hsl(210,100%,63%),hsl(195,100%,63%),hsl(270,100%,63%));--glow:linear-gradient(90deg,#141314,#9a9995,#141314,#d6d5d2,#141314);position:relative;display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 14px;border-radius:8px;border:.08rem solid transparent;font:500 14px/1 var(--body);color:var(--ink);text-decoration:none;white-space:nowrap;cursor:pointer;
-  background:linear-gradient(#fff,#fff),linear-gradient(#fff 50%,rgba(255,255,255,.6) 80%,rgba(0,0,0,0)),var(--rainbow);background-size:200%;background-clip:padding-box,border-box,border-box;background-origin:border-box;animation:rainbow 2s linear infinite;transform-origin:50% 50%;transition:transform .2s;will-change:transform}
-.gh-star::before{content:"";position:absolute;bottom:-20%;left:50%;z-index:0;width:60%;height:20%;transform:translateX(-50%);background:var(--glow);background-size:200%;filter:blur(.8rem);animation:rainbow 2s linear infinite}
-.gh-star:hover{transform:scale(1.05)}
-.gh-star:active{transform:scale(.95)}
-.gh-star > span{position:relative;z-index:1;display:inline-flex;align-items:center}
+.gh-star{display:inline-flex;align-items:center;gap:10px;height:40px;padding:0 14px;border-radius:8px;border:1px solid var(--line);background:transparent;font:500 14px/1 var(--body);color:var(--ink);text-decoration:none;white-space:nowrap;transition:border-color .2s}
+.gh-star:hover{border-color:var(--ink)}
+.gh-star > span{display:inline-flex;align-items:center}
 .gh-l{gap:6px}
 .gh-l svg{width:16px;height:16px}
 .gh-r{gap:4px}
-.gh-star-ico{width:16px;height:16px;color:#6b7280;transition:color .2s}
-.gh-star:hover .gh-star-ico{color:#fcd34d}
+.gh-star-ico{width:16px;height:16px;color:var(--muted);transition:color .2s}
+.gh-star:hover .gh-star-ico{color:var(--ink)}
 .gh-n{min-width:2ch;text-align:center;transition:opacity .35s;font-weight:600;font-variant-numeric:tabular-nums}
-@keyframes rainbow{0%{background-position:0%}100%{background-position:200%}}
-@media (prefers-reduced-motion:reduce){.gh-star,.gh-star::before{animation:none}.gh-star:hover,.gh-star:active{transform:none}}
 
 /* hero */
 
