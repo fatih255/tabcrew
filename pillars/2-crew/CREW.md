@@ -34,9 +34,11 @@ Read the front block of every `providers/*/PROVIDER.md` (`id`, `name`, `status`,
 
 | Workflow | Question (header `Seats`) | Options |
 |---|---|---|
-| solo | "Which chat?" | one option per ready provider (first one Recommended) |
+| solo | "Which chat?" | one option per ready provider. **Recommended** = the provider the user already mentioned or linked in this conversation (e.g. "my DeepSeek chat", a chat URL); only if there is none, the first ready one |
 | debate | "Which two chats should debate?" | `ChatGPT ↔ DeepSeek (Recommended)`, `DeepSeek ↔ DeepSeek`, `ChatGPT ↔ ChatGPT` |
 | fanout | "Which chats should research?" | `DeepSeek + ChatGPT (Recommended)`, `2× DeepSeek`, `3× mixed (DeepSeek, ChatGPT, DeepSeek)` |
+
+Do not ask a seat question at all when the user already named the chat (a pasted chat URL or "continue my DeepSeek chat"): use it and say so in the status line.
 
 Add a second question in the same call: **"New chats or existing ones?"** (header `Chats`): `New chats (Recommended)` / `Existing chat` → "Paste the URL(s) into 'Other', one per seat, in seat order". Detect each URL's provider from `url_pattern`. If a URL does not match any pattern, say so and ask again.
 
