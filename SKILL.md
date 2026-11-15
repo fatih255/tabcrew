@@ -27,7 +27,7 @@ tabcrew/
 │   ├── 1-connection/            local-Chrome-only preflight
 │   ├── 2-crew/CREW.md           workflow + seats + mode questions; open tabs; verify logins
 │   ├── 3-routing/               one named background agent per seat (+ router-prompt.md)
-│   ├── 4-turn/TURN.md           primitive: one turn with one seat; parallel turns
+│   ├── 4-turn/                  TURN.md (one turn, parallel turns) · QUESTIONS.md (who answers a chat's question)
 │   ├── 5-workflows/             solo.md · debate.md · fanout.md · templates/
 │   └── 6-memory/MEMORY.md       dated project wiki in .tabcrew/ (read at start, write each round)
 ├── providers/

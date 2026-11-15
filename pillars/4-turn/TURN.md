@@ -18,7 +18,7 @@ Every workflow is built from **turns**. A turn = send one message to one seat �
    - Save the `done` result (the JSON with `len`, `enc`, `chunks`) to `<scratchpad>/seat-<id>-round-<N>.json` and run `python -I tools/join_reply.py <that file> <scratchpad>/seat-<id>-round-<N>.md`. The `.md` file is the exact reply `text` (decoded, length-checked). Relays and memory read it from there, so nothing is retyped. If the helper reports `[BLOCKED` or a length mismatch, run `wait_read('last')` again.
    - A very short reply that looks like a server error (`busy`, `try again`, `rate limit`, `something went wrong`, or the same in the UI language, e.g. `meşgul`, `服务器繁忙`): wait ~15 s (`computer` → `wait`), then resend the same message once. Still failing: tell the user.
    - The page says the chat is too long or the context limit is reached: tell the user and offer a new chat for that seat that starts with a handoff summary (`pillars/6-memory`).
-3. **Route.** Send `text` to the seat's agent (`pillars/3-routing`). Return the `ROUTE`.
+3. **Route.** Send `text` to the seat's agent (`pillars/3-routing`). Return the `ROUTE`. For a question (`ASK_USER`), who answers is decided by `QUESTIONS.md` (next to this file): in auto mode Claude Code answers most of them itself.
 
 ## No size limits
 

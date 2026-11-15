@@ -17,7 +17,7 @@ Send each reply to its own seat agent (they route in parallel). Flexible shortcu
 | ROUTE | Do |
 |---|---|
 | `FORWARD` / `DONE` | Store the forward text as `FINDINGS[seat]`. |
-| `ASK_USER` | Ask the user, then send the answer to that seat and wait again. |
+| `ASK_USER` | Follow `pillars/4-turn/QUESTIONS.md` (auto mode: answer it yourself unless it is user-only), then send the answer to that seat and wait again. Other seats keep going meanwhile. |
 | `NOTHING` | Send `Please give your findings under "Findings for Claude Code:".` once. |
 
 Progress line: *"Fan-out round 1 · A ✅ B ✅ C ⏳"*.

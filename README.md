@@ -31,6 +31,8 @@ Have two DeepSeek chats research rate limits and pricing for the Stripe API, the
 Continue my DeepSeek chat https://chat.deepseek.com/a/chat/s/<id> from where we left off.
 ```
 
+In automatic mode Claude Code also answers the chats' questions on your behalf (and notes each decision in the session memory). It only stops to ask you for secrets or before risky steps such as deleting, deploying or spending money.
+
 Or call it directly. Claude Code asks for anything you leave out:
 
 ```text

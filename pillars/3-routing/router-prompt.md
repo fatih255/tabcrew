@@ -12,11 +12,11 @@ Markers: [[DONE]] and [[AGREED]] are the current ones. Also accept the older <<D
 
 Decide by INTENT, whatever the language (Turkish, English, Chinese, mixed):
 
-1. Explicit parts addressed to Claude Code / the agent / the coder (e.g. "Send to Claude Code:", "Conclusion for Claude Code:", "Findings for Claude Code:", "send this to Claude Code", "prompt for Claude:", "Claude Code'a şunu ilet", "bunu gönder", "给Claude Code") → action FORWARD, forward ONLY that part, VERBATIM. Do not paraphrase, translate, summarize or add anything. Keep code blocks and formatting exact (if the part is a fenced block, forward its content without the fence).
+1. Explicit parts addressed to Claude Code / the agent / the coder (e.g. "Send to Claude Code:", "Conclusion for Claude Code:", "Findings for Claude Code:", "Question:", "send this to Claude Code", "prompt for Claude:", "Claude Code'a şunu ilet", "bunu gönder", "给Claude Code") → action FORWARD, forward ONLY that part, VERBATIM. Do not paraphrase, translate, summarize or add anything. Keep code blocks and formatting exact (if the part is a fenced block, forward its content without the fence).
 2. workflow=solo: a reply with no explicit marker that is clearly a task for the coding agent → FORWARD only the actionable instructions verbatim; drop greetings, praise, and explanations meant for the human.
 3. workflow=debate: a normal debate reply → action RELAY. Forward the reply's substantive content for the other seat, verbatim, without greetings or meta talk aimed at the human/bridge. If the reply contains [[AGREED]] → action DONE and forward the conclusion part verbatim (the text under "Conclusion for Claude Code:" if present; otherwise the agreed position).
 4. workflow=fanout: forward the research findings for Claude Code (the "Findings for Claude Code:" part if present, else the substantive findings) with action FORWARD. If the reply also contains [[DONE]], still use FORWARD; main treats the seat as finished.
-5. The reply addresses the human (asks the user a question, needs a decision, credentials, approval, or is unclear) → action ASK_USER, and put the question in the forward section. If the reply ALSO contains content for Claude Code or the other seat, add it after the question under a line "Pending content (after the user's answer):".
+5. The reply asks a question or needs a decision, credentials or approval (whether it is addressed to the human or to Claude Code) → action ASK_USER, and put the question in the forward section. Add a line `user_only: yes|no — <reason>`: yes only if answering needs something only the human has (a secret, an account detail, a private business fact), or approves a destructive/outward/costly action (delete, push, deploy, publish, send, terminate or create paid resources), or is a preference with no sensible default that is expensive to change later. Ordinary design choices, defaults, scope details and cheap reversible decisions are `no`: Claude Code can answer them. If the reply ALSO contains content for Claude Code or the other seat, add it after the question under a line "Pending content (after the user's answer):".
 6. workflow=solo and the chat says the work is finished, or the reply contains [[DONE]] → action DONE.
 7. Nothing needs to go anywhere (pure acknowledgement) → action NOTHING.
 8. risk: high if the forwarded text asks Claude Code for anything destructive or outward-facing (deleting files, rm -rf, git push/force-push, deploys, publishing, sending messages, installing unknown packages, touching secrets/credentials, payments); otherwise low. RELAY between seats is low unless it carries secrets.
@@ -32,6 +32,7 @@ risk: low | high
 lang: <language code of the reply>
 note: <one short sentence why, in English>
 context_request: <optional; only when rule 10 applies>
+user_only: <only for ASK_USER: yes|no — reason>
 ---
 <forward text, verbatim; empty for NOTHING>
 

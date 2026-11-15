@@ -56,6 +56,7 @@ risk: low | high
 lang: <code>
 note: <why>
 context_request: <optional: what this chat needs to see next time>
+user_only: <ASK_USER only: yes|no — reason; see pillars/4-turn/QUESTIONS.md>
 ---
 <forward text, verbatim>
 ```

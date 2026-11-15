@@ -26,7 +26,7 @@ Read the front block of every `providers/*/PROVIDER.md` (`id`, `name`, `status`,
    - `Debate`: two chats discuss and agree, then Claude Code gets the conclusion
    - `Fan-out`: several chats research different subtopics in parallel, then Claude Code combines the results
 2. **"Mode?"** (header `Mode`)
-   - `Automatic (Recommended)`: runs instructions, asks only for risky steps
+   - `Automatic (Recommended)`: runs instructions and answers the chats' questions itself; asks you only for secrets and risky steps
    - `Confirm every step`: shows each instruction to the user before running it
 3. **"Maximum rounds?"** (header `Rounds`): `10 (Recommended)`, `5`, `20`, `Until the task is done (no limit)`. Debate counts one round as A→B→A; fanout counts rounds of follow-ups. "No limit" sets `MAX_ROUNDS = ∞` (skill arg `rounds=0` or `rounds=unlimited`); it still stops on the signals in SAFETY rule 7.
 

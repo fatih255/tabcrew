@@ -19,7 +19,7 @@ Act on each ROUTE:
 |---|---|
 | `FORWARD` with `risk: high`, or `MODE = confirm` | `AskUserQuestion` showing the forward text: `Run it` / `Skip, tell the chat` / `Stop`. On skip, the next message is `The user did not approve this step: <reason>. Suggest another way.` |
 | `FORWARD` | Do the work in the repo exactly as forwarded, within `GOAL` (SAFETY rule 3). The next message is `templates/report.md`. |
-| `ASK_USER` | Ask the user. The next message is `The user's answer: …`. Pending content follows normal FORWARD rules after the answer. |
+| `ASK_USER` | Follow `pillars/4-turn/QUESTIONS.md`: in auto mode answer it yourself unless it is user-only; in confirm mode ask the user. The next message carries the answer. Pending content follows normal FORWARD rules after the answer. |
 | `DONE` | → § Finish. |
 | `NOTHING` | The next message is `Claude Code is waiting: give the next step under "Send to Claude Code:", or write [[DONE]] if the work is finished.` Do this at most once; on a second NOTHING in a row, ask the user. |
 | `RELAY` | Not used in solo; treat it as `FORWARD`. |

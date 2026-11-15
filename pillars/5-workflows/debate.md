@@ -20,7 +20,7 @@ After each turn, act on the ROUTE of the seat that just spoke (`S`; the other se
 | `RELAY` | `turn(O, "<forward text>")`. Send it unchanged, so the other chat sees the argument exactly. |
 | `DONE` (contains `[[AGREED]]`) | Keep the forward text as `CONCLUSION`. Send `templates/debate-confirm.md` to `O` with `{{CONCLUSION}}`, so both agree on the same text. If `O` replies `[[AGREED]]` (router `DONE`), go to § Finish. If `O` objects (`RELAY`), continue the loop with that objection. |
 | `FORWARD` | A seat addressed Claude Code directly mid-debate. Note it and keep it for § Finish. Continue by relaying the rest of the reply. |
-| `ASK_USER` | Ask the user. Send the answer to **both** seats as `The user's answer: …`, then continue with the seat whose turn it is. |
+| `ASK_USER` | Follow `pillars/4-turn/QUESTIONS.md` (auto mode: answer it yourself unless it is user-only). Send the answer to **both** seats, then continue with the seat whose turn it is. |
 | `NOTHING` | Send `Please continue the debate, or write [[AGREED]] with "Conclusion for Claude Code:" if you agree.` to that seat, once. On a second NOTHING, go to the wrap-up. |
 
 Progress line per turn: *"Round 2/6 · B (ChatGPT) → A (DeepSeek): objection relayed"*.
