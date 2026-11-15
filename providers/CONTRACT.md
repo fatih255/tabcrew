@@ -39,8 +39,8 @@ Rules every op must follow:
 | Op | Returns |
 |---|---|
 | `status` | `{url, title, loggedIn, ready, generating, assistantCount, messages, toggles:[{name,on}]}` |
-| `send` | `{ok:true, len, url}` or `{ok:false, err:'no_textarea'│'still_generating'│'value_mismatch'│'send_disabled'│'send_not_confirmed'}` |
-| `wait_read` | `{status:'done', len, enc:'pct3', chunks:[…], source:'copy'│'markdown'│'innerText', secs}` or `{status:'generating'│'waiting', partialLen}` or `{status:'error', err:'no_send_in_this_page'}` |
+| `send` | `{ok:true, len, url}` or `{ok:false, err:'no_textarea'│'still_generating'│'value_mismatch'│'send_disabled'│'send_not_confirmed'}`, or `{ok:false, err:'too_long', max}` when the site has a known input limit (`max` characters) and the message is longer |
+| `wait_read` | `{status:'done', len, enc:'pct3', chunks:[…], source:'copy'│'markdown'│'innerText', secs}` (optionally `canvas:true` when part of the reply went to a side panel the adapter cannot read) or `{status:'generating'│'waiting', partialLen}` or `{status:'error', err:'no_send_in_this_page'}`, or `{status:'error', err:'rejected', note}` when the site refused the message (`note` is the site's notice, e.g. "Content is too long") |
 | `toggle` | `{ok, name, on}` or `{ok:false, err:'toggle_not_found'}` |
 
 **No size limit.** The browser tool truncates any single returned string at about 1000 characters, so `wait_read` returns the whole reply as `chunks` (strings of at most 900 characters). Chunks are cut by Unicode code points (never inside an emoji), and `len` counts code points.
@@ -56,5 +56,7 @@ It joins, decodes, checks `len`, and writes the exact reply text. The full text 
 `text` must be the assistant's **final answer only**, never its hidden reasoning or "thinking" section. Return markdown if possible. Use `copy` when the chat's own Copy button can be captured with a synthetic click, or `markdown` when the adapter converts the rendered DOM itself. Use `innerText` only as a fallback.
 
 Ops run in background tabs too: several seats can generate at the same time, and the orchestrator polls them one by one. An op must never depend on its tab being focused, on hover, or on a trusted (real) mouse click.
+
+**The sent message may render differently from the text sent** (ChatGPT turns a leading code fence into a code block, so the fence line is not in the bubble). `send` stores two heads, `head` (normalized text without fence lines and link targets) and `head2` (the raw normalized text), confirms the send when a new user message starts with either, and as a last resort adopts the text of the only new user message after ~2 s. `wait_read` matches either head.
 
 **Never find replies by counting messages.** Chat UIs virtualize long threads (DeepSeek removes old messages from the DOM), so counts stop growing. `send` must remember *which* message it sent (mark the existing messages, store the text head on `window`), and `wait_read('after_send')` must return the first reply that comes after that exact user message. Re-sending identical text must still return the new reply.

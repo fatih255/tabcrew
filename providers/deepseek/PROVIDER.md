@@ -14,6 +14,7 @@ tested: 2026-11-15, Turkish UI, Chrome on Windows
 
 | Thing | Selector / signal |
 |---|---|
+| Input limit | the textarea takes any length, but the server rejects long messages with a notice under the user message ("Content is too long. Please shorten it and try again.") and never answers. In testing 59.9k characters were accepted and 70k rejected (the limit is probably in tokens). `send` returns `too_long` (`max: 55000`) above that, and `wait_read` returns `{status:'error', err:'rejected', note}` when such a notice appears |
 | Input | the only `textarea` (placeholder "DeepSeek'e mesaj gönder") |
 | Send / stop button | `.ds-button--primary.ds-button--filled.ds-button--circle` |
 | Idle | textarea empty → the button has `ds-button--disabled` |
@@ -38,6 +39,8 @@ Hashed class names (`_63c77b1`, `d29f3d7d`…) change between builds. Do not use
 - DeepThink on: `text` contains only the final answer, without the reasoning.
 - Attaching to an existing chat URL: the history loads; `wait_read('last')` returns the newest reply.
 - **Virtualized long chat** (10 messages, only the last 6 in the DOM): after `send`, `wait_read('after_send')` returns the right reply. Sending the identical text twice returned the two different new replies (no stale read). The older count-based version failed here in the first end-to-end run.
+- Logged out (incognito, Turkish UI): the site redirects to `/sign_in`. A `status` started before the redirect fails with "Inspected target navigated or closed"; run again, it returns `loggedIn:false`, `ready:false` (see `pillars/2-crew` step 2).
+- Input limit: 59.9k characters sent and answered; 70k, 80k and 100k were rejected with "Content is too long". `wait_read` returned `rejected` with that note within 2 s; normal messages have no notice and were not affected.
 - End to end (fresh sessions): solo (twice, plus attaching to an old chat with a handoff), debate DeepSeek vs DeepSeek and vs ChatGPT, fanout with three DeepSeek seats.
 - "A message is being generated, please try again later" (busy) during a three-seat fanout: one resend after 15 s worked.
 

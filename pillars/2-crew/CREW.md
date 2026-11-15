@@ -35,8 +35,8 @@ Read the front block of every `providers/*/PROVIDER.md` (`id`, `name`, `status`,
 | Workflow | Question (header `Seats`) | Options |
 |---|---|---|
 | solo | "Which chat?" | one option per ready provider. **Recommended** = the provider the user already mentioned or linked in this conversation (e.g. "my DeepSeek chat", a chat URL); only if there is none, the first ready one |
-| debate | "Which two chats should debate?" | `ChatGPT ↔ DeepSeek (Recommended)`, `DeepSeek ↔ DeepSeek`, `ChatGPT ↔ ChatGPT` |
-| fanout | "Which chats should research?" | `DeepSeek + ChatGPT (Recommended)`, `2× DeepSeek`, `3× mixed (DeepSeek, ChatGPT, DeepSeek)` |
+| debate | "Which two chats should debate?" | `ChatGPT ↔ DeepSeek (Recommended)`, `Gemini ↔ ChatGPT`, `Gemini ↔ DeepSeek`, `DeepSeek ↔ DeepSeek` |
+| fanout | "Which chats should research?" | `DeepSeek + ChatGPT (Recommended)`, `3× mixed (DeepSeek, ChatGPT, Gemini)`, `2× DeepSeek` |
 
 Do not ask a seat question at all when the user already named the chat (a pasted chat URL or "continue my DeepSeek chat"): use it and say so in the status line.
 
@@ -57,7 +57,7 @@ Add a second question in the same call: **"New chats or existing ones?"** (heade
 For each seat:
 
 1. `tabs_create_mcp` → `tab`. `navigate` it to the seat URL (`url_new` for a new chat).
-2. Run the provider's **status** op (`providers/CONTRACT.md` says how to run an op).
+2. Run the provider's **status** op (`providers/CONTRACT.md` says how to run an op). If it fails with "Inspected target navigated or closed", the site redirected while the op ran (DeepSeek sends a logged-out visitor to `/sign_in`): run it again.
 3. Check:
    - `loggedIn:false`: take a screenshot and tell the user: *"You are not logged in to <Provider> (seat <id>). Log in in the tab I opened, then write 'logged in'."* When they answer, run status again. Never type credentials.
    - Existing chat with `messages: 0`: wrong URL, or not the user's chat. Ask again.

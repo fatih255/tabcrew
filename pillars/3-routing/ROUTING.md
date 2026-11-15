@@ -13,7 +13,7 @@ Give every seat a display name before you spawn its agent:
 ```
 
 - **Color:** a random, unused one of 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫. The seats in one session never share a color.
-- **Provider emoji:** DeepSeek 🐋 · ChatGPT 🤖 · a future provider sets its own `emoji:` in `PROVIDER.md`.
+- **Provider emoji:** DeepSeek 🐋 · ChatGPT 🤖 · Gemini ✨ · a future provider sets its own `emoji:` in `PROVIDER.md`.
 - **Persona:** one short word that fits the job. Pick it yourself and vary it between sessions. Examples:
   - lead: Captain, Navigator, Pilot
   - proposer: Architect, Builder, Advocate

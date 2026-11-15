@@ -4,7 +4,7 @@
 
 # tabcrew
 
-tabcrew is a Claude Code skill that lets Claude Code drive the AI chats you already have open in Chrome. DeepSeek and ChatGPT tabs become seats in a crew. Claude Code sends them messages, waits for their answers, passes the right parts between them, and does the actual work in your repo.
+tabcrew is a Claude Code skill that lets Claude Code drive the AI chats you already have open in Chrome. DeepSeek, ChatGPT and Gemini tabs become seats in a crew. Claude Code sends them messages, waits for their answers, passes the right parts between them, and does the actual work in your repo.
 
 If you copy prompts from a chat into Claude Code and paste the results back, this does that loop for you.
 
@@ -142,6 +142,14 @@ Each run below was a fresh `claude -p` session in an empty folder, driving real 
 | solo, auto mode | DeepSeek | disk-cached downloader; the chat asked 6 design questions first | all answered by Claude Code, 0 asked to the user, 14 tests pass |
 | fanout, auto mode | ChatGPT + DeepSeek | file encoding fixer; each seat asked a clarifying question | all answered by Claude Code, 0 asked to the user, 28 tests pass |
 | solo, auto mode | ChatGPT | Slack deploy notifier with dry run, no real message sent | format and retry questions answered by Claude Code, webhook read from an env var, 24 tests pass |
+| solo, auto mode | Gemini | `top_words()` word counter with Turkish and German letters | Claude Code fixed Gemini's regex for `İ` and Gemini agreed, 16 tests pass |
+| debate, auto mode | Gemini vs ChatGPT | rules for `parse_duration("1h30m")` | agreed in 1 round after ChatGPT's whitespace and repeated-unit objections, 49 cases pass |
+| fanout, auto mode | DeepSeek + ChatGPT + Gemini | SemVer 2.0 `compare()` and `is_valid()` | Claude Code caught a wrong expected result from Gemini, Gemini corrected it, all tests pass |
+| debate, auto mode | DeepSeek vs Gemini | token-bucket rate limiter with a fake clock | agreed in 2 rounds, 17 tests pass |
+| solo, auto mode, 6 rounds | Gemini | INI-to-JSON converter planned and reviewed step by step | 3 steps reviewed by Gemini, 51 tests pass |
+| solo, auto mode | ChatGPT | review a 24.5k-character file (over ChatGPT's ~10k message limit) | sent in 4 parts automatically, bug found, 11 tests pass |
+| debate, auto mode | ChatGPT vs DeepSeek | config loading (TOML, JSON, env vars) with code blocks on both sides | agreed in 2 rounds, 34 tests pass |
+| fanout, auto mode | ChatGPT + Gemini + DeepSeek | `slugify()` for Turkish, German, French, emoji and CJK | 116 cases pass |
 
 ## Memory
 
@@ -172,7 +180,8 @@ When you attach to a chat you have been using for a while, tabcrew first asks th
 |---|---|
 | DeepSeek (chat.deepseek.com) | Supported |
 | ChatGPT (chatgpt.com) | Supported |
-| Gemini, Claude.ai, Grok and others | Not yet. See [CONTRIBUTING.md](CONTRIBUTING.md) to add one. |
+| Gemini (gemini.google.com) | Supported |
+| Claude.ai, Grok, Perplexity and others | Not yet. See [CONTRIBUTING.md](CONTRIBUTING.md) to add one. |
 
 ## Contributing
 

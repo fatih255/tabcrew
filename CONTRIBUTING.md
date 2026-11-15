@@ -18,7 +18,8 @@ tabcrew/
 ├── providers/
 │   ├── CONTRACT.md             what every adapter must do
 │   ├── deepseek/
-│   └── chatgpt/
+│   ├── chatgpt/
+│   └── gemini/
 └── tools/                      fill_op.py builds a runnable op; join_reply.py decodes a reply
 ```
 

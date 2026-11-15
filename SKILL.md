@@ -1,6 +1,6 @@
 ---
 name: tabcrew
-description: Run the AI chats in the user's own local Chrome (DeepSeek, ChatGPT; pluggable) as a crew of agents orchestrated by Claude Code via Claude in Chrome — no copy-paste. Workflows - solo (one chat leads, Claude Code executes in the repo), debate (two chats discuss and converge, then hand the conclusion to Claude Code), fanout (several chats research subtopics in parallel, Claude Code synthesizes and acts). One named background agent per seat extracts, in any language, the part of each chat reply meant for Claude Code or for the other chat. Use when the user says "deepseek ile çalış", "chatgpt ile çalış", "chatgpt ile deepseek tartışsın", "iki chat açıp araştırsın", "tabcrew", "/tabcrew", "copy-paste between chat and Claude Code", or wants browser AI chats to work together with Claude Code.
+description: Run the AI chats in the user's own local Chrome (DeepSeek, ChatGPT, Gemini; pluggable) as a crew of agents orchestrated by Claude Code via Claude in Chrome — no copy-paste. Workflows - solo (one chat leads, Claude Code executes in the repo), debate (two chats discuss and converge, then hand the conclusion to Claude Code), fanout (several chats research subtopics in parallel, Claude Code synthesizes and acts). One named background agent per seat extracts, in any language, the part of each chat reply meant for Claude Code or for the other chat. Use when the user says "deepseek ile çalış", "chatgpt ile çalış", "gemini ile çalış", "chatgpt ile deepseek tartışsın", "iki chat açıp araştırsın", "tabcrew", "/tabcrew", "copy-paste between chat and Claude Code", or wants browser AI chats to work together with Claude Code.
 ---
 
 # tabcrew
@@ -33,7 +33,8 @@ tabcrew/
 ├── providers/
 │   ├── CONTRACT.md              adapter interface (status / send / wait_read / toggle)
 │   ├── deepseek/                ready
-│   └── chatgpt/                 ready
+│   ├── chatgpt/                 ready
+│   └── gemini/                  ready
 └── tools/                       fill_op.py (build an op from a file) · join_reply.py (decode a reply)
 ```
 
@@ -54,7 +55,7 @@ Browser actions on a chat always go through its provider adapter (`providers/<pr
 Load all tools in ONE ToolSearch call at the start:
 
 ```
-select:mcp__claude-in-chrome__list_connected_browsers,mcp__claude-in-chrome__select_browser,mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in-chrome__tabs_create_mcp,mcp__claude-in-chrome__navigate,mcp__claude-in-chrome__javascript_tool,mcp__claude-in-chrome__computer,mcp__claude-in-chrome__browser_batch,SendMessage
+select:mcp__claude-in-chrome__list_connected_browsers,mcp__claude-in-chrome__select_browser,mcp__claude-in-chrome__tabs_context_mcp,mcp__claude-in-chrome__tabs_create_mcp,mcp__claude-in-chrome__tabs_close_mcp,mcp__claude-in-chrome__navigate,mcp__claude-in-chrome__javascript_tool,mcp__claude-in-chrome__computer,mcp__claude-in-chrome__browser_batch,SendMessage
 ```
 
 **Skill args** (optional; each one skips its question):

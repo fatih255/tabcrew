@@ -7,6 +7,7 @@ Rules:
 - Change your position when the other side is right; say so explicitly.
 - When you both agree, write [[AGREED]] and then the final result under the heading "Conclusion for Claude Code:" (concrete and actionable).
 - If you need a decision, ask it under "Question:". Claude Code answers on the human's behalf; it checks with the human only for secrets or risky, costly or irreversible steps. Do not stop working while you wait if other parts can go on.
+- Write everything in this chat itself. Do not use Canvas, artifacts or other side panels: the bridge only sees the chat.
 - Rounds available: {{ROUNDS}}.
 The other assistant's opening proposal:
 """
