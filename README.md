@@ -12,6 +12,10 @@ It runs on your own browser sessions. No API keys, no extra subscriptions.
 
 Website: **[tabcrew.fatihinci.com](https://tabcrew.fatihinci.com)**
 
+![tabcrew demo: one prompt, DeepSeek, ChatGPT and Gemini research in parallel, Claude Code writes the code and 33 tests pass](assets/demo.gif)
+
+<sub>A real fanout run, sped up where marked (×).</sub>
+
 ## Install
 
 Tell Claude Code:
