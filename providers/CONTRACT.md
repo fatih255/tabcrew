@@ -13,6 +13,19 @@ providers/<id>/
 
 ## How to run an op
 
+**Install once, then call (use this).** A full op is 3–11 KB; sending it on every poll costs many tokens and invites copy mistakes. Instead, install all of a provider's ops in the tab once, then send short calls:
+
+```
+python -I tools/fill_op.py --install providers/<id>                          # once per page load
+python -I tools/fill_op.py providers/<id>/send.js --msg-file <file> --call    # ~130 characters + the message
+python -I tools/fill_op.py providers/<id>/wait_read.js --mode after_send --call
+python -I tools/fill_op.py providers/<id>/status.js --call
+```
+
+Run each output with `javascript_tool` unchanged. The installer defines `window.__tc` (with a version of the op files). A call returns `{ok:false, status:'error', err:'not_installed'}` when the tab has no install or an older one (after every `navigate` or reload, or after an adapter changed): run the installer, then the same call again. Everything below about placeholders and results applies to both forms.
+
+**Full op (fallback).**
+
 1. Read the `.js` file.
 2. Replace the placeholder on its **first line** only:
    - `__MSG__` → the message as a **JSON string literal**, quotes included. For example `"Merhaba\n\"x\""`. Escape `\`, `"` and newlines exactly as `JSON.stringify` does.
@@ -40,7 +53,7 @@ Rules every op must follow:
 |---|---|
 | `status` | `{url, title, loggedIn, ready, generating, assistantCount, messages, toggles:[{name,on}]}` |
 | `send` | `{ok:true, len, url}` or `{ok:false, err:'no_textarea'│'still_generating'│'value_mismatch'│'send_disabled'│'send_not_confirmed'}`, or `{ok:false, err:'site_error', note}` when the site rejected the message with an error notice, or `{ok:false, err:'too_long', max}` when the site has a known input limit (`max` characters) and the message is longer |
-| `wait_read` | `{status:'done', len, enc:'pct3', chunks:[…], source:'copy'│'markdown'│'innerText', secs}` (optionally `canvas:true` when part of the reply went to a side panel the adapter cannot read) or `{status:'generating'│'waiting', partialLen}` or `{status:'error', err:'no_send_in_this_page'}`, or `{status:'error', err:'rejected'│'site_error', note}` when the site refused the message or showed an error instead of a reply (`note` is the site's own text, e.g. "Content is too long", "Too many requests", or `no reply and the chat is idle`). A `done` result may carry `warn:[…]` (see below) |
+| `wait_read` | `{status:'done', len, h, enc:'pct3', chunks:[…], source:'copy'│'markdown'│'innerText', secs}` (optionally `canvas:true` when part of the reply went to a side panel the adapter cannot read) or `{status:'generating'│'waiting', partialLen}` or `{status:'error', err:'no_send_in_this_page'}`, or `{status:'error', err:'rejected'│'site_error', note}` when the site refused the message or showed an error instead of a reply (`note` is the site's own text, e.g. "Content is too long", "Too many requests", or `no reply and the chat is idle`). A `done` result may carry `warn:[…]` (see below) |
 | `toggle` | `{ok, name, on}` or `{ok:false, err:'toggle_not_found'}` |
 
 **No size limit.** The browser tool truncates any single returned string at about 1000 characters, so `wait_read` returns the whole reply as `chunks` (strings of at most 900 characters). Chunks are cut by Unicode code points (never inside an emoji), and `len` counts code points.
@@ -51,7 +64,7 @@ The browser tool also hides any string that looks like cookie or query-string da
 python -I tools/join_reply.py <result.json> <reply.md>
 ```
 
-It joins, decodes, checks `len`, and writes the exact reply text. The full text also stays in `window.__tabpair.lastText`.
+It joins, decodes, checks `len` and the content hash `h` (FNV-1a over the UTF-16 code units of the text, so a character changed while you copied the result is caught even when the length matches), and writes the exact reply text. The full text also stays in `window.__tabpair.lastText`.
 
 `text` must be the assistant's **final answer only**, never its hidden reasoning or "thinking" section. Return markdown if possible. Use `copy` when the chat's own Copy button can be captured with a synthetic click, or `markdown` when the adapter converts the rendered DOM itself. Use `innerText` only as a fallback.
 

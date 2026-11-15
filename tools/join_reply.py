@@ -5,7 +5,8 @@ Save the JSON that wait_read returned (or just its "chunks" array) to a file, th
   python -I tools/join_reply.py <result.json> <reply.md>
 
 It joins the chunks, undoes the "pct3" encoding (%25 -> %, %26 -> &, %3B -> ;),
-checks the length against "len" when present, and writes the reply as UTF-8.
+checks the length against "len" and the content hash against "h" when present (so a
+character changed while copying the result is caught too), and writes the reply as UTF-8.
 
 Why the encoding exists: the browser tool hides any returned string that looks like
 cookie or query-string data (for example "x=1&y=2" or "a=b; c=d") behind
@@ -15,6 +16,16 @@ import io
 import json
 import re
 import sys
+
+
+def fnv(text: str) -> str:
+    """FNV-1a (32 bit) over UTF-16 code units, the same as wait_read's `h`."""
+    h = 0x811C9DC5
+    b = text.encode("utf-16-le")
+    for i in range(0, len(b), 2):
+        h ^= b[i] | (b[i + 1] << 8)
+        h = (h * 0x01000193) & 0xFFFFFFFF
+    return "%08x" % h
 
 
 def main() -> int:
@@ -33,6 +44,11 @@ def main() -> int:
     if want is not None and len(joined) != want:
         print(f"ERROR: length {len(joined)} != expected {want}; a chunk is missing or was retyped", file=sys.stderr)
         return 3
+    h = None if isinstance(data, list) else data.get("h")
+    if h and fnv(joined) != h:
+        print(f"ERROR: content hash {fnv(joined)} != expected {h}; some characters changed while the result was copied."
+              " Re-read the reply (wait_read 'last') and save that result again", file=sys.stderr)
+        return 4
     io.open(dst, "w", encoding="utf-8", newline="\n").write(joined)
     print(f"ok: {len(joined)} chars -> {dst}")
     return 0

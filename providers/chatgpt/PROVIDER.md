@@ -25,7 +25,7 @@ tested: 2026-11-15, Turkish UI, logged-in account, Chrome on Windows
 | Code blocks | ChatGPT is rolling out a new renderer and uses both in one reply. New: a `[data-code-block]` root, the code in `[data-code-block-source]`, and the label in the header (`[data-markdown-copy=exclude]`; the first line, e.g. "Python", or a localized "Kod"/"Düz metin" for no language). Old (now often inside a `[data-code-block]` root): `pre` **or** an element with `data-language` whose lines are `div`s. The language label is in the block header ("Python", "Bash"). Blocks without a language get a localized label ("Düz metin" = plain text); anything that is not a plain identifier is dropped |
 | Rendered markdown | mostly semantic HTML (`H2`, `UL/OL/LI`, `BLOCKQUOTE`, `A`, `STRONG`, `EM`, `CODE`, `TABLE`) with `data-d-component` (`text`, `title`, `divider`, `table`…) |
 | Sent-message marker | `send` sets `data-tp-old` on all existing units and stores `window.__tabpair = {head}` |
-| New chat | sending from `https://chatgpt.com/` changes the URL to `/c/local-chatgpt%3A<uuid>` first, then to `/c/<id>`. Read the final URL from `status` at the end |
+| New chat | sending from `https://chatgpt.com/` changes the URL to `/c/local-chatgpt%3A<uuid>` first, then to `/c/<id>` about a second later. `send` waits (up to 6 s) for the final `/c/<id>` before it returns its `url` |
 | Logged out | no composer, or a visible "Log in" / "Sign up" button |
 
 Class names are hashed or utility classes. Do not use them. ARIA labels are localized ("Gönder", "Durdur", "Kopyala"). Do not use them either.

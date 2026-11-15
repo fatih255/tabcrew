@@ -39,8 +39,10 @@ Save each returned agentId in the seat as `seat.agent`. Never show agent ids to 
 
 ```
 SendMessage {to: seat.agent, summary: "<display name> round <N>", message:
-"<context workflow=\"<WORKFLOW>\" seat=\"<id>\" role=\"<role>\" round=\"<N>\" />\n<chat_reply>\n<FULL reply text>\n</chat_reply>"}
+"<context workflow=\"<WORKFLOW>\" seat=\"<id>\" role=\"<role>\" round=\"<N>\" />\n<chat_reply file=\"<absolute path of tc-<SESSION>-seat-<id>-round-<N>.md>\" />"}
 ```
+
+Give the path of the `.md` file that `join_reply.py` wrote (`pillars/4-turn` step 2). The agent reads the exact reply from it, so you do not paste the reply into the message and never shorten it. Only when there is no file (for example the first message of a spawn), put the reply inline between `<chat_reply>` and `</chat_reply>`.
 
 The answer comes back as an agent message that starts with `ROUTE`. It arrives during one of your next tool calls, or with that agent's completion notification. **Do not poll and do not send "are you done?".** If you have nothing else to do, end the turn with one line (*"Replies are with the crew agents…"*). The notifications wake you up.
 

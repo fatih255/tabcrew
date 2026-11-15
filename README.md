@@ -150,6 +150,7 @@ Each run below was a fresh `claude -p` session in an empty folder, driving real 
 | solo, auto mode | ChatGPT | review a 24.5k-character file (over ChatGPT's ~10k message limit) | sent in 4 parts automatically, bug found, 11 tests pass |
 | debate, auto mode | ChatGPT vs DeepSeek | config loading (TOML, JSON, env vars) with code blocks on both sides | agreed in 2 rounds, 34 tests pass |
 | fanout, auto mode | ChatGPT + Gemini + DeepSeek | `slugify()` for Turkish, German, French, emoji and CJK | 116 cases pass |
+| `tools/e2e.sh`, 5 tests at once | one solo per chat, ChatGPT vs Gemini debate, three-chat fanout | word counter, slugify, duration parser, JSON-lines reader, SemVer | all pass (11, 11, 18, 23 and 6 tests); ops installed once per tab, no adapter errors or warnings |
 
 ## Memory
 
