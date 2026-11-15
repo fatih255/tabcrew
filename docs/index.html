@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>tabcrew</title>
+<meta name="description" content="A Claude Code skill that drives the DeepSeek, ChatGPT and Gemini chats you already have open in Chrome, passes the right parts between them, and does the work in your repo.">
+<link rel="icon" href="logo.png">
+<link rel="canonical" href="https://tabcrew.fatihinci.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="tabcrew: your AI chat tabs, working as one crew">
+<meta property="og:description" content="A Claude Code skill that drives the DeepSeek, ChatGPT and Gemini chats you already have open in Chrome and does the work in your repo.">
+<meta property="og:url" content="https://tabcrew.fatihinci.com/">
+<meta property="og:image" content="https://tabcrew.fatihinci.com/banner.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@500&family=Host+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#f5f4f0; --alt:#ecebe8; --ink:#000; --ink-2:#373737; --muted:#505050;
+  --inv:#141314; --inv-ink:#fcfcfd; --btn:#131313; --btn-ink:#fcfcfd; --line:#d6d5d2;
+  --r:8px; --display:"EB Garamond", Georgia, serif; --body:"Host Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --mono:ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --band:128px; --band-b:85px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-color:#9a9995 var(--ground)}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--ground);color:var(--ink);font:400 16px/1.6 var(--body);-webkit-font-smoothing:antialiased}
+::selection{background:var(--ink);color:var(--ground)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
+img,svg{display:block;max-width:100%}
+code,.mono{font-family:var(--mono);font-size:.9em}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.band{padding:var(--band) 0 var(--band-b)}
+.band.alt{background:var(--alt)}
+h1,h2,h3{font-family:var(--display);font-weight:500;margin:0;text-wrap:balance}
+h2{font-size:clamp(40px,4.6vw,56px);line-height:1.08;letter-spacing:-.01em}
+h3{font-size:24px;line-height:1.2}
+p{margin:0;text-wrap:pretty}
+.muted{color:var(--muted)}
+
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:var(--r);padding:11px 18px;font:500 15px/1 var(--body);text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn.primary{background:var(--btn);color:var(--btn-ink)}
+.btn.primary:hover{background:#2a2a2a}
+.btn.ghost{border-color:var(--line);background:transparent;color:var(--ink)}
+.btn.ghost:hover{border-color:var(--ink)}
+
+/* header */
+.header{margin-top:16px;background:var(--alt);border-radius:var(--r);display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 12px 12px 20px}
+.brand{display:flex;align-items:center;gap:10px;font:500 26px/1 var(--display);text-decoration:none;letter-spacing:-.01em}
+.brand svg{width:26px;height:26px}
+.nav{display:flex;gap:28px;font-size:15px;color:var(--ink-2)}
+.nav a{text-decoration:none}.nav a:hover{color:var(--ink);text-decoration:underline;text-underline-offset:4px}
+.acts{display:flex;gap:8px}
+.gh > svg{width:16px;height:16px}
+.stars{display:inline-flex;align-items:center;gap:4px;margin-left:4px;padding-left:10px;border-left:1px solid var(--line);color:var(--ink-2);font-variant-numeric:tabular-nums}
+.stars[hidden]{display:none}
+.stars svg{width:13px;height:13px}
+.stars b{font-weight:500}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:56px;align-items:center;padding:104px 0 var(--band-b)}
+.hero h1{font-size:76px;line-height:1.02;letter-spacing:-.015em}
+.hero .intro{font-size:18px;line-height:1.6;color:var(--ink-2);max-width:48ch;margin-top:24px}
+.hero .more{margin-top:20px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;font-size:14px;color:var(--muted)}
+.hero .more a{color:var(--ink);font-weight:500;text-underline-offset:4px}
+
+/* install box */
+.install{margin-top:32px;background:var(--inv);color:var(--inv-ink);border-radius:var(--r);overflow:hidden;max-width:560px}
+.install .tabs{display:flex;gap:2px;padding:6px 6px 0}
+.install .tab{background:none;border:0;color:#b9b8bb;font:500 13px/1 var(--body);padding:10px 12px 11px;cursor:pointer;border-radius:6px 6px 0 0}
+.install .tab[aria-selected=true]{color:var(--inv-ink);background:#232223}
+.install .tab:hover{color:var(--inv-ink)}
+.install .tab:focus-visible,.copy:focus-visible{outline-color:var(--inv-ink)}
+.install .pane{display:flex;align-items:flex-start;gap:12px;padding:16px 12px 16px 18px;background:#232223}
+.install .pane[hidden]{display:none}
+.install pre{margin:0;flex:1;min-width:0;font:400 14px/1.6 var(--mono);white-space:pre-wrap;word-break:break-word}
+.install pre code{font-size:1em}
+.install .p{color:#8f8e92;user-select:none}
+.copy{flex:none;display:inline-flex;align-items:center;gap:6px;background:#3a393a;color:var(--inv-ink);border:0;border-radius:6px;padding:7px 10px;font:500 13px/1 var(--body);cursor:pointer}
+.copy:hover{background:#4a494a}
+.copy svg{width:14px;height:14px}
+.install .foot{padding:10px 18px 12px;font-size:13px;color:#b9b8bb;background:#232223;border-top:1px solid #2f2e2f}
+.install .foot a{color:var(--inv-ink)}
+.install ::selection{background:var(--inv-ink);color:var(--inv)}
+
+.hero-fig{margin:0}
+.hero-fig svg{width:100%;height:auto}
+.cap{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
+.wire{stroke-dasharray:6 10;animation:flow 1.6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+@media (prefers-reduced-motion:reduce){.wire{animation:none;stroke-dasharray:none}}
+
+/* about */
+.lead{font:500 clamp(28px,3.2vw,40px)/1.25 var(--display);max-width:30ch}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:56px;max-width:960px}
+.cols h3{margin-bottom:12px}
+.cols p{color:var(--ink-2);max-width:60ch}
+.cols p+p{margin-top:14px}
+
+/* features */
+.feat-head{display:flex;justify-content:space-between;align-items:end;gap:32px;margin-bottom:48px}
+.feat-head p{max-width:44ch;color:var(--ink-2)}
+.feat-big{background:var(--ground);border-radius:var(--r);padding:40px;display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:40px;align-items:center}
+.feat-big > div > p{color:var(--ink-2);margin-top:12px;max-width:46ch}
+.feat-big ul{list-style:none;padding:0;margin:20px 0 0;display:grid;gap:10px}
+.feat-big li{display:grid;grid-template-columns:72px 1fr;gap:12px;font-size:15px;color:var(--ink-2)}
+.feat-big li b{font-weight:600;color:var(--ink)}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:16px}
+.feat{background:var(--ground);border-radius:var(--r);padding:28px}
+.feat svg{width:28px;height:28px;margin-bottom:20px}
+.feat h3{font-size:22px;margin-bottom:8px}
+.feat p{color:var(--ink-2);font-size:15px}
+
+/* benefits */
+.benefits{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:64px;align-items:center}
+.reasons{display:grid;gap:28px;margin-top:40px}
+.reasons > div{display:grid;grid-template-columns:28px 1fr;gap:16px}
+.reasons svg{width:24px;height:24px;margin-top:4px}
+.reasons h3{font-size:22px;margin-bottom:4px}
+.reasons p{color:var(--ink-2);max-width:52ch}
+.frame{background:#fbfaf7;border:1px solid var(--line);border-radius:12px;overflow:hidden;box-shadow:0 18px 40px -24px rgba(0,0,0,.25)}
+.frame .bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--alt)}
+.frame .bar i{width:10px;height:10px;border-radius:50%;background:#bdbcb8}
+.frame .bar span{margin-left:10px;font:400 12px/1 var(--mono);color:var(--muted)}
+.frame pre{margin:0;padding:22px 22px 26px;font:400 14px/1.75 var(--mono);color:var(--ink-2);overflow-x:auto}
+.frame pre b{font-weight:600;color:var(--ink)}
+.frame pre .c{color:#62615e}
+
+/* proof rows */
+.proof{margin-top:48px;display:grid;gap:44px}
+.row{display:grid;grid-template-columns:260px 1fr;gap:40px}
+.who{display:flex;gap:14px;align-items:flex-start}
+.av{flex:none;width:44px;height:44px;border-radius:50%;background:var(--inv);color:var(--inv-ink);display:grid;place-items:center;font:500 20px/1 var(--display)}
+.who b{display:block;font-weight:600}
+.who span{font-size:14px;color:var(--muted)}
+.row blockquote{margin:0;font:500 clamp(22px,2.2vw,28px)/1.35 var(--display);max-width:42ch}
+.row blockquote+p{margin-top:10px;font-size:14px;color:var(--muted)}
+
+/* faq */
+.faq{display:grid;grid-template-columns:1fr 1fr;gap:40px 56px;margin-top:48px}
+.faq h3{font:600 17px/1.4 var(--body);margin-bottom:8px}
+.faq p{color:var(--ink-2);max-width:56ch}
+.faq code{background:var(--alt);padding:1px 5px;border-radius:4px}
+
+/* install cta */
+.cta{text-align:center}
+.cta h2{max-width:16ch;margin:0 auto}
+.cta > p{margin:20px auto 0;color:var(--ink-2);max-width:52ch}
+.cta .install{margin:36px auto 0;text-align:left}
+.cta .note{margin-top:16px;font-size:14px;color:var(--muted)}
+
+/* footer */
+footer{background:var(--inv);color:var(--inv-ink);padding:96px 0 40px}
+footer .links{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:32px}
+footer .links p{color:#b9b8bb;max-width:36ch;font-size:15px}
+footer h4{font:600 14px/1 var(--body);margin:0 0 16px}
+footer ul{list-style:none;padding:0;margin:0;display:grid;gap:10px;font-size:15px}
+footer ul a{color:#cfced1;text-decoration:none}
+footer ul a:hover{color:var(--inv-ink);text-decoration:underline;text-underline-offset:4px}
+.bigname{font:500 clamp(88px,21vw,290px)/.8 var(--display);letter-spacing:-.03em;margin:80px 0 40px}
+.legal{display:flex;justify-content:space-between;gap:12px 24px;flex-wrap:wrap;font-size:13px;color:#a9a8ab;border-top:1px solid #2f2e2f;padding-top:20px}
+footer ::selection{background:var(--inv-ink);color:var(--inv)}
+footer :focus-visible{outline-color:var(--inv-ink)}
+
+@media (max-width:1020px){
+  .hero{grid-template-columns:minmax(0,1fr);gap:48px;padding-top:72px}
+  .feat-big{grid-template-columns:minmax(0,1fr)}
+  .benefits{grid-template-columns:minmax(0,1fr);gap:40px}
+  .feat-grid{grid-template-columns:1fr 1fr}
+}
+@media (max-width:820px){
+  :root{--band:85px;--band-b:64px}
+  .nav{display:none}
+  .hero h1{font-size:62px}
+  .cols,.faq{grid-template-columns:1fr;gap:32px}
+  .feat-grid{grid-template-columns:1fr}
+  .feat-head{display:block}.feat-head p{margin-top:16px}
+  .feat-big{padding:24px}
+  .row{grid-template-columns:minmax(0,1fr);gap:16px}
+  footer .links{grid-template-columns:1fr 1fr}
+  footer .links > div:first-child{grid-column:1/-1}
+}
+@media (max-width:440px){
+  .hero h1{font-size:50px}
+  .acts .ghost{display:none}
+  .feat-big li{grid-template-columns:1fr;gap:2px}
+  .install .pane{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="header">
+    <a class="brand" href="#"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="3" width="24" height="7" rx="2" fill="#131313"/><path d="M4 10 L4 6 h5 l1.5 4z M10.5 10 L10.5 6 h5 l1.5 4z M17 10 L17 6 h5 l1.5 4z" fill="#fcfcfd" opacity=".55"/><path d="M6 10 C6 16 13 15 13 18 M13 10 L13 18 M20 10 C20 16 13 15 13 18" stroke="#131313" stroke-width="1.6" fill="none"/><rect x="8" y="18" width="10" height="7" rx="1.5" fill="#131313"/></svg>tabcrew</a>
+    <nav class="nav" aria-label="Main"><a href="#about">How it works</a><a href="#features">Workflows</a><a href="#faq">FAQ</a><a href="https://github.com/fatih255/tabcrew/blob/main/CONTRIBUTING.md">Contribute</a></nav>
+    <div class="acts"><a class="btn ghost gh" href="https://github.com/fatih255/tabcrew" aria-label="tabcrew on GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub<span class="stars" data-stars hidden><svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 .8l2.2 4.6 5 .7-3.6 3.5.9 5L8 12.2l-4.5 2.4.9-5L.8 6.1l5-.7z"/></svg><b></b></span></a><a class="btn primary" href="#install">Install</a></div>
+  </header>
+
+  <section class="hero">
+    <div>
+      <h1>Your AI chat tabs, working as one crew</h1>
+      <p class="intro">tabcrew is a Claude Code skill. It writes to the DeepSeek, ChatGPT and Gemini chats you already have open in Chrome, passes the right parts between them, and does the work in your repo.</p>
+
+      <div class="install" data-install>
+        <div class="tabs" role="tablist" aria-label="Install method">
+          <button class="tab" role="tab" aria-selected="true" data-tab="0">Claude Code</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="1">Terminal</button>
+        </div>
+        <div class="pane" role="tabpanel" data-pane="0">
+          <pre><code><span class="p">&gt; </span>Install the skill from https://github.com/fatih255/tabcrew</code></pre>
+          <button class="copy" type="button" data-copy="Install the skill from https://github.com/fatih255/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button>
+        </div>
+        <div class="pane" role="tabpanel" data-pane="1" hidden>
+          <pre><code><span class="p">$ </span>git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew</code></pre>
+          <button class="copy" type="button" data-copy="git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button>
+        </div>
+        <p class="foot">Needs the <a href="https://claude.ai/chrome">Claude in Chrome</a> extension, signed in with your Claude Code account.</p>
+      </div>
+
+      <p class="more"><a href="https://github.com/fatih255/tabcrew">Read the docs on GitHub →</a><span>Free and open source (MIT) · No API keys</span></p>
+    </div>
+
+    <figure class="hero-fig">
+      <svg viewBox="140 30 920 590" role="img" aria-label="Illustration: three chat tabs in a browser window, wired to a Claude Code terminal">
+        <defs><filter id="lift" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".10"/></filter></defs>
+        <rect x="150" y="40" width="900" height="470" rx="14" fill="#fbfaf7" stroke="#d6d5d2" stroke-width="1.5" filter="url(#lift)"/>
+        <circle cx="180" cy="66" r="6" fill="#bdbcb8"/><circle cx="200" cy="66" r="6" fill="#bdbcb8"/><circle cx="220" cy="66" r="6" fill="#bdbcb8"/>
+        <path d="M180 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#ecebe8" stroke="#131313" stroke-width="2"/>
+        <rect x="196" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".18"/>
+        <path d="M268 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
+        <path d="M480 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#d6d5d2" stroke="#131313" stroke-width="2"/>
+        <rect x="496" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".22"/>
+        <path d="M568 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
+        <path d="M780 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#f5f4f0" stroke="#131313" stroke-width="2"/>
+        <rect x="796" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".14"/>
+        <path d="M868 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
+        <g fill="#131313">
+          <rect x="190" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="224" y="294" width="130" height="7" rx="3.5" opacity=".55"/><rect x="224" y="306" width="96" height="6" rx="3" opacity=".2"/>
+          <rect x="190" y="350" width="22" height="22" rx="5" opacity=".7"/><rect x="224" y="354" width="110" height="7" rx="3.5" opacity=".55"/><rect x="224" y="366" width="140" height="6" rx="3" opacity=".2"/>
+          <rect x="490" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="524" y="294" width="120" height="7" rx="3.5" opacity=".55"/>
+          <rect x="790" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="824" y="294" width="134" height="7" rx="3.5" opacity=".55"/><rect x="824" y="306" width="84" height="6" rx="3" opacity=".2"/>
+          <rect x="790" y="350" width="22" height="22" rx="5" opacity=".7"/><rect x="824" y="354" width="100" height="7" rx="3.5" opacity=".55"/>
+        </g>
+        <g fill="none" stroke="#131313" stroke-width="3" stroke-linecap="round">
+          <path class="wire" d="M300 256 C300 380 560 360 570 452"/><path class="wire" d="M600 256 L600 452"/><path class="wire" d="M900 256 C900 380 640 360 630 452"/>
+        </g>
+        <rect x="470" y="440" width="260" height="160" rx="12" fill="#141314" filter="url(#lift)"/>
+        <circle cx="492" cy="460" r="4.5" fill="#505050"/><circle cx="508" cy="460" r="4.5" fill="#505050"/><circle cx="524" cy="460" r="4.5" fill="#505050"/>
+        <path d="M512 512 l22 18 l-22 18" fill="none" stroke="#fcfcfd" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="546" y="542" width="34" height="6" rx="3" fill="#fcfcfd"/>
+      </svg>
+      <figcaption class="cap">Illustration: chat tabs in Chrome, wired to Claude Code</figcaption>
+    </figure>
+  </section>
+</div>
+
+<section class="band alt" id="about">
+  <div class="wrap">
+    <p class="lead">If you copy prompts from a chat into Claude Code and paste the results back, tabcrew does that loop for you.</p>
+    <div class="cols">
+      <div>
+        <h3>The chats think</h3>
+        <p>You keep the chats you already use. tabcrew opens its own tabs, writes the message, waits for the answer and reads it back, including long code blocks and tables.</p>
+        <p>A small helper agent for each chat picks out the part of the reply meant for Claude Code or for the other chat, in any language.</p>
+      </div>
+      <div>
+        <h3>Claude Code does the work</h3>
+        <p>Claude Code runs every step in your repo: edits files, runs tests, and reports the real result back to the chat, round after round.</p>
+        <p>Chat replies are treated as input for your goal, not as commands. Deleting, deploying, publishing and anything that touches secrets waits for you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="features">
+  <div class="wrap">
+    <div class="feat-head">
+      <h2>One chat, two, or three at once</h2>
+      <p>Describe the job in plain words, or call <code>/tabcrew</code> with a workflow, the chats and a round limit.</p>
+    </div>
+
+    <div class="feat-big" style="background:var(--alt)">
+      <div>
+        <h3>Three workflows</h3>
+        <p>Mix chats or repeat one: ChatGPT against Gemini, three DeepSeek tabs, two ChatGPT tabs plus a Gemini tab.</p>
+        <ul>
+          <li><b>solo</b><span>One chat leads. Claude Code carries out each step and reports back.</span></li>
+          <li><b>debate</b><span>Two chats argue until both agree on one written conclusion, then Claude Code builds it.</span></li>
+          <li><b>fanout</b><span>Each chat researches its own subtopic at the same time. Claude Code checks the claims, merges and acts.</span></li>
+        </ul>
+      </div>
+      <svg viewBox="0 0 580 300" role="img" aria-label="Diagram of the three workflows: solo, debate and fanout">
+        <g font-family="Host Grotesk, sans-serif" font-size="15" font-weight="600" fill="#000">
+          <text x="30" y="30">solo</text><text x="222" y="30">debate</text><text x="414" y="30">fanout</text>
+        </g>
+        <g fill="none" stroke="#131313" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M80 96 V188"/><path d="M70 178 l10 10 l10 -10"/><path d="M70 106 l10 -10 l10 10"/>
+          <path d="M250 74 C268 58 292 58 310 74"/><path d="M310 108 C292 124 268 124 250 108"/>
+          <path d="M280 120 V188"/>
+          <path d="M430 104 C430 150 490 150 490 188"/><path d="M490 104 V188"/><path d="M550 104 C550 150 490 150 490 188"/>
+        </g>
+        <rect x="40" y="56" width="80" height="40" rx="8" fill="#d6d5d2" stroke="#131313" stroke-width="2"/>
+        <rect x="186" y="72" width="80" height="40" rx="8" fill="#d6d5d2" stroke="#131313" stroke-width="2"/>
+        <rect x="294" y="72" width="80" height="40" rx="8" fill="#f5f4f0" stroke="#131313" stroke-width="2"/>
+        <rect x="404" y="64" width="52" height="40" rx="8" fill="#d6d5d2" stroke="#131313" stroke-width="2"/>
+        <rect x="464" y="64" width="52" height="40" rx="8" fill="#f5f4f0" stroke="#131313" stroke-width="2"/>
+        <rect x="524" y="64" width="52" height="40" rx="8" fill="#fbfaf7" stroke="#131313" stroke-width="2"/>
+        <rect x="30" y="190" width="100" height="62" rx="10" fill="#141314"/>
+        <rect x="230" y="190" width="100" height="62" rx="10" fill="#141314"/>
+        <rect x="440" y="190" width="100" height="62" rx="10" fill="#141314"/>
+        <g fill="none" stroke="#fcfcfd" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M52 213 l9 8 l-9 8"/><path d="M252 213 l9 8 l-9 8"/><path d="M462 213 l9 8 l-9 8"/>
+        </g>
+        <g font-family="Host Grotesk, sans-serif" font-size="13" fill="#505050">
+          <text x="80" y="280" text-anchor="middle">step, run, report</text><text x="280" y="280" text-anchor="middle">agree, then build</text><text x="490" y="280" text-anchor="middle">research, then merge</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="feat-grid">
+      <div class="feat" style="background:var(--alt)">
+        <svg viewBox="0 0 28 28" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="22" height="16" rx="3"/><path d="M3 10h22M9 25h10"/></svg>
+        <h3>Your own sessions</h3>
+        <p>Works through the Claude in Chrome extension and the chats you are already logged in to. No API keys, no extra subscriptions.</p>
+      </div>
+      <div class="feat" style="background:var(--alt)">
+        <svg viewBox="0 0 28 28" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h18M5 14h12M5 21h7"/><path d="M18 20l3 3 5-7"/></svg>
+        <h3>Replies checked</h3>
+        <p>Each reply comes back with its length and a hash. Missing code blocks, tables or a short read are flagged instead of passed on silently.</p>
+      </div>
+      <div class="feat" style="background:var(--alt)">
+        <svg viewBox="0 0 28 28" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h12M4 14h20M4 20h10"/><path d="M21 4v8M25 8h-8"/></svg>
+        <h3>Long messages split</h3>
+        <p>A message over a site's limit (ChatGPT about 10,000 characters, Gemini 32,000) goes out in ordered parts.</p>
+      </div>
+      <div class="feat" style="background:var(--alt)">
+        <svg viewBox="0 0 28 28" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4l11 19H3z"/><path d="M14 11v5M14 20v.5"/></svg>
+        <h3>Site errors noticed</h3>
+        <p>"Too many requests", lost connections and silent stalls are caught. The tab is reloaded and the message tried once more.</p>
+      </div>
+      <div class="feat" style="background:var(--alt)">
+        <svg viewBox="0 0 28 28" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 14h10M9 18h6"/></svg>
+        <h3>Session memory</h3>
+        <p>Every run leaves dated Markdown notes in <code>.tabcrew/</code>, so a later session can pick up where this one stopped.</p>
+      </div>
+      <div class="feat" style="background:var(--alt)">
+        <svg viewBox="0 0 28 28" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14" cy="14" r="10"/><path d="M14 8v6l4 3"/></svg>
+        <h3>Knows when to stop</h3>
+        <p>A round limit of 5, 10 or 20, or "until done" with a check that pauses the run when it stops making progress.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt">
+  <div class="wrap benefits">
+    <div>
+      <h2>Why let the chats work together</h2>
+      <div class="reasons">
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6"/></svg>
+          <div><h3>No more copy and paste</h3><p>The loop between a chat and your terminal runs by itself, and the chat sees real test output instead of your summary of it.</p></div>
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="12" r="4"/><circle cx="16" cy="12" r="4"/></svg>
+          <div><h3>A second opinion built in</h3><p>In a debate one chat checks the other. In fanout Claude Code checks each claim before acting.</p></div>
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18M3 12h18"/></svg>
+          <div><h3>Use what you already have</h3><p>The chat accounts you already use stay useful, and Claude Code spends its effort on the repo work.</p></div>
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="M9 9h6M9 13h6M9 17h3"/></svg>
+          <div><h3>A record you can read</h3><p>Goals, decisions, what changed and the next step are written down in plain files you can commit or ignore.</p></div>
+        </div>
+      </div>
+    </div>
+    <figure style="margin:0">
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i><span>your-project/.tabcrew</span></div>
+<pre><b>.tabcrew/</b>
+├── <b>INDEX.md</b>        <span class="c">one line per session</span>
+├── <b>sessions/</b>
+│   └── 2026-11-14-csv-export.md
+│       <span class="c">goal · chats · decisions</span>
+│       <span class="c">what changed · next step</span>
+└── <b>chats/</b>
+    └── deepseek-2026-11-14.md
+        <span class="c">the chat's own summary</span></pre>
+      </div>
+      <figcaption class="cap">The session memory folder tabcrew writes to your project (example names)</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <h2>From the test runs</h2>
+    <p class="muted" style="margin-top:16px;max-width:62ch">Each run was a fresh Claude Code session in an empty folder, driving real chat tabs, and ended with Claude Code writing code and running its tests.</p>
+    <div class="proof">
+      <div class="row">
+        <div class="who"><div class="av" aria-hidden="true">S</div><div><b>solo</b><span>DeepSeek, ChatGPT or Gemini</span></div></div>
+        <div><blockquote>A todo CLI, slugify(), a word counter, an INI-to-JSON converter, and a review of a 24.5k-character file.</blockquote><p>Result: all tests pass</p></div>
+      </div>
+      <div class="row">
+        <div class="who"><div class="av" aria-hidden="true">D</div><div><b>debate</b><span>Every pair, and a chat against itself</span></div></div>
+        <div><blockquote>Retry with backoff, an LRU cache, a duration parser, a rate limiter, config loading.</blockquote><p>Result: both chats agreed on one conclusion, all tests pass</p></div>
+      </div>
+      <div class="row">
+        <div class="who"><div class="av" aria-hidden="true">F</div><div><b>fanout</b><span>Two or three chats, mixed</span></div></div>
+        <div><blockquote>Unicode edge cases, a password checker, SemVer, slugify() for five scripts.</blockquote><p>Result: wrong claims caught and corrected, all tests pass</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band alt" id="faq">
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq">
+      <div><h3>Which chats does it support?</h3><p>DeepSeek, ChatGPT and Gemini. Claude.ai, Grok, Perplexity and others are not supported yet; adapters are welcome.</p></div>
+      <div><h3>Does it need API keys?</h3><p>No. It drives the chat websites in your own Chrome through the Claude in Chrome extension, using the accounts you are logged in to.</p></div>
+      <div><h3>Will it type into my open tabs?</h3><p>No. It works only in tabs it opened itself. They stay open when it finishes, so you can read the whole conversation.</p></div>
+      <div><h3>What does it store in my browser?</h3><p>A copy of its own page code, about 10 KB, in each chat site's <code>localStorage</code> under keys starting with <code>__tc_src_</code>. No chat content.</p></div>
+      <div><h3>What if a chat is logged out?</h3><p>It asks you to log in. It never types passwords, and messages to the chats never include <code>.env</code> values, keys or tokens.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="install">
+  <div class="wrap cta">
+    <h2>Put your chat tabs to work</h2>
+    <p>Tell Claude Code to install it, log in to a chat site, and describe the job.</p>
+    <div class="install" data-install>
+      <div class="tabs" role="tablist" aria-label="Install method">
+        <button class="tab" role="tab" aria-selected="true" data-tab="0">Claude Code</button>
+        <button class="tab" role="tab" aria-selected="false" data-tab="1">Terminal</button>
+      </div>
+      <div class="pane" role="tabpanel" data-pane="0">
+        <pre><code><span class="p">&gt; </span>Install the skill from https://github.com/fatih255/tabcrew</code></pre>
+        <button class="copy" type="button" data-copy="Install the skill from https://github.com/fatih255/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button>
+      </div>
+      <div class="pane" role="tabpanel" data-pane="1" hidden>
+        <pre><code><span class="p">$ </span>git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew</code></pre>
+        <button class="copy" type="button" data-copy="git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button>
+      </div>
+    </div>
+    <p class="note">Then try: “Use DeepSeek to plan a CSV export feature for this repo and build it step by step.”</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <div><p>A Claude Code skill that runs your browser AI chats as a crew. Free and open source.</p></div>
+      <div><h4>Project</h4><ul><li><a href="https://github.com/fatih255/tabcrew">GitHub</a></li><li><a href="https://github.com/fatih255/tabcrew#readme">README</a></li><li><a href="https://github.com/fatih255/tabcrew/blob/main/LICENSE">MIT license</a></li></ul></div>
+      <div><h4>Learn</h4><ul><li><a href="#about">How it works</a></li><li><a href="#features">Workflows</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+      <div><h4>Community</h4><ul><li><a href="https://github.com/fatih255/tabcrew/blob/main/CONTRIBUTING.md">Contribute</a></li><li><a href="https://github.com/fatih255/tabcrew/issues">Issues</a></li><li><a href="https://github.com/fatih255">@fatih255 on GitHub</a></li><li><a href="https://fatihinci.com">fatihinci.com</a></li></ul></div>
+    </div>
+    <div class="bigname" aria-hidden="true">tabcrew</div>
+    <div class="legal"><span>© 2026 tabcrew contributors · MIT · Made by <a href="https://fatihinci.com" style="color:#cfced1">fatihinci.com</a></span><span>Not affiliated with DeepSeek, OpenAI, Google or Anthropic.</span></div>
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('[data-install]').forEach(function (box) {
+  var tabs = box.querySelectorAll('[data-tab]'), panes = box.querySelectorAll('[data-pane]');
+  tabs.forEach(function (t) {
+    t.addEventListener('click', function () {
+      tabs.forEach(function (x) { x.setAttribute('aria-selected', x === t ? 'true' : 'false'); });
+      panes.forEach(function (p) { p.hidden = p.dataset.pane !== t.dataset.tab; });
+    });
+  });
+});
+document.querySelectorAll('[data-copy]').forEach(function (b) {
+  b.addEventListener('click', function () {
+    var label = b.querySelector('span'), text = b.dataset.copy;
+    var done = function (ok) { label.textContent = ok ? 'Copied' : 'Select and copy'; setTimeout(function () { label.textContent = 'Copy'; }, 1600); };
+    if (navigator.clipboard) navigator.clipboard.writeText(text).then(function () { done(true); }, function () { done(false); });
+    else done(false);
+  });
+});
+fetch('https://api.github.com/repos/fatih255/tabcrew').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
+  var n = d && d.stargazers_count;
+  if (!n) return;
+  var label = n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'k' : String(n);
+  document.querySelectorAll('[data-stars]').forEach(function (el) {
+    el.querySelector('b').textContent = label; el.hidden = false;
+    el.closest('a').setAttribute('aria-label', 'tabcrew on GitHub, ' + n + ' stars');
+  });
+}).catch(function () {});
+</script>
+</body>
+</html>

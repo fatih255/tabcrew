@@ -10,12 +10,20 @@ If you copy prompts from a chat into Claude Code and paste the results back, thi
 
 It runs on your own browser sessions. No API keys, no extra subscriptions.
 
+Website: **[tabcrew.fatihinci.com](https://tabcrew.fatihinci.com)**
+
 ## Install
 
 Tell Claude Code:
 
 ```text
 Install the skill from https://github.com/fatih255/tabcrew
+```
+
+Or clone it into your skills folder yourself:
+
+```bash
+git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew
 ```
 
 You also need the [Claude in Chrome](https://claude.ai/chrome) extension, signed in with the same account as Claude Code, and you need to be logged in to the chat sites you want to use.
