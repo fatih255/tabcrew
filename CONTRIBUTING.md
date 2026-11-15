@@ -20,7 +20,7 @@ tabcrew/
 │   ├── deepseek/
 │   ├── chatgpt/
 │   └── gemini/
-└── tools/                      fill_op.py builds a runnable op; join_reply.py decodes a reply
+└── tools/                      fill_op.py (install ops, short calls) · fill_template.py · join_reply.py · e2e.sh
 ```
 
 Pillars and workflows never contain site selectors. Everything site-specific lives in `providers/<id>/`.

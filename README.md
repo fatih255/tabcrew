@@ -4,7 +4,7 @@
 
 # tabcrew
 
-tabcrew is a Claude Code skill that lets Claude Code drive the AI chats you already have open in Chrome. DeepSeek, ChatGPT and Gemini tabs become seats in a crew. Claude Code sends them messages, waits for their answers, passes the right parts between them, and does the actual work in your repo.
+tabcrew is a Claude Code skill that lets Claude Code work with the AI chats you already use in Chrome: DeepSeek, ChatGPT and Gemini. Claude Code writes to the chats, waits for their answers, passes the right parts between them, and does the actual work in your repo.
 
 If you copy prompts from a chat into Claude Code and paste the results back, this does that loop for you.
 
@@ -26,131 +26,130 @@ Describe what you want in plain words:
 
 ```text
 Use DeepSeek to plan a CSV export feature for this repo and build it step by step.
-Let ChatGPT and DeepSeek debate SQLite vs Postgres for this CLI, then implement the winner.
-Have two DeepSeek chats research rate limits and pricing for the Stripe API, then write NOTES.md.
+Let ChatGPT and Gemini debate SQLite vs Postgres for this CLI, then implement the winner.
+Have DeepSeek, ChatGPT and Gemini research rate limits, pricing and SDKs for the Stripe API, then write NOTES.md.
 Continue my DeepSeek chat https://chat.deepseek.com/a/chat/s/<id> from where we left off.
 ```
-
-In automatic mode Claude Code also answers the chats' questions on your behalf (and notes each decision in the session memory). It only stops to ask you for secrets or before risky steps such as deleting, deploying or spending money.
 
 Or call it directly. Claude Code asks for anything you leave out:
 
 ```text
 /tabcrew
-/tabcrew workflow=debate seats=chatgpt,deepseek rounds=4 goal="..."
+/tabcrew workflow=debate seats=chatgpt,gemini rounds=4 goal="..."
 /tabcrew workflow=solo seats=deepseek rounds=unlimited goal="..."
 ```
+
+In automatic mode Claude Code also answers the chats' questions on your behalf and notes each decision in the session memory. It only stops to ask you for secrets or before risky steps such as deleting, deploying or spending money.
 
 The round limit is 5, 10 or 20, or "until the task is done". Without a limit, tabcrew still stops when the chat says the work is finished, when a decision or a risky step needs you, or when the last few rounds made no progress.
 
 ## Workflows
 
-| Workflow | Seats | What happens |
+| Workflow | Chats | What happens |
 |---|---|---|
-| solo | 1 | One chat leads. Claude Code carries out each step in the repo and reports back, round after round. |
-| debate | 2 | Two chats argue a question until both agree on one written conclusion. Claude Code then acts on it. |
+| solo | 1 | One chat leads. Claude Code carries out each step in the repo and reports the result back, round after round. |
+| debate | 2 | Two chats argue a question until both agree on one written conclusion. Claude Code then builds it. |
 | fanout | 2 or more | Each chat researches its own subtopic at the same time. Claude Code checks the claims, merges the findings and acts. |
 
-Seats can mix providers or repeat one: three DeepSeek tabs, two ChatGPT tabs plus a DeepSeek tab, or anything else.
+You can mix chats or repeat one: ChatGPT against Gemini, three DeepSeek tabs, two ChatGPT tabs plus a Gemini tab.
 
 ## How it works
 
 ```mermaid
 flowchart LR
-    U([You]) -->|goal| CC
-
-    subgraph CC[Claude Code, the orchestrator]
-        direction TB
-        W[Workflow: solo, debate or fanout]
-        T[Turn: context check, send, wait, read]
-        W --> T
-    end
-
-    subgraph Chrome[Your Chrome, this computer only]
-        A[Seat A: DeepSeek tab]
-        B[Seat B: ChatGPT tab]
-        N[Seat N: another tab]
-    end
-
-    subgraph Agents[One background agent per seat]
-        RA[Seat agent A]
-        RB[Seat agent B]
-    end
-
-    T -->|message| A & B & N
-    A & B & N -->|reply| T
-    T --> RA & RB
-    RA & RB -->|"for Claude Code / for the other seat / question for you / done"| CC
-    CC -->|edits, tests, commands| Repo[(Your repo)]
-    CC -->|dated notes| Mem[(.tabcrew memory)]
+    you(["You"]) -->|"goal"| cc["Claude Code"]
+    cc -->|"message"| chats["Chat tabs<br/>in your Chrome"]
+    chats -->|"reply"| cc
+    cc -->|"code, tests,<br/>commands"| repo[("Your repo")]
+    cc -->|"notes"| mem[(".tabcrew/")]
 ```
 
-Each seat is a chat tab with a role, such as lead, proposer, critic or researcher. Each one gets a small background agent with a name, an emoji and a color, for example `🟣🐋 Skeptic (DeepSeek · critic)`. The agent reads its chat's replies in any language and returns, word for word, the part meant for Claude Code or for the other seat. It also flags risky steps.
-
-A chat only sees its own conversation. It does not see your repo or the other seats. Before each message, Claude Code checks what that chat is missing, such as the code it asked about, a test failure, another seat's finding or an earlier decision. It adds only those parts. When a chat's answer rests on a wrong guess about the project, its seat agent says so, and the next message corrects it.
-
-### Debate in detail
+Every exchange with a chat follows the same steps:
 
 ```mermaid
 sequenceDiagram
-    participant A as Seat A (proposer)
     participant CC as Claude Code
-    participant B as Seat B (critic)
+    participant Tab as Chat tab
+    participant Agent as Helper agent
+    CC->>Tab: types the message
+    Tab-->>CC: the full reply
+    Note over CC: checks the reply is complete
+    CC->>Agent: which part goes where?
+    Agent-->>CC: for Claude Code, for the other chat,<br/>a question, or done
+    Note over CC: does the work,<br/>or passes the part on
+```
+
+- **Each chat has a role** such as lead, proposer, critic or researcher, and a small helper agent with a name, for example `🟣🐋 Skeptic (DeepSeek · critic)`. The helper reads the reply in any language and returns, word for word, the part meant for Claude Code or for the other chat. It also flags risky steps.
+- **A chat only sees its own conversation**, not your repo or the other chats. Before each message, Claude Code adds what that chat is missing: the code it asked about, a failing test, another chat's finding or an earlier decision.
+- **Claude Code checks each reply against the page** before using it: no text lost, code blocks and tables intact, every character copied correctly.
+
+### Debate
+
+```mermaid
+sequenceDiagram
+    participant A as Chat A (proposer)
+    participant CC as Claude Code
+    participant B as Chat B (critic)
     CC->>A: topic and rules
     A-->>CC: proposal
     CC->>B: topic, rules and the proposal
-    loop until both agree or the round limit
-        B-->>CC: critique
-        CC->>A: relayed word for word
+    loop until both agree, or the round limit
+        B-->>CC: objections
+        CC->>A: objections, word for word
         A-->>CC: revised proposal
-        CC->>B: relayed word for word
+        CC->>B: revised proposal, word for word
     end
     CC->>B: do you agree with this exact conclusion?
     B-->>CC: [[AGREED]]
-    CC->>CC: implement the conclusion and run the tests
+    Note over CC: builds the conclusion<br/>and runs the tests
 ```
 
-### Fanout in detail
+### Fanout
 
 ```mermaid
-flowchart LR
-    CC[Claude Code] -->|subtopic 1| A[Seat A]
-    CC -->|subtopic 2| B[Seat B]
-    CC -->|subtopic 3| C[Seat C]
-    A & B & C -->|findings| S[Claude Code checks and merges]
-    S -->|follow-up questions when something is thin or wrong| A & B & C
-    S --> Out[NOTES.md, code or a decision]
+flowchart TB
+    cc["Claude Code<br/>splits the goal<br/>into subtopics"]
+    cc --> a["Chat A<br/>subtopic 1"]
+    cc --> b["Chat B<br/>subtopic 2"]
+    cc --> c["Chat C<br/>subtopic 3"]
+    a --> check["Claude Code<br/>checks the claims<br/>and merges them"]
+    b --> check
+    c --> check
+    check --> out["NOTES.md, code<br/>or a decision"]
 ```
 
-All seats generate at the same time. In testing, Claude Code ran the seats' example claims in real Python, caught two that were wrong, and had that seat correct itself before writing the notes.
+All chats write at the same time. When a finding is thin or looks wrong, Claude Code sends that chat a follow-up question before merging. In testing, Claude Code ran the chats' example claims in real Python, caught wrong ones, and had that chat correct itself before writing the result.
+
+## Reliability
+
+Chat sites change their pages and have limits. tabcrew deals with them so a run does not silently go wrong:
+
+| Situation | What tabcrew does |
+|---|---|
+| A message is longer than the site accepts (ChatGPT about 10,000 characters, Gemini 32,000, DeepSeek about 60,000) | Splits it into parts and sends them in order |
+| The site shows an error ("Too many requests", "Something went wrong", a lost connection) | Notices it (usually within seconds, at most about two minutes), reloads the tab, tries once more, then tells you |
+| A reply is read incompletely, for example after a site redesign | Tells you the reply may be incomplete; if text is missing, uses the page's plain text instead |
+| Gemini puts code in its Canvas side panel | Asks Gemini to paste it into the chat |
+| A chat is logged out | Asks you to log in; it never types passwords |
+
+To check that all three chats still work, run the smoke tests (about 10 minutes, real chats, 5 sessions at once):
+
+```bash
+bash tools/e2e.sh
+```
 
 ## What has been tested
 
-Each run below was a fresh `claude -p` session in an empty folder, driving real chat tabs, and ended with Claude Code writing code and running its tests.
+Every run below was a fresh `claude -p` session in an empty folder, driving real chat tabs, and ended with Claude Code writing code and running its tests.
 
-| Workflow | Seats | Task | Result |
+| Workflow | Chats | Example tasks | Result |
 |---|---|---|---|
-| solo | DeepSeek | todo CLI with JSON storage | 13 tests pass |
-| solo | ChatGPT | `slugify()` with Turkish and German letters | 12 tests pass |
-| solo, existing chat | DeepSeek | continue an old chat via its handoff, add `count_vowels()` | 21 tests pass |
-| debate | ChatGPT vs DeepSeek | palindrome rules for punctuation and Unicode | 11 tests pass |
-| debate | DeepSeek vs DeepSeek | retry and backoff for a urllib `fetch_json()` | 19 tests pass |
-| debate | ChatGPT vs ChatGPT | API of an LRU cache with TTL | 26 tests pass |
-| fanout | DeepSeek + ChatGPT | Unicode edge cases, written up as NOTES.md | 9 checks pass |
-| fanout | DeepSeek ×3 | password strength checker | 23 tests pass |
-| fanout | ChatGPT ×2 + DeepSeek | aligned Markdown tables with CJK and emoji | 18 tests pass |
-| solo, auto mode | DeepSeek | disk-cached downloader; the chat asked 6 design questions first | all answered by Claude Code, 0 asked to the user, 14 tests pass |
-| fanout, auto mode | ChatGPT + DeepSeek | file encoding fixer; each seat asked a clarifying question | all answered by Claude Code, 0 asked to the user, 28 tests pass |
-| solo, auto mode | ChatGPT | Slack deploy notifier with dry run, no real message sent | format and retry questions answered by Claude Code, webhook read from an env var, 24 tests pass |
-| solo, auto mode | Gemini | `top_words()` word counter with Turkish and German letters | Claude Code fixed Gemini's regex for `İ` and Gemini agreed, 16 tests pass |
-| debate, auto mode | Gemini vs ChatGPT | rules for `parse_duration("1h30m")` | agreed in 1 round after ChatGPT's whitespace and repeated-unit objections, 49 cases pass |
-| fanout, auto mode | DeepSeek + ChatGPT + Gemini | SemVer 2.0 `compare()` and `is_valid()` | Claude Code caught a wrong expected result from Gemini, Gemini corrected it, all tests pass |
-| debate, auto mode | DeepSeek vs Gemini | token-bucket rate limiter with a fake clock | agreed in 2 rounds, 17 tests pass |
-| solo, auto mode, 6 rounds | Gemini | INI-to-JSON converter planned and reviewed step by step | 3 steps reviewed by Gemini, 51 tests pass |
-| solo, auto mode | ChatGPT | review a 24.5k-character file (over ChatGPT's ~10k message limit) | sent in 4 parts automatically, bug found, 11 tests pass |
-| debate, auto mode | ChatGPT vs DeepSeek | config loading (TOML, JSON, env vars) with code blocks on both sides | agreed in 2 rounds, 34 tests pass |
-| fanout, auto mode | ChatGPT + Gemini + DeepSeek | `slugify()` for Turkish, German, French, emoji and CJK | 116 cases pass |
-| `tools/e2e.sh`, 5 tests at once | one solo per chat, ChatGPT vs Gemini debate, three-chat fanout | word counter, slugify, duration parser, JSON-lines reader, SemVer | all pass (11, 11, 18, 23 and 6 tests); ops installed once per tab, no adapter errors or warnings |
+| solo | DeepSeek, ChatGPT or Gemini | todo CLI, `slugify()`, word counter, INI-to-JSON converter, reviewing a 24.5k-character file | all tests pass |
+| solo, existing chat | DeepSeek | continue an old chat from its own summary | 21 tests pass |
+| debate | every pair, and a chat against itself | palindrome rules, retry/backoff, LRU cache, duration parser, rate limiter, config loading, JSON-lines reader | all tests pass |
+| fanout | 2 or 3 chats, mixed | Unicode edge cases, password checker, SemVer, `slugify()` for 5 scripts | wrong claims caught and corrected, all tests pass |
+| auto mode | DeepSeek, ChatGPT | the chats asked design questions first | all answered by Claude Code, none needed you |
+| `tools/e2e.sh` | all three | one solo per chat, a debate, a three-chat fanout | 5 of 5 pass |
 
 ## Memory
 
@@ -159,21 +158,22 @@ Every session leaves dated notes in your project:
 ```text
 .tabcrew/
 ├── INDEX.md            one line per session, newest first
-├── sessions/           goal, seats, decisions, what changed, open items, next step
+├── sessions/           goal, chats, decisions, what changed, open items, next step
 └── chats/              each chat's own summary of the conversation, by date
 ```
 
 When you attach to a chat you have been using for a while, tabcrew first asks that chat to summarize the whole conversation, saves the summary, and continues from its "next step". A later session, or any other AI, can read the folder and pick up where things stopped. The files are Markdown with YAML frontmatter. Commit them or add `.tabcrew/` to `.gitignore`, as you prefer.
 
-## Safety
+## Safety and privacy
 
 - It only uses the Chrome extension on this computer. It never connects to your Chrome on other machines.
-- It works in tabs it opened itself and never types into yours.
+- It works in tabs it opened itself and never types into yours. The chat tabs stay open when it finishes.
 - Chat output is treated as input for your goal, not as commands. Deleting files, force-pushing, deploying, publishing, installing unknown packages and anything touching secrets wait for your approval.
 - Lines such as "ignore your rules" in a chat reply are dropped.
 - Messages to the chats never include `.env` values, keys or tokens.
 - Every workflow has a round limit or, if you choose "until done", a check that pauses the run when it stops making progress. You can say stop at any time.
 - It never types passwords. If a chat is logged out, you log in.
+- To avoid sending its page code again on every page load, tabcrew keeps a copy of its own code (about 10 KB) in each chat site's browser storage (`localStorage`, keys starting with `__tc_src_`). It holds no chat content, and older copies are removed when tabcrew updates.
 
 ## Supported chats
 
