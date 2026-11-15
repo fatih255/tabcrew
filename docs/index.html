@@ -130,7 +130,11 @@ p{margin:0;text-wrap:pretty}
 .install ::selection{background:var(--inv-ink);color:var(--inv)}
 
 .hero-fig{margin:0}
-.hero-fig svg{width:100%;height:auto}
+.video-frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--inv);box-shadow:0 24px 48px -28px rgba(0,0,0,.45)}
+.video-frame video{display:block;width:100%;height:auto;aspect-ratio:16/9;cursor:pointer}
+.about-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}
+.about-fig{margin:0}
+.about-fig svg{width:100%;height:auto}
 .cap{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
 .wire{stroke-dasharray:6 10;animation:flow 1.6s linear infinite}
 @keyframes flow{to{stroke-dashoffset:-32}}
@@ -210,6 +214,7 @@ footer :focus-visible{outline-color:var(--inv-ink)}
 
 @media (max-width:1020px){
   .hero{grid-template-columns:minmax(0,1fr);gap:48px;padding-top:72px}
+  .about-top{grid-template-columns:minmax(0,1fr);gap:40px}
   .feat-big{grid-template-columns:minmax(0,1fr)}
   .benefits{grid-template-columns:minmax(0,1fr);gap:40px}
   .feat-grid{grid-template-columns:1fr 1fr}
@@ -268,42 +273,50 @@ footer :focus-visible{outline-color:var(--inv-ink)}
     </div>
 
     <figure class="hero-fig">
-      <svg viewBox="140 30 920 590" role="img" aria-label="Illustration: three chat tabs in a browser window, wired to a Claude Code terminal">
-        <defs><filter id="lift" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".10"/></filter></defs>
-        <rect x="150" y="40" width="900" height="470" rx="14" fill="#fbfaf7" stroke="#d6d5d2" stroke-width="1.5" filter="url(#lift)"/>
-        <circle cx="180" cy="66" r="6" fill="#bdbcb8"/><circle cx="200" cy="66" r="6" fill="#bdbcb8"/><circle cx="220" cy="66" r="6" fill="#bdbcb8"/>
-        <path d="M180 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#ecebe8" stroke="#131313" stroke-width="2"/>
-        <rect x="196" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".18"/>
-        <path d="M268 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
-        <path d="M480 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#d6d5d2" stroke="#131313" stroke-width="2"/>
-        <rect x="496" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".22"/>
-        <path d="M568 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
-        <path d="M780 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#f5f4f0" stroke="#131313" stroke-width="2"/>
-        <rect x="796" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".14"/>
-        <path d="M868 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
-        <g fill="#131313">
-          <rect x="190" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="224" y="294" width="130" height="7" rx="3.5" opacity=".55"/><rect x="224" y="306" width="96" height="6" rx="3" opacity=".2"/>
-          <rect x="190" y="350" width="22" height="22" rx="5" opacity=".7"/><rect x="224" y="354" width="110" height="7" rx="3.5" opacity=".55"/><rect x="224" y="366" width="140" height="6" rx="3" opacity=".2"/>
-          <rect x="490" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="524" y="294" width="120" height="7" rx="3.5" opacity=".55"/>
-          <rect x="790" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="824" y="294" width="134" height="7" rx="3.5" opacity=".55"/><rect x="824" y="306" width="84" height="6" rx="3" opacity=".2"/>
-          <rect x="790" y="350" width="22" height="22" rx="5" opacity=".7"/><rect x="824" y="354" width="100" height="7" rx="3.5" opacity=".55"/>
-        </g>
-        <g fill="none" stroke="#131313" stroke-width="3" stroke-linecap="round">
-          <path class="wire" d="M300 256 C300 380 560 360 570 452"/><path class="wire" d="M600 256 L600 452"/><path class="wire" d="M900 256 C900 380 640 360 630 452"/>
-        </g>
-        <rect x="470" y="440" width="260" height="160" rx="12" fill="#141314" filter="url(#lift)"/>
-        <circle cx="492" cy="460" r="4.5" fill="#505050"/><circle cx="508" cy="460" r="4.5" fill="#505050"/><circle cx="524" cy="460" r="4.5" fill="#505050"/>
-        <path d="M512 512 l22 18 l-22 18" fill="none" stroke="#fcfcfd" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="546" y="542" width="34" height="6" rx="3" fill="#fcfcfd"/>
-      </svg>
-      <figcaption class="cap">Illustration: chat tabs in Chrome, wired to Claude Code</figcaption>
+      <div class="video-frame">
+        <video src="demo.mp4" poster="demo-poster.jpg" autoplay muted loop playsinline preload="auto" width="1280" height="720" aria-label="Demo video: one prompt in Claude Code, DeepSeek, ChatGPT and Gemini research in parallel, Claude Code writes the code and 33 tests pass"></video>
+      </div>
+      <figcaption class="cap">A real fanout run, sped up where marked (×). Click to pause.</figcaption>
     </figure>
   </section>
 </div>
 
 <section class="band alt" id="about">
   <div class="wrap">
-    <p class="lead">If you copy prompts from a chat into Claude Code and paste the results back, tabcrew does that loop for you.</p>
+    <div class="about-top">
+      <p class="lead">If you copy prompts from a chat into Claude Code and paste the results back, tabcrew does that loop for you.</p>
+      <figure class="about-fig">
+        <svg viewBox="140 30 920 590" role="img" aria-label="Illustration: three chat tabs in a browser window, wired to a Claude Code terminal">
+          <defs><filter id="lift" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".10"/></filter></defs>
+          <rect x="150" y="40" width="900" height="470" rx="14" fill="#fbfaf7" stroke="#d6d5d2" stroke-width="1.5" filter="url(#lift)"/>
+          <circle cx="180" cy="66" r="6" fill="#bdbcb8"/><circle cx="200" cy="66" r="6" fill="#bdbcb8"/><circle cx="220" cy="66" r="6" fill="#bdbcb8"/>
+          <path d="M180 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#ecebe8" stroke="#131313" stroke-width="2"/>
+          <rect x="196" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".18"/>
+          <path d="M268 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
+          <path d="M480 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#d6d5d2" stroke="#131313" stroke-width="2"/>
+          <rect x="496" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".22"/>
+          <path d="M568 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
+          <path d="M780 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#f5f4f0" stroke="#131313" stroke-width="2"/>
+          <rect x="796" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".14"/>
+          <path d="M868 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
+          <g fill="#131313">
+            <rect x="190" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="224" y="294" width="130" height="7" rx="3.5" opacity=".55"/><rect x="224" y="306" width="96" height="6" rx="3" opacity=".2"/>
+            <rect x="190" y="350" width="22" height="22" rx="5" opacity=".7"/><rect x="224" y="354" width="110" height="7" rx="3.5" opacity=".55"/><rect x="224" y="366" width="140" height="6" rx="3" opacity=".2"/>
+            <rect x="490" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="524" y="294" width="120" height="7" rx="3.5" opacity=".55"/>
+            <rect x="790" y="290" width="22" height="22" rx="5" opacity=".7"/><rect x="824" y="294" width="134" height="7" rx="3.5" opacity=".55"/><rect x="824" y="306" width="84" height="6" rx="3" opacity=".2"/>
+            <rect x="790" y="350" width="22" height="22" rx="5" opacity=".7"/><rect x="824" y="354" width="100" height="7" rx="3.5" opacity=".55"/>
+          </g>
+          <g fill="none" stroke="#131313" stroke-width="3" stroke-linecap="round">
+            <path class="wire" d="M300 256 C300 380 560 360 570 452"/><path class="wire" d="M600 256 L600 452"/><path class="wire" d="M900 256 C900 380 640 360 630 452"/>
+          </g>
+          <rect x="470" y="440" width="260" height="160" rx="12" fill="#141314" filter="url(#lift)"/>
+          <circle cx="492" cy="460" r="4.5" fill="#505050"/><circle cx="508" cy="460" r="4.5" fill="#505050"/><circle cx="524" cy="460" r="4.5" fill="#505050"/>
+          <path d="M512 512 l22 18 l-22 18" fill="none" stroke="#fcfcfd" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="546" y="542" width="34" height="6" rx="3" fill="#fcfcfd"/>
+        </svg>
+        <figcaption class="cap">Illustration: chat tabs in Chrome, wired to Claude Code</figcaption>
+      </figure>
+    </div>
     <div class="cols">
       <div>
         <h3>The chats think</h3>
@@ -510,6 +523,10 @@ footer :focus-visible{outline-color:var(--inv-ink)}
 </footer>
 
 <script>
+document.querySelectorAll('.video-frame video').forEach(function (v) {
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { v.removeAttribute('autoplay'); v.pause(); v.controls = true; }
+  v.addEventListener('click', function () { if (v.paused) v.play(); else v.pause(); });
+});
 document.querySelectorAll('[data-install]').forEach(function (box) {
   var tabs = box.querySelectorAll('[data-tab]'), panes = box.querySelectorAll('[data-pane]');
   tabs.forEach(function (t) {
