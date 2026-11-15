@@ -104,8 +104,9 @@ p{margin:0;text-wrap:pretty}
 .stars b{font-weight:500}
 
 /* hero */
-.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:56px;align-items:center;padding:104px 0 var(--band-b)}
-.hero h1{font-size:76px;line-height:1.02;letter-spacing:-.015em}
+.wrap.wide{max-width:1488px}
+.hero{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.5fr);gap:56px;align-items:center;padding:104px 0 var(--band-b)}
+.hero h1{font-size:clamp(56px,5vw,76px);line-height:1.02;letter-spacing:-.015em}
 .hero .intro{font-size:18px;line-height:1.6;color:var(--ink-2);max-width:48ch;margin-top:24px}
 .hero .more{margin-top:20px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;font-size:14px;color:var(--muted)}
 .hero .more a{color:var(--ink);font-weight:500;text-underline-offset:4px}
@@ -241,7 +242,7 @@ footer :focus-visible{outline-color:var(--inv-ink)}
 </head>
 <body>
 
-<div class="wrap">
+<div class="wrap wide">
   <header class="header">
     <a class="brand" href="#"><svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="3" width="24" height="7" rx="2" fill="#131313"/><path d="M4 10 L4 6 h5 l1.5 4z M10.5 10 L10.5 6 h5 l1.5 4z M17 10 L17 6 h5 l1.5 4z" fill="#fcfcfd" opacity=".55"/><path d="M6 10 C6 16 13 15 13 18 M13 10 L13 18 M20 10 C20 16 13 15 13 18" stroke="#131313" stroke-width="1.6" fill="none"/><rect x="8" y="18" width="10" height="7" rx="1.5" fill="#131313"/></svg>tabcrew</a>
     <nav class="nav" aria-label="Main"><a href="#about">How it works</a><a href="#features">Workflows</a><a href="#faq">FAQ</a><a href="https://github.com/fatih255/tabcrew/blob/main/CONTRIBUTING.md">Contribute</a></nav>
