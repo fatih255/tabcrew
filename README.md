@@ -12,6 +12,8 @@ It runs on your own browser sessions. No API keys, no extra subscriptions.
 
 Website: **[tabcrew.fatihinci.com](https://tabcrew.fatihinci.com)**
 
+Why I built it and how one round works: [Why I Built tabcrew](https://fatihinci.com/blog/claude-code-skill-browser-ai-chats/)
+
 ![tabcrew demo: one prompt, DeepSeek, ChatGPT and Gemini research in parallel, Claude Code writes the code and 33 tests pass](assets/demo.gif)
 
 <sub>A real fanout run, sped up where marked (×).</sub>
