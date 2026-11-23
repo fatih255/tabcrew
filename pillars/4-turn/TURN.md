@@ -53,6 +53,19 @@ Chats generate in parallel; only *your* tool calls are sequential.
 
 Tested: a DeepSeek tab and a ChatGPT tab generated at the same time; both replies were read correctly. So did a DeepSeek, a ChatGPT and a Gemini tab together.
 
+## Generated images (when the goal needs pictures)
+
+Some goals ask a chat to *make* images (icons, backgrounds, mockups). Only providers with `images.js` and `save_image.js` can hand them over (today: ChatGPT; see `providers/CONTRACT.md` § Generated images). Saving needs no download dialog and no user click.
+
+1. Once per session, start the receiver in the background (`run_in_background`) and read its first line for the url:
+   `python -I -u tools/save_server.py --out <folder>` → `{"ready": true, "url": "http://127.0.0.1:<port>/save/<token>", …}`. The folder is where the user wants the images (ask if unclear; otherwise a new folder in the project). Each saved file is printed as `{"saved": "<file>", "bytes": n}`.
+2. Send the image request with `send` as usual. Then, instead of `wait_read`, poll `images` (`fill_op.py … images.js --mode after_send --call`) until `status:'done'`. `count: 0` means the chat answered in text (for example a refusal or a question): read it with `wait_read('last')` and handle it like any reply.
+3. For each image `i`, run `save_image` (`fill_op.py … save_image.js --url <url> --file <name> --index <i> --call`) and check the receiver's output for the `saved` line. The tab reloads once after each save. Wait about 5 s before the next call to that tab, and use mode `'last'` from then on (the reload forgets the last `send`).
+4. Look at the saved files (open them) before you tell the user they are done. A chat that was asked for a transparent background does not always deliver one.
+5. Stop the receiver when the session ends.
+
+For a consistent style across many images, generate one style reference first and keep the rest in the same chat ("same style as the image above"). Several seats can generate in parallel (§ Parallel turns): give each the reference image as an attachment in its first message, and save from each tab as its images finish.
+
 ## Messages to chats
 
 - Write them in English (templates in `pillars/5-workflows/templates/`), unless the user asks for another language.

@@ -5,6 +5,8 @@ Install once per tab, then call (recommended, small):
   python -I tools/fill_op.py providers/<id>/send.js --msg-file <msg.txt> --call
   python -I tools/fill_op.py providers/<id>/wait_read.js --mode after_send --call
   python -I tools/fill_op.py providers/<id>/status.js --call
+  python -I tools/fill_op.py providers/<id>/images.js --mode after_send --call             # generated images
+  python -I tools/fill_op.py providers/<id>/save_image.js --url <save url> --file <name> --index 0 --call
 
 Full op (no install needed, large):
   python -I tools/fill_op.py providers/<id>/send.js --msg-file <message.txt>
@@ -14,7 +16,8 @@ Full op (no install needed, large):
 Prints the JavaScript to stdout. Pass it to javascript_tool unchanged. The output is pure
 ASCII (non-ASCII is \\uXXXX-escaped), so copying it cannot corrupt anything.
 
-The installer defines window.__tc = {v, p, status(), send(msg), wait(mode), toggle(re, on)}
+The installer defines window.__tc = {v, p, status(), send(msg), wait(mode), toggle(re, on), images(mode),
+saveImage(args)} (the last two only for providers that have images.js / save_image.js)
 and caches that definition in the site's localStorage (__tc_src_<provider>_<version>).
 A --call reinstalls from the cache when the page lost window.__tc (reload, new tab), and
 returns {ok:false, status:'error', err:'not_installed'} only when the cache is missing or
@@ -32,6 +35,8 @@ OPS = {  # file -> (method name, placeholder -> parameter)
     "send.js": ("send", {"__MSG__": "__a"}),
     "wait_read.js": ("wait", {"__MODE__": "__a"}),
     "toggle.js": ("toggle", {"__NAME__": "__a", "__ON__": "__b"}),
+    "images.js": ("images", {"__MODE__": "__a"}),
+    "save_image.js": ("saveImage", {"__SAVE__": "__a"}),
 }
 
 
@@ -90,6 +95,9 @@ def main() -> int:
     p.add_argument("--mode", choices=["after_send", "last"])
     p.add_argument("--name")
     p.add_argument("--on", choices=["true", "false"])
+    p.add_argument("--url", help="save_image: the url from tools/save_server.py's ready line")
+    p.add_argument("--file", help="save_image: file name without a path; the extension follows the image type")
+    p.add_argument("--index", type=int, default=0, help="save_image: which image of the reply (0 = first)")
     a = p.parse_args()
     sys.stdout.reconfigure(encoding="utf-8", newline="\n")
 
@@ -119,6 +127,11 @@ def main() -> int:
         if not a.name:
             p.error("this op needs --name")
         values["__NAME__"] = "/" + a.name.replace("/", "\\/") + "/i"
+    if "__SAVE__" in first:
+        if not a.url or not a.file:
+            p.error("this op needs --url and --file")
+        values["__SAVE__"] = json.dumps({"url": a.url, "file": a.file, "i": a.index,
+                                         "mode": a.mode or "last"}, ensure_ascii=True)
     if "__ON__" in first:
         if not a.on:
             p.error("this op needs --on")

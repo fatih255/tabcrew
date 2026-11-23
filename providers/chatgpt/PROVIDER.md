@@ -34,7 +34,18 @@ Class names are hashed or utility classes. Do not use them. ARIA labels are loca
 
 ChatGPT's Copy button ignores synthetic clicks. It needs a trusted user gesture, which would require focusing the tab and breaks parallel seats. So `wait_read` converts the rendered reply to markdown itself. Code block text is read from the **live** DOM (`innerText`), because the lines are `div`s and a detached clone loses its newlines.
 
+## Generated images (`images.js`, `save_image.js`)
+
+| Thing | Selector / signal |
+|---|---|
+| Generated image | a `main img` at least 256 px wide after the user message (the finished image is a `blob:` URL; 1254×1254, 1024×1536, 1536×1024, 1086×1448 or 2172×724 seen). An image-only reply may have no `[data-content-search-unit-key]` assistant unit, so the op selects by position between user messages, not by unit |
+| Still drawing | the turn is not `complete` (or a `[data-testid=stop-button]` exists) and no qualifying `img` is in the page yet. Checked by polling every 2.5 s during a ~28 s generation: no image appeared before the turn completed |
+| Attached reference image | inside the user message unit, so it is excluded |
+| Saving | `chatgpt.com` CSP: `connect-src` blocks localhost, `frame-src` blocks it too, there is no `form-action` → a top-level form post to `http://127.0.0.1` works and the server's `303` brings the tab back to the chat |
+
 ## Tested cases
+
+- Generated images (2026-11-23): an image request → `images('after_send')` → `done, count 1` (the previous turn's image was not included); `save_image` → the receiver saved the exact PNG (1254×1254, 1.5 MB), the tab came back to the chat, and the next call reinstalled the ops from the cache and `images('last')` still found the image. A text-only reply → `count 0` in 4 s. Earlier the same flow saved 13 images from three ChatGPT tabs generating in parallel, with no download dialog.
 
 - Site errors (2026-11-15, the chat request failed inside the page): a fake 429 shows a red `aside[role=alert]` "Too many requests" with a retry button after the user message → `wait_read` returns `site_error` in 3 s. A request that never reaches the server shows `[role=status]` "Bağlantı kesildi. Yanıtın tamamı bekleniyor" (connection lost) forever, with every turn `complete` → `site_error` after 45 s. Normal replies with code and tables: no false error, no `warn`.
 - Consistency check: with the code block attributes removed from a reply (a stand-in for a redesign), `wait_read` returned `warn: ["code_blocks 0/2"]`.

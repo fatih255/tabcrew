@@ -20,7 +20,7 @@ tabcrew/
 │   ├── deepseek/
 │   ├── chatgpt/
 │   └── gemini/
-└── tools/                      fill_op.py (install ops, short calls) · fill_template.py · join_reply.py · e2e.sh
+└── tools/                      fill_op.py (install ops, short calls) · fill_template.py · join_reply.py · save_server.py (+ test_save_server.py) · e2e.sh
 ```
 
 Pillars and workflows never contain site selectors. Everything site-specific lives in `providers/<id>/`.
@@ -35,6 +35,7 @@ An adapter is a folder with a `PROVIDER.md` and three or four small JavaScript f
 | `send.js` | Put a message into the input and send it. Placeholder `__MSG__`. |
 | `wait_read.js` | Wait for the reply to the message just sent (or the latest reply) and return it as markdown in chunks. Placeholder `__MODE__`. |
 | `toggle.js` | Optional. Switch a mode such as "deep think". |
+| `images.js`, `save_image.js` | Optional. List the images a reply generated and save one to a local folder (`providers/CONTRACT.md` § Generated images). |
 
 Read `providers/CONTRACT.md` first. It defines the return shapes and the rules that come from real failures:
 

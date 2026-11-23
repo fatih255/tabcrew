@@ -35,7 +35,7 @@ tabcrew/
 │   ├── deepseek/                ready
 │   ├── chatgpt/                 ready
 │   └── gemini/                  ready
-└── tools/                       fill_op.py (install ops, short calls) · fill_template.py (fill templates) · join_reply.py (decode + verify a reply) · e2e.sh (smoke tests)
+└── tools/                       fill_op.py (install ops, short calls) · fill_template.py (fill templates) · join_reply.py (decode + verify a reply) · save_server.py (receive generated images) · e2e.sh (smoke tests)
 ```
 
 ## Flow (read each file when you reach its step; paths are relative to this file's folder)
