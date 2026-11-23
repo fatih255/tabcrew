@@ -55,12 +55,12 @@ Tested: a DeepSeek tab and a ChatGPT tab generated at the same time; both replie
 
 ## Generated images (when the goal needs pictures)
 
-Some goals ask a chat to *make* images (icons, backgrounds, mockups). Only providers with `images.js` and `save_image.js` can hand them over (today: ChatGPT; see `providers/CONTRACT.md` § Generated images). Saving needs no download dialog and no user click.
+Some goals ask a chat to *make* images (icons, backgrounds, mockups). Only providers with `images.js` and `save_image.js` can hand them over (ChatGPT and Gemini; see `providers/CONTRACT.md` § Generated images). Saving needs no download dialog and no user click.
 
 1. Once per session, start the receiver in the background (`run_in_background`) and read its first line for the url:
    `python -I -u tools/save_server.py --out <folder>` → `{"ready": true, "url": "http://127.0.0.1:<port>/save/<token>", …}`. The folder is where the user wants the images (ask if unclear; otherwise a new folder in the project). Each saved file is printed as `{"saved": "<file>", "bytes": n}`.
 2. Send the image request with `send` as usual. Then, instead of `wait_read`, poll `images` (`fill_op.py … images.js --mode after_send --call`) until `status:'done'`. `count: 0` means the chat answered in text (for example a refusal or a question): read it with `wait_read('last')` and handle it like any reply.
-3. For each image `i`, run `save_image` (`fill_op.py … save_image.js --url <url> --file <name> --index <i> --call`) and check the receiver's output for the `saved` line. The tab reloads once after each save. Wait about 5 s before the next call to that tab, and use mode `'last'` from then on (the reload forgets the last `send`).
+3. For each image `i`, run `save_image` (`fill_op.py … save_image.js --url <url> --file <name> --index <i> --call`) and check the receiver's output for the `saved` line. The tab reloads after each call. Wait about 5 s before the next call to that tab, and use mode `'last'` from then on (the reload forgets the last `send`). On Gemini a large image goes out in parts: while the result says `more: true`, run the same call again (same `--file`) until the receiver prints `saved`. `source: 'preview'` means only the preview size could be taken; say so to the user.
 4. Look at the saved files (open them) before you tell the user they are done. A chat that was asked for a transparent background does not always deliver one.
 5. Stop the receiver when the session ends.
 

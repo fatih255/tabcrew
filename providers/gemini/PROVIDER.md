@@ -31,7 +31,20 @@ tested: 2026-11-15, English UI, logged-in Google account, Chrome on Windows
 
 Angular adds hashed attributes (`_ngcontent-…`, `ng-tns-c…`). Do not use them. ARIA labels are localized ("Send message", "Stop response", "Copy"). Do not use them either.
 
+## Generated images (`images.js`, `save_image.js`)
+
+| Thing | Selector / signal |
+|---|---|
+| Generated image | `generated-image img` inside the `model-response` after the user query. The `img` is a `blob:` preview (1024×559 seen); the full-size file (1408×768 JPEG seen) is only fetched when the download button is used |
+| Done | `.response-footer.complete` in that response and no `stop` class on the send button |
+| Image buttons | `gem-icon-button` inside `generated-image`, told apart by their `mat-icon` `fonticon` (`share_1`, `content_copy`, `download`), which is not localized (the ARIA labels are) |
+| Full-size file | the download flow fetches `…/gg/…` (a text link), then `lh3.google.com/rd-gg/…`, which redirects to `lh3.googleusercontent.com/rd-gg/…` (the image). These need the Google session; without cookies the first one returns a 595-byte text page |
+| Copy image | writes a PNG of the preview (1024×559) with `navigator.clipboard.write` |
+| CSP | `connect-src` excludes localhost, `form-action` lists only Google hosts (a form post to `127.0.0.1` is reported as an enforced violation), popups without a user gesture are blocked. Top-level navigation is not restricted |
+
 ## Tested cases
+
+- Generated images (2026-11-23): `images('last')` → `count 1` (preview size); `save_image` took the full-size JPEG (1408×768, 754,075 bytes) from the download flow, the receiver saved the exact bytes, the tab came back to the chat, and **no download started** (the Downloads folder was checked after each run; Gemini showed "Couldn't download image" until the reload). With the part size forced down to 600,000 characters the same image went out in 2 navigations (the second call found the pending part in IndexedDB) and the saved file was byte-identical. A new image request sent with `send` → `save_image('after_send')` saved the new image, not the older one in the chat. Clicking the download button without the interception starts a real download (a save dialog opened once while this was being found).
 
 - A multi-line message with `"` `'` `` ` `` `${x}` `\n` (literal) `\`, Turkish characters and an emoji is inserted exactly (checked through Quill's `getText()` and the sent bubble).
 - A 5,630-character message from a new chat: sent in one call (insert took 0.4 s), URL changed to `/app/<id>`, answered.

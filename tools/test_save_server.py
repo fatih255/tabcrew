@@ -1,4 +1,5 @@
 """Tests for tools/save_server.py:  python -I tools/test_save_server.py -v."""
+import base64
 import http.client
 import json
 import os
@@ -89,6 +90,44 @@ class SaveServerTest(unittest.TestCase):
         status, loc = self.post([("ok.png", PNG)], back="https://chatgpt.com.evil.example/")
         self.assertEqual((status, loc), (204, None))
         self.assertEqual([e["saved"] for e in self.events(2)], ["ok.png", "ok-2.png"])
+
+
+    # GET uploads (Gemini): the image travels in the URL, in parts when large
+    def get(self, name, data, i=0, n=1, back="https://gemini.google.com/app/1", path=None):
+        b64 = base64.urlsafe_b64encode(data).decode().rstrip("=")
+        q = urllib.parse.urlencode({"f": name, "i": i, "n": n, "back": back}) + "&d=" + b64
+        c = http.client.HTTPConnection(self.url.hostname, self.url.port, timeout=10)
+        c.request("GET", (path or self.url.path) + "?" + q)
+        r = c.getresponse()
+        r.read()
+        c.close()
+        return r.status, r.getheader("Location")
+
+    def test_get_single_part_saves_and_redirects_to_gemini(self):
+        self.assertEqual(self.get("key.jpg", JPG), (303, "https://gemini.google.com/app/1"))
+        self.assertEqual(self.events(1), [{"saved": "key.jpg", "bytes": len(JPG)}])
+
+    def test_get_parts_are_joined_and_a_2mb_url_is_accepted(self):
+        big = PNG + os.urandom(2_000_000)
+        b64 = base64.urlsafe_b64encode(big)
+        cut = [big[:1_400_000], big[1_400_000:]]
+        self.assertEqual(self.get("big.png", cut[0], 0, 2)[0], 303)
+        self.assertEqual(self.get("big.png", cut[1], 1, 2)[0], 303)
+        ev = self.events(2)
+        self.assertEqual(ev[0], {"part": 1, "of": 2, "file": "big.png"})
+        self.assertEqual(ev[1], {"saved": "big.png", "bytes": len(big)})
+        self.assertEqual(pathlib.Path(self.out, "big.png").read_bytes(), big)
+        self.assertGreater(len(b64), 2_600_000)
+
+    def test_get_with_wrong_token_bad_data_or_foreign_back_url(self):
+        self.assertEqual(self.get("x.png", PNG, path="/save/not-the-token-0000000000")[0], 403)
+        self.assertEqual(self.get("x.png", b"not an image")[0], 303)
+        self.assertEqual(self.get("../x.png", PNG)[0], 400)
+        self.assertEqual(self.get("ok.png", PNG, back="https://evil.example/")[:2], (204, None))
+        ev = self.events(3)
+        self.assertEqual([e.get("rejected") or e.get("saved") for e in ev],
+                         ["bad token", "not a PNG, JPEG or WebP image", "bad request"])
+        self.assertEqual(self.events(1), [{"saved": "ok.png", "bytes": len(PNG)}])
 
 
 if __name__ == "__main__":

@@ -44,6 +44,7 @@ Let ChatGPT and Gemini debate SQLite vs Postgres for this CLI, then implement th
 Have DeepSeek, ChatGPT and Gemini research rate limits, pricing and SDKs for the Stripe API, then write NOTES.md.
 Continue my DeepSeek chat https://chat.deepseek.com/a/chat/s/<id> from where we left off.
 Ask ChatGPT for an app icon and three backgrounds in one style and save them to art/.
+Have Gemini draw four cover options and save them to covers/.
 ```
 
 Or call it directly. Claude Code asks for anything you leave out:
@@ -146,7 +147,7 @@ Chat sites change their pages and have limits. tabcrew deals with them so a run 
 | A reply is read incompletely, for example after a site redesign | Tells you the reply may be incomplete; if text is missing, uses the page's plain text instead |
 | Gemini puts code in its Canvas side panel | Asks Gemini to paste it into the chat |
 | A chat is logged out | Asks you to log in; it never types passwords |
-| A chat generates images (ChatGPT) | Saves them straight into a folder you choose, with no download dialog, through a small local receiver that only accepts image files on a random, per-run address |
+| A chat generates images (ChatGPT, Gemini) | Saves them straight into a folder you choose, with no download dialog, through a small local receiver that only accepts image files on a random, per-run address. Gemini images are saved at full size |
 
 To check that all three chats still work, run the smoke tests (about 10 minutes, real chats, 5 sessions at once):
 
@@ -189,7 +190,7 @@ When you attach to a chat you have been using for a while, tabcrew first asks th
 - Messages to the chats never include `.env` values, keys or tokens.
 - Every workflow has a round limit or, if you choose "until done", a check that pauses the run when it stops making progress. You can say stop at any time.
 - It never types passwords. If a chat is logged out, you log in.
-- To save generated images it runs `tools/save_server.py` only while needed. It listens on `127.0.0.1` alone, accepts files only on a random address it prints at start, stores only real PNG, JPEG or WebP data, and never overwrites a file.
+- To save generated images it runs `tools/save_server.py` only while needed. It listens on `127.0.0.1` alone, accepts files only on a random address it prints at start, stores only real PNG, JPEG or WebP data, and never overwrites a file. On Gemini a large image waits in the site's browser storage (IndexedDB `tabcrew_save`) between its parts and is deleted after the last one.
 - To avoid sending its page code again on every page load, tabcrew keeps a copy of its own code (10–17 KB) in each chat site's browser storage (`localStorage`, keys starting with `__tc_src_`). It holds no chat content, and older copies are removed when tabcrew updates.
 
 ## Supported chats
