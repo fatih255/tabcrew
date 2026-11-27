@@ -133,7 +133,8 @@ section[id]{scroll-margin-top:72px}
 .install .foot{margin:0;padding:10px 18px 12px;font-size:13px;color:#b9b8bb;border-top:1px solid #2f2e2f}
 .install .foot a{color:var(--inv-ink)}
 
-.hero-fig{margin:0}
+.hero-fig{margin:0;position:relative}
+.hero-pop{position:absolute;right:-4%;top:17%;width:38%;height:auto;border:1px solid var(--line);border-radius:12px;box-shadow:0 22px 44px -18px rgba(0,0,0,.35);background:#fff}
 .demo{margin:48px 0 0;max-width:960px}
 .video-frame{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--inv);box-shadow:0 24px 48px -28px rgba(0,0,0,.45)}
 .video-frame video{display:block;width:100%;height:auto;aspect-ratio:16/9;cursor:pointer}
@@ -253,6 +254,7 @@ footer :focus-visible{outline-color:var(--inv-ink)}
   :root{--band:85px;--band-b:64px}
   .nav{display:none}
   .hero h1{font-size:62px}
+  .hero-pop{right:0;width:36%}
   .cols,.faq{grid-template-columns:1fr;gap:32px}
   .feat-grid{grid-template-columns:1fr}
   .ctabs{grid-template-columns:1fr}
@@ -301,6 +303,8 @@ footer :focus-visible{outline-color:var(--inv-ink)}
         <defs><filter id="lift" x="-10%" y="-10%" width="120%" height="130%"><feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".10"/></filter></defs>
         <rect x="150" y="40" width="900" height="470" rx="14" fill="#fbfaf7" stroke="#d6d5d2" stroke-width="1.5" filter="url(#lift)"/>
         <circle cx="180" cy="66" r="6" fill="#bdbcb8"/><circle cx="200" cy="66" r="6" fill="#bdbcb8"/><circle cx="220" cy="66" r="6" fill="#bdbcb8"/>
+        <rect x="242" y="54" width="92" height="24" rx="12" fill="#d6d5d2"/><text x="288" y="71" text-anchor="middle" font-family="Inter,system-ui,sans-serif" font-size="14" font-weight="500" fill="#131313">tabcrew</text>
+        <rect x="1004" y="50" width="32" height="30" rx="8" fill="#131313"/><path d="M1009 65s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" fill="none" stroke="#fcfcfd" stroke-width="2"/><circle cx="1020" cy="65" r="3" fill="#fcfcfd"/>
         <path d="M180 92 h220 l22 36 v120 a8 8 0 0 1 -8 8 h-226 a8 8 0 0 1 -8 -8 z" fill="#ecebe8" stroke="#131313" stroke-width="2"/>
         <rect x="196" y="102" width="150" height="10" rx="5" fill="#131313" opacity=".18"/>
         <path d="M268 160 h56 a14 14 0 0 1 14 14 v30 a14 14 0 0 1 -14 14 h-30 l-20 16 v-16 h-6 a14 14 0 0 1 -14 -14 v-30 a14 14 0 0 1 14 -14z" fill="#131313"/>
@@ -325,7 +329,8 @@ footer :focus-visible{outline-color:var(--inv-ink)}
         <path d="M512 512 l22 18 l-22 18" fill="none" stroke="#fcfcfd" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
         <rect x="546" y="542" width="34" height="6" rx="3" fill="#fcfcfd"/>
       </svg>
-      <figcaption class="cap">Illustration: chat tabs in Chrome, wired to Claude Code</figcaption>
+      <img class="hero-pop" src="assets/popup-light.png" width="420" height="590" alt="The tabcrew Chrome Agent popup: agent tabs grouped per agent, the eye follows one agent">
+      <figcaption class="cap">Chat tabs in Chrome wired to Claude Code, and the real tabcrew Chrome Agent popup</figcaption>
     </figure>
   </section>
 </div>

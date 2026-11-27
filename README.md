@@ -20,6 +20,26 @@ How it works and why I built it: [How to Make Claude Code Chat With ChatGPT in Y
 
 <sub>A real fanout run, sped up where marked (×).</sub>
 
+## tabcrew Chrome Agent
+
+tabcrew drives Chrome through **tabcrew Chrome Agent**, its own open-source (MIT) extension, native host and MCP server, in [`src/chrome-agent/`](src/chrome-agent/). It needs no account and no cloud: it runs on your computer, and your messages go only to the chat sites.
+
+![The agent searching Wikipedia: cursor, captions and the tab frame](docs/assets/chrome-agent-demo.gif)
+
+- **You see what it does.** While the agent works in a tab, a black cursor shows where it points and clicks, with a short caption of what it is doing, and a soft black frame marks the tab. The tab title shows ⏳ while it works and ✅ when it is done.
+- **Follow one agent.** The popup lists the agent tabs per agent, for example *Claude Code · my-repo*, so several agents can share one browser. Click the eye next to an agent and the window shows the tab that agent is working in; you can watch it move between the chats. Only the agent you follow moves the view, and switching tabs yourself stops following.
+- **Only its own tabs.** The agent acts only in tabs inside its grey "tabcrew" tab group, never in yours. In the popup you can block sites, or make it ask before it acts on a new site.
+- **Built for chat sites.** `chat_send`, `chat_read`, `chat_images` and friends write to ChatGPT, Gemini and DeepSeek, read the full reply as markdown checked against the page, and save generated images at full size with no download dialog.
+- **Several Chrome profiles.** Every profile with the extension connects; tabcrew uses the one logged in to the chat you picked.
+- **Works on its own.** 26 browser tools for any MCP client: Claude Code, Codex CLI, Gemini CLI, Cursor, VS Code and others. See [src/chrome-agent/README.md](src/chrome-agent/README.md).
+
+Click the toolbar icon for the popup: the connection, this browser's name, the agent tabs per agent with their state, and the latest tool calls (click a failed one to read the error). The gear opens the site permissions.
+
+<p>
+  <img src="docs/assets/popup-light.png" alt="tabcrew Chrome Agent popup, light theme: agent tabs grouped per agent, the eye follows Claude Code · my-app" width="49%">
+  <img src="docs/assets/popup-dark.png" alt="tabcrew Chrome Agent popup, dark theme" width="49%">
+</p>
+
 ## Install
 
 Tell Claude Code:
@@ -50,26 +70,6 @@ Then set up [tabcrew Chrome Agent](#tabcrew-chrome-agent), the Chrome extension 
 **Several Chrome profiles.** Load the extension in each profile you want to use. tabcrew checks which profile is logged in to the chat you picked and uses that one; if several are, it asks.
 
 **Update.** `git -C ~/.claude/skills/tabcrew pull`, run the installer again, then click the reload icon on the extension in `chrome://extensions`.
-
-## tabcrew Chrome Agent
-
-tabcrew drives Chrome through **tabcrew Chrome Agent**, its own open-source (MIT) extension, native host and MCP server, in [`src/chrome-agent/`](src/chrome-agent/). It needs no account and no cloud: it runs on your computer, and your messages go only to the chat sites.
-
-![The agent searching Wikipedia: cursor, captions and the tab frame](docs/assets/chrome-agent-demo.gif)
-
-- **You see what it does.** While the agent works in a tab, a black cursor shows where it points and clicks, with a short caption of what it is doing, and a soft black frame marks the tab. The tab title shows ⏳ while it works and ✅ when it is done.
-- **Follow one agent.** The popup lists the agent tabs per agent, for example *Claude Code · my-repo*, so several agents can share one browser. Click the eye next to an agent and the window shows the tab that agent is working in; you can watch it move between the chats. Only the agent you follow moves the view, and switching tabs yourself stops following.
-- **Only its own tabs.** The agent acts only in tabs inside its grey "tabcrew" tab group, never in yours. In the popup you can block sites, or make it ask before it acts on a new site.
-- **Built for chat sites.** `chat_send`, `chat_read`, `chat_images` and friends write to ChatGPT, Gemini and DeepSeek, read the full reply as markdown checked against the page, and save generated images at full size with no download dialog.
-- **Several Chrome profiles.** Every profile with the extension connects; tabcrew uses the one logged in to the chat you picked.
-- **Works on its own.** 26 browser tools for any MCP client: Claude Code, Codex CLI, Gemini CLI, Cursor, VS Code and others. See [src/chrome-agent/README.md](src/chrome-agent/README.md).
-
-Click the toolbar icon for the popup: the connection, this browser's name, the agent tabs per agent with their state, and the latest tool calls (click a failed one to read the error). The gear opens the site permissions.
-
-<p>
-  <img src="docs/assets/popup-light.png" alt="tabcrew Chrome Agent popup, light theme: agent tabs grouped per agent, the eye follows Claude Code · my-app" width="49%">
-  <img src="docs/assets/popup-dark.png" alt="tabcrew Chrome Agent popup, dark theme" width="49%">
-</p>
 
 ## Use it
 
