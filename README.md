@@ -6,13 +6,11 @@
 </p>
 <br>
 
-tabcrew is a Claude Code skill that lets Claude Code work with the AI chats you already use in Chrome: DeepSeek, ChatGPT and Gemini. Claude Code writes to the chats, waits for their answers, passes the right parts between them, and does the actual work in your repo.
+**Claude Code, working in your Chrome.** tabcrew is a Claude Code skill with its own open-source browser agent, **[tabcrew Chrome Agent](#tabcrew-chrome-agent)** (a Chrome extension and MCP server in this repo).
 
-If you copy prompts from a chat into Claude Code and paste the results back, this does that loop for you.
-
-It runs on your own browser sessions. No API keys, no extra subscriptions.
-
-It comes with its own browser agent: **[tabcrew Chrome Agent](#tabcrew-chrome-agent)**, an open-source Chrome extension and MCP server in this repo. You can watch it work in your Chrome, follow one agent while several share the browser, and use it on its own with any MCP client.
+- **Your AI chats as one crew.** Claude Code writes to the DeepSeek, ChatGPT and Gemini chats you already use, waits for their answers, passes the right parts between them, and does the actual work in your repo. If you copy prompts from a chat into Claude Code and paste the results back, this does that loop for you.
+- **Any other site, too.** The same agent can open, read, click and fill in pages in your real Chrome, with your logins, in its own tab group. You can watch it work and follow one agent while several share the browser.
+- **Your own sessions.** No API keys, no extra subscriptions, no cloud: it runs on your computer.
 
 ![tabcrew Chrome Agent popup in light and dark themes: connected, agent tabs grouped per agent (the eye follows Claude Code · my-app), and the latest tool calls](docs/assets/extension.png)
 

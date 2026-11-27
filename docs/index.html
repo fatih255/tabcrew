@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>tabcrew: AI chat tabs working as one crew for Claude Code</title>
-<meta name="description" content="Free, open-source Claude Code skill that runs the DeepSeek, ChatGPT and Gemini chats in your own Chrome as one crew and does the work in your repo. No API keys.">
+<title>tabcrew: Claude Code, working in your Chrome</title>
+<meta name="description" content="Free, open-source Claude Code skill with its own Chrome agent. It runs the DeepSeek, ChatGPT and Gemini chats you already use as one crew, works on any site in your real browser, and does the work in your repo. No API keys.">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta name="author" content="fatihinci.com">
 <meta name="theme-color" content="#f5f4f0">
@@ -16,18 +16,18 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="tabcrew">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="tabcrew: your AI chat tabs, working as one crew">
-<meta property="og:description" content="A Claude Code skill that drives the DeepSeek, ChatGPT and Gemini chats you already have open in Chrome and does the work in your repo. Free and open source, no API keys.">
+<meta property="og:title" content="tabcrew: Claude Code, working in your Chrome">
+<meta property="og:description" content="A Claude Code skill with its own open-source Chrome agent: your AI chats as one crew, any site in your real browser, the work done in your repo. Free and open source, no API keys.">
 <meta property="og:url" content="https://tabcrew.fatihinci.com/">
 <meta property="og:image" content="https://tabcrew.fatihinci.com/banner.png">
 <meta property="og:image:width" content="1584">
 <meta property="og:image:height" content="672">
-<meta property="og:image:alt" content="tabcrew: three chat tabs in the browser agent's tab group wired to a Claude Code terminal, next to the tabcrew Chrome Agent popup">
+<meta property="og:image:alt" content="tabcrew: Claude Code, working in your Chrome. Chat tabs in the browser agent's tab group wired to a Claude Code terminal, next to the tabcrew Chrome Agent popup">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="tabcrew: your AI chat tabs, working as one crew">
-<meta name="twitter:description" content="A Claude Code skill that drives DeepSeek, ChatGPT and Gemini in your own Chrome and does the work in your repo. No API keys.">
+<meta name="twitter:title" content="tabcrew: Claude Code, working in your Chrome">
+<meta name="twitter:description" content="A Claude Code skill with its own Chrome agent: your AI chats as one crew, any site in your real browser, the work done in your repo. No API keys.">
 <meta name="twitter:image" content="https://tabcrew.fatihinci.com/banner.png">
-<meta name="twitter:image:alt" content="tabcrew: three chat tabs in the browser agent's tab group wired to a Claude Code terminal, next to the tabcrew Chrome Agent popup">
+<meta name="twitter:image:alt" content="tabcrew: Claude Code, working in your Chrome. Chat tabs in the browser agent's tab group wired to a Claude Code terminal, next to the tabcrew Chrome Agent popup">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -43,7 +43,7 @@
       "@type": "SoftwareApplication",
       "name": "tabcrew",
       "url": "https://tabcrew.fatihinci.com/",
-      "description": "A Claude Code skill that runs the DeepSeek, ChatGPT and Gemini chats in your own Chrome as a crew of agents and does the work in your repo.",
+      "description": "A Claude Code skill with its own open-source Chrome agent. It runs the DeepSeek, ChatGPT and Gemini chats in your own Chrome as a crew of agents, works on any site in your browser, and does the work in your repo.",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Windows, macOS, Linux",
       "image": "https://tabcrew.fatihinci.com/banner.png",
@@ -145,42 +145,20 @@ section[id]{scroll-margin-top:72px}
 .vbtn.paused .i-play{display:block}.vbtn.paused .i-pause{display:none}
 .cap{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
 
-/* hero: the extension popup follows the agent */
-.hp{display:flex;flex-direction:column;align-items:center}
-.hp-pop{width:100%;max-width:380px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 40px -24px rgba(0,0,0,.22);padding:14px 14px 12px;font:400 13px/1.35 var(--body);color:#0b0b0c}
-.hp-head{display:flex;align-items:center;gap:7px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid #e3e3e6}
-.hp-logo{display:grid;place-items:center;width:26px;height:26px;border-radius:7px;background:#131313;color:#fcfcfd;font:700 11px/1 var(--mono)}
-.hp-head b{font-weight:700;font-size:14px}.hp-sub{color:#6b6b72;font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hp-chip{display:flex;align-items:center;gap:5px;padding:3px 8px;white-space:nowrap;border:1.5px solid #0b0b0c;border-radius:999px;font-weight:600;font-size:12px}
-.hp-chip i,.hp-live i{width:7px;height:7px;border-radius:50%;background:#0b0b0c}
-.hp-gear{display:grid;place-items:center;width:28px;height:28px;border:1px solid #e3e3e6;border-radius:8px}
-.hp-gear svg,.hp-tab svg,.hp-eye svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.hp-h2{display:flex;align-items:center;gap:7px;margin:10px 2px 7px;color:#6b6b72;font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
-.hp-n{padding:0 6px;border-radius:5px;background:#ececee;color:#0b0b0c;letter-spacing:0}
-.hp-live{margin-left:auto;display:flex;align-items:center;gap:5px;color:#0b0b0c;letter-spacing:0;text-transform:none;font-size:12px}
-.hp-live i{animation:hp-pulse 1.6s ease-in-out infinite}
-.hp-box{list-style:none;margin:0;padding:4px 10px;border:1px solid #e3e3e6;border-radius:11px;background:#f6f6f7}
-.hp-box li{display:flex;align-items:center;gap:9px;height:34px;border-bottom:1px solid #e3e3e6}
-.hp-box li:last-child{border-bottom:0}
-.hp-agent{font-weight:600;font-size:12px}
-.hp-eye{display:grid;place-items:center;width:24px;height:24px;border-radius:6px;background:#0b0b0c;color:#fff;flex:none}
-.hp-tab{padding-left:22px;border-radius:8px;transition:background .35s}
-.hp-tab.on{background:#e9e9ec}
-.hp-ti{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.hp-ho{color:#6b6b72;font-size:12px}
-.hp-tab svg{color:#6b6b72;flex:none}
-.hp-st{width:14px;height:14px;flex:none;border-radius:50%;border:1.5px solid #9b9ba1;box-sizing:border-box;transform:scale(.6)}
-.hp-tab.done .hp-st{transform:none;border-color:#0b0b0c;background:radial-gradient(circle,transparent 0 0) ;position:relative}
-.hp-tab.done .hp-st::after{content:"";position:absolute;left:3.5px;top:1.5px;width:3px;height:6px;border:solid #0b0b0c;border-width:0 1.6px 1.6px 0;transform:rotate(45deg)}
-.hp-tab.work .hp-st{transform:none;border-color:#d6d6da;border-top-color:#0b0b0c;animation:hp-spin .8s linear infinite}
-.hp-log{height:166px;overflow:hidden}
-.hp-log li{display:grid;grid-template-columns:62px 1fr auto;gap:10px;animation:hp-in .45s ease-out}
-.hp-log .t{font:11.5px var(--mono);color:#6b6b72}.hp-log .o{font-weight:600;font-family:var(--mono);font-size:12px}.hp-log .m{color:#6b6b72;font-size:12px}
-@keyframes hp-spin{to{transform:rotate(360deg)}}
-@keyframes hp-pulse{50%{opacity:.25}}
-@keyframes hp-in{from{opacity:0;transform:translateY(-10px)}}
-@media (max-width:560px){.hp-sub{display:none}}
-@media (prefers-reduced-motion:reduce){.hp *{animation:none!important;transition:none!important}}
+/* hero: a simple flow diagram */
+.hd svg{display:block;width:100%;height:auto;max-width:620px;margin:0 auto}
+.hd-card{fill:#fbfaf7;stroke:#d6d5d2;stroke-width:1.5}
+.hd-card.dark{fill:#141314;stroke:#141314}
+.hd-label{font:600 15px/1 var(--body);fill:#131313}.hd-label.inv{fill:#fcfcfd}
+.hd-small{font:500 12px/1 var(--body);fill:var(--muted)}
+.hd-pill rect{fill:#fff;stroke:#131313;stroke-width:1.5}
+.hd-pill text{font:500 14px/1 var(--body);fill:#131313}
+.hd-pill.any rect{fill:var(--alt);stroke-dasharray:4 4}
+.hd-line path{fill:none;stroke:#131313;stroke-width:1.6;opacity:.18}
+.hd-flow path{fill:none;stroke:#131313;stroke-width:1.8;stroke-linecap:round;stroke-dasharray:3 13;animation:hd-flow 1.4s linear infinite}
+.hd-tip{fill:none;stroke:#131313;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@keyframes hd-flow{to{stroke-dashoffset:-32}}
+@media (prefers-reduced-motion:reduce){.hd-flow path{animation:none}}
 
 
 /* about */
@@ -319,8 +297,8 @@ footer :focus-visible{outline-color:var(--inv-ink)}
 
   <section class="hero">
     <div>
-      <h1>Your AI chat tabs, working as one crew</h1>
-      <p class="intro">tabcrew is a Claude Code skill. It writes to the DeepSeek, ChatGPT and Gemini chats you already have open in Chrome, passes the right parts between them, and does the work in your repo.</p>
+      <h1>Claude Code, working in your Chrome</h1>
+      <p class="intro">tabcrew is a Claude Code skill with its own open-source Chrome agent. It runs the DeepSeek, ChatGPT and Gemini chats you already use as one crew, works on any other site in your real browser, and does the work in your repo.</p>
 
       <div class="install">
         <div class="cmd"><code><span class="p">&gt; </span>Install the skill from https://github.com/fatih255/tabcrew</code><button class="copy" type="button" data-copy="Install the skill from https://github.com/fatih255/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button></div>
@@ -330,20 +308,61 @@ footer :focus-visible{outline-color:var(--inv-ink)}
       <p class="more"><a href="https://github.com/fatih255/tabcrew">Read the docs on GitHub →</a><span>Free and open source (MIT) · No API keys</span></p>
     </div>
 
-    <figure class="hero-fig hp" aria-label="Animation: the tabcrew Chrome Agent popup follows Claude Code from chat to chat and lists each tool call">
-      <div class="hp-pop" aria-hidden="true">
-        <div class="hp-head"><span class="hp-logo">&gt;_</span><b>tabcrew</b><span class="hp-sub">Chrome Agent</span><span class="hp-chip"><i></i>Connected</span><span class="hp-gear"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span></div>
-        <div class="hp-h2">Agent tabs <span class="hp-n">3</span></div>
-        <ul class="hp-box">
-          <li class="hp-agent"><span class="hp-eye"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="hp-ti">Claude Code · my-app</span><span class="hp-ho">3 tabs</span></li>
-          <li class="hp-tab" data-i="0"><span class="hp-st"></span><span class="hp-ti">DeepSeek</span><span class="hp-ho">chat.deepseek.com</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3h8v8m0-8L10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></li>
-          <li class="hp-tab" data-i="1"><span class="hp-st"></span><span class="hp-ti">ChatGPT</span><span class="hp-ho">chatgpt.com</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3h8v8m0-8L10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></li>
-          <li class="hp-tab" data-i="2"><span class="hp-st"></span><span class="hp-ti">Google Gemini</span><span class="hp-ho">gemini.google.com</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13 3h8v8m0-8L10 14M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></svg></li>
-        </ul>
-        <div class="hp-h2">Activity <span class="hp-live"><i></i>Live</span></div>
-        <ul class="hp-box hp-log"></ul>
-      </div>
-      <figcaption class="cap">The tabcrew Chrome Agent popup follows the agent from chat to chat</figcaption>
+    <figure class="hero-fig hd">
+      <svg viewBox="0 0 640 430" role="img" aria-label="Diagram: Claude Code talks to the tabcrew Chrome Agent, which works in your Chrome on AI chats and any website; Claude Code does the work in your repo">
+        <g class="hd-line">
+          <path id="hd-a" d="M176 172 H256"/>
+          <path id="hd-b" d="M256 212 H176"/>
+          <path d="M392 192 C430 192 430 110 470 110"/>
+          <path d="M392 192 C432 192 432 162 470 162"/>
+          <path d="M392 192 C432 192 432 214 470 214"/>
+          <path d="M392 192 C430 192 430 300 470 300"/>
+          <path d="M98 250 V318"/>
+        </g>
+        <g class="hd-flow">
+          <path d="M176 172 H256"/><path d="M256 212 H176"/>
+          <path d="M392 192 C430 192 430 110 470 110"/><path d="M392 192 C432 192 432 162 470 162"/>
+          <path d="M392 192 C432 192 432 214 470 214"/><path d="M392 192 C430 192 430 300 470 300"/>
+          <path d="M98 250 V318"/>
+        </g>
+        <path class="hd-tip" d="M249 167 l8 5 -8 5"/><path class="hd-tip" d="M183 207 l-8 5 8 5"/><path class="hd-tip" d="M93 311 l5 8 5-8"/>
+        <text class="hd-small" x="216" y="160" text-anchor="middle">actions</text>
+        <text class="hd-small" x="216" y="232" text-anchor="middle">results</text>
+
+        <g transform="translate(20 134)">
+          <rect class="hd-card dark" width="156" height="116" rx="14"/>
+          <circle cx="20" cy="20" r="4" fill="#505050"/><circle cx="34" cy="20" r="4" fill="#505050"/><circle cx="48" cy="20" r="4" fill="#505050"/>
+          <path d="M22 50 l14 11 -14 11" fill="none" stroke="#fcfcfd" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><rect x="44" y="68" width="22" height="4" rx="2" fill="#fcfcfd"/>
+          <text class="hd-label inv" x="20" y="100">Claude Code</text>
+        </g>
+
+        <g transform="translate(256 134)">
+          <rect class="hd-card" width="136" height="116" rx="14"/>
+          <rect x="18" y="16" width="34" height="34" rx="9" fill="#131313"/>
+          <rect x="24" y="23" width="22" height="7" rx="2" fill="#fcfcfd"/><path d="M28 30 v6 M35 30 v6 M42 30 v6" stroke="#fcfcfd" stroke-width="2"/><rect x="29" y="38" width="12" height="7" rx="2" fill="#fcfcfd"/>
+          <text class="hd-label" x="18" y="76">tabcrew</text>
+          <text class="hd-label" x="18" y="96">Chrome Agent</text>
+        </g>
+
+        <g transform="translate(470 66)">
+          <rect class="hd-card" width="150" height="270" rx="14"/>
+          <text class="hd-small" x="16" y="24">your Chrome</text>
+          <g class="hd-pill"><rect x="12" y="34" width="126" height="32" rx="9"/><text x="26" y="55">DeepSeek</text></g>
+          <g class="hd-pill"><rect x="12" y="80" width="126" height="32" rx="9"/><text x="26" y="101">ChatGPT</text></g>
+          <g class="hd-pill"><rect x="12" y="126" width="126" height="32" rx="9"/><text x="26" y="147">Gemini</text></g>
+          <line x1="16" y1="186" x2="134" y2="186" stroke="#d6d5d2"/>
+          <g class="hd-pill any"><rect x="12" y="218" width="126" height="32" rx="9"/><circle cx="31" cy="234" r="7" fill="none" stroke="#131313" stroke-width="1.6"/><path d="M24 234 h14 M31 227 c-4 4 -4 10 0 14 M31 227 c4 4 4 10 0 14" fill="none" stroke="#131313" stroke-width="1.2"/><text x="46" y="239">any website</text></g>
+          <text class="hd-small" x="16" y="206">and</text>
+        </g>
+
+        <g transform="translate(20 318)">
+          <rect class="hd-card" width="156" height="60" rx="12"/>
+          <path d="M18 22 h10 l4 4 h14 v16 h-28 z" fill="none" stroke="#131313" stroke-width="1.8" stroke-linejoin="round"/>
+          <text class="hd-label" x="58" y="37">your repo</text>
+        </g>
+        <text class="hd-small" x="110" y="292">edits · tests</text>
+      </svg>
+      <figcaption class="cap">Claude Code works through its own Chrome agent: in your AI chats, on any site, with your logins.</figcaption>
     </figure>
   </section>
 </div>
@@ -615,7 +634,7 @@ footer :focus-visible{outline-color:var(--inv-ink)}
 
 <section class="band alt" id="install">
   <div class="wrap cta">
-    <h2>Put your chat tabs to work</h2>
+    <h2>Put your browser to work</h2>
     <p>Tell Claude Code to install it, log in to a chat site, and describe the job.</p>
     <div class="install">
       <div class="cmd"><code><span class="p">&gt; </span>Install the skill from https://github.com/fatih255/tabcrew</code><button class="copy" type="button" data-copy="Install the skill from https://github.com/fatih255/tabcrew"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5" y="5" width="9" height="9" rx="2"/><path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/></svg><span>Copy</span></button></div>
@@ -628,7 +647,7 @@ footer :focus-visible{outline-color:var(--inv-ink)}
 <footer>
   <div class="wrap">
     <div class="links">
-      <div><p>A Claude Code skill that runs your browser AI chats as a crew. Free and open source.</p></div>
+      <div><p>A Claude Code skill with its own Chrome agent: your AI chats as a crew, any site, your own logins. Free and open source.</p></div>
       <div><h4>Project</h4><ul><li><a href="https://github.com/fatih255/tabcrew">GitHub</a></li><li><a href="https://github.com/fatih255/tabcrew#readme">README</a></li><li><a href="https://github.com/fatih255/tabcrew/blob/main/LICENSE">MIT license</a></li></ul></div>
       <div><h4>Learn</h4><ul><li><a href="#about">How it works</a></li><li><a href="#features">Workflows</a></li><li><a href="#chats">Supported chats</a></li><li><a href="#extension">Chrome extension</a></li><li><a href="#faq">FAQ</a></li></ul></div>
       <div><h4>Community</h4><ul><li><a href="https://github.com/fatih255/tabcrew/blob/main/CONTRIBUTING.md">Contribute</a></li><li><a href="https://github.com/fatih255/tabcrew/issues">Issues</a></li><li><a href="https://github.com/fatih255">@fatih255 on GitHub</a></li><li><a href="https://fatihinci.com">fatihinci.com</a></li></ul></div>
@@ -661,45 +680,6 @@ document.querySelectorAll('[data-copy]').forEach(function (b) {
     else done(false);
   });
 });
-(function () {
-  var fig = document.querySelector('.hp');
-  if (!fig) return;
-  var tabs = fig.querySelectorAll('.hp-tab'), log = fig.querySelector('.hp-log');
-  var steps = [
-    ['navigate', 'chat.deepseek.com', 'Opening the chat'], ['chat_send', '2.1k chars', 'Sending the message'], ['chat_read', 'done · 6.4k', 'Reading the reply'],
-    ['navigate', 'chatgpt.com', 'Opening the chat'], ['chat_send', '1.8k chars', 'Sending the message'], ['chat_read', 'done · 5.2k', 'Reading the reply'],
-    ['navigate', 'gemini.google.com', 'Opening the chat'], ['chat_send', '2.0k chars', 'Sending the message'], ['chat_read', 'done · 7.9k', 'Reading the reply']
-  ];
-  var clock = new Date(); clock.setHours(14, 2, 10);
-  function add(op, meta) {
-    clock = new Date(clock.getTime() + 1000 + Math.random() * 4000);
-    var li = document.createElement('li');
-    var tm = clock.toTimeString().slice(0, 8);
-    li.innerHTML = '<span class="t">' + tm + '</span><span class="o">' + op + '</span><span class="m">' + meta + '</span>';
-    log.insertBefore(li, log.firstChild);
-    while (log.children.length > 5) log.removeChild(log.lastChild);
-  }
-  function show(k) {
-    var i = Math.floor(k / 3) % 3, s = steps[k % 9];
-    tabs.forEach(function (el, j) {
-      el.classList.toggle('on', j === i);
-      el.classList.toggle('work', j === i && s[0] !== 'chat_read');
-      if (j === i && s[0] === 'chat_read') el.classList.add('done');
-      if (k % 9 === 0) el.classList.remove('done');
-    });
-    add(s[0], s[1]);
-  }
-  ['tabs_context_mcp', 'tabs_create_mcp', 'tabs_create_mcp', 'chat_status'].forEach(function (o, n) { add(o, ['1 tab', 'DeepSeek', 'ChatGPT', 'logged in'][n]); });
-  var k = 0;
-  show(k);
-  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var timer = null;
-  function run() { if (!timer) timer = setInterval(function () { show(++k); }, 1900); }
-  function stop() { clearInterval(timer); timer = null; }
-  if ('IntersectionObserver' in window) {
-    new IntersectionObserver(function (es) { es[0].isIntersecting ? run() : stop(); }).observe(fig);
-  } else run();
-})();
 fetch('https://api.github.com/repos/fatih255/tabcrew').then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
   var n = d && d.stargazers_count;
   if (typeof n !== 'number') return;
