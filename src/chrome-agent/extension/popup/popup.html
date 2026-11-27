@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>tabcrew Chrome Agent</title><link rel="stylesheet" href="popup.css"></head>
+<body class="popup">
+  <header>
+    <img class="logo" src="../icons/icon-48.png" alt="">
+    <h1>tabcrew <span>Chrome Agent</span></h1>
+    <span id="chip" class="chip" role="status"><span class="dot"></span><span id="status">Checking</span></span>
+    <button id="settingsBtn" class="iconbtn" title="Settings" aria-label="Settings" aria-expanded="false" data-icon="settings"></button>
+  </header>
+
+  <main>
+    <section id="problem" class="card problem" hidden>
+      <p class="strong" data-icon-before="alert-circle">Agents can't reach this browser.</p>
+      <p id="errorText" class="mono muted"></p>
+      <p class="muted">Run the installer once from the tabcrew folder, then reconnect:</p>
+      <div class="cmd"><code id="installCmd"></code><button class="link" data-copy="installCmd">Copy</button></div>
+      <button id="reconnect" class="primary">Reconnect</button>
+    </section>
+
+    <section id="settings" class="collapse" aria-hidden="true" inert>
+     <div class="collapse-inner">
+     <div class="card settings">
+      <div class="head"><h2>Permissions</h2><button id="settingsClose" type="button" class="iconbtn sm" title="Close" aria-label="Close settings" data-icon="x"></button></div>
+      <label class="opt"><input type="radio" name="mode" value="allow_all"> Allow all sites</label>
+      <label class="opt"><input type="radio" name="mode" value="ask"> Ask before acting on a new site</label>
+      <div id="sitesBox" hidden>
+        <h3>Allowed sites</h3>
+        <ul id="sites" class="rows"></ul>
+      </div>
+      <h3>Blocked sites</h3>
+      <textarea id="blocked" rows="3" placeholder="one domain per line" spellcheck="false"></textarea>
+      <div class="row"><button id="saveBlocked" class="primary">Save</button><span class="muted small" id="version"></span></div>
+     </div>
+     </div>
+    </section>
+
+    <section>
+      <h2 data-icon-before="monitor">Browser</h2>
+      <form id="nameEdit" class="card browser" autocomplete="off">
+        <span class="badge" data-icon="browser"></span>
+        <input id="bname" class="field" maxlength="60" spellcheck="false" aria-label="Browser name" placeholder="Default name" readonly>
+        <span class="tip" tabindex="0" data-icon="info" aria-label="Agents see this name when several Chrome profiles are connected."
+              data-tip="Agents see this name when several Chrome profiles are connected."></span>
+        <span class="actions">
+          <button id="renameBtn" type="button" class="ghost" data-icon-before="edit">Rename</button>
+          <button id="saveName" type="submit" class="primary" hidden>Save</button>
+          <button id="cancelName" type="button" class="ghost" hidden>Cancel</button>
+        </span>
+      </form>
+    </section>
+
+    <section>
+      <h2 data-icon-before="layers">Agent tabs <span id="groupCount" class="count" hidden></span></h2>
+      <ul id="groupTabs" class="rows scroll list tabs"></ul>
+      <p id="groupEmpty" class="empty">No agent tabs. The agent works only in tabs it opens in its grey “tabcrew” group.</p>
+    </section>
+
+    <section>
+      <h2 data-icon-before="activity">Activity <span id="live" class="live" hidden><span class="dot"></span>Live</span></h2>
+      <ul id="log" class="rows scroll list log"></ul>
+      <p id="logEmpty" class="empty">No activity yet.</p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="popup.js" type="module"></script>
+</body></html>

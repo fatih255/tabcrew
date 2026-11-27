@@ -1,0 +1,8 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>cross-origin frame</title></head>
+<body style="font:15px sans-serif">
+<p>Cross origin frame text.</p>
+<button id="xbtn" onclick="this.textContent='x clicked'">Frame button</button>
+<input id="xin" aria-label="Frame input" oninput="document.getElementById('xout').textContent='typed:'+this.value">
+<div id="xout"></div>
+</body></html>

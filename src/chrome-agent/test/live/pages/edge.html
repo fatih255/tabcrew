@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><title>TCA edge cases</title>
+<style>body{font:16px sans-serif;margin:20px} .row{margin:12px 0} #wide{width:600px;overflow-x:auto;white-space:nowrap;border:1px solid #aaa} #wide span{display:inline-block;width:300px} #hidden{display:none}</style></head>
+<body>
+<h1>Kenar durumlar · Edge cases 🚀</h1>
+<p id="tr">Türkçe metin: ğüşıöç ĞÜŞİÖÇ — emoji 😀👍</p>
+<div class="row"><input id="tri" aria-label="Turkish input"> <span id="trout"></span></div>
+<div class="row"><input id="maxl" aria-label="Short field" maxlength="5"></div>
+<div class="row"><button id="disabled" disabled>Disabled button</button></div>
+<div class="row" id="hidden"><button>Hidden button</button></div>
+<div class="row"><my-widget id="w"></my-widget></div>
+<div class="row"><button id="delayBtn" onclick="setTimeout(()=>{const b=document.createElement('button');b.id='late';b.textContent='Late button';b.onclick=()=>b.textContent='late clicked';document.getElementById('lateBox').append(b)},1500)">Show late button</button> <span id="lateBox"></span></div>
+<div class="row"><button id="mover" onclick="this.remove()">Vanishing button</button></div>
+<div class="row"><button id="alertBtn" onclick="alert('hello from page');document.getElementById('alertOut').textContent='after alert'">Alert button</button> <span id="alertOut"></span></div>
+<div class="row"><button id="hoverBtn" onmouseenter="this.textContent='hovered'">Hover me</button></div>
+<div class="row"><button id="rightBtn" oncontextmenu="event.preventDefault();this.textContent='right clicked'">Right click me</button></div>
+<div class="row"><p id="tripleP" onclick="if(event.detail===3)this.dataset.t='3'">Triple click this paragraph to select it.</p></div>
+<div class="row"><div id="dragSrc" draggable="true" style="width:80px;height:30px;background:#9cf">Drag me</div>
+  <div id="dropZone" style="width:200px;height:50px;border:2px dashed #999" ondragover="event.preventDefault()" ondrop="event.preventDefault();this.textContent='dropped'">Drop here</div></div>
+<div class="row"><input type="range" id="slider" aria-label="Volume" min="0" max="100" value="10"></div>
+<div class="row"><select id="multi" multiple aria-label="Colors"><option>Red</option><option>Green</option><option>Blue</option></select></div>
+<div class="row"><input type="date" id="date" aria-label="Birthday"> <input type="number" id="num" aria-label="Count"></div>
+<div class="row" id="wide"><span>Left</span><span>Middle</span><span>Right</span><span id="farRight">Far right cell</span></div>
+<div class="row"><canvas id="cv" width="200" height="60"></canvas></div>
+<div class="row"><a href="javascript:void(document.getElementById('jsl').textContent='js link ran')" id="jslink">JS link</a> <span id="jsl"></span></div>
+<ul id="list"></ul>
+<script>
+customElements.define("my-widget", class extends HTMLElement {
+  constructor() { super(); const r = this.attachShadow({ mode: "open" });
+    r.innerHTML = `<button id="sb">Shadow button</button>`;
+    r.getElementById("sb").onclick = (e) => { e.target.textContent = "shadow clicked"; }; }
+});
+document.getElementById("tri").addEventListener("input", (e) => { document.getElementById("trout").textContent = e.target.value; });
+const c = document.getElementById("cv").getContext("2d"); c.fillStyle = "#c33"; c.fillRect(0, 0, 200, 60);
+const ul = document.getElementById("list");
+for (let i = 1; i <= 2000; i++) { const li = document.createElement("li"); li.textContent = "List item number " + i; ul.append(li); }
+for (let i = 0; i < 30; i++) console.log("bulk log line " + i);
+</script>
+</body></html>

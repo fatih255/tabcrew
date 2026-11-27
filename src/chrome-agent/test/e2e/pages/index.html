@@ -1,0 +1,34 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>TCA test form</title>
+<style>body{font:16px sans-serif;margin:20px} .row{margin:10px 0} #spacer{height:1500px;background:linear-gradient(#fff,#ddd)} #out{color:green}</style></head>
+<body>
+<main>
+  <h1>Signup test</h1>
+  <div class="row"><label for="name">Full name</label> <input id="name" placeholder="Your name"></div>
+  <div class="row"><label for="pw">Password</label> <input id="pw" type="password" value="hunter2secret"></div>
+  <div class="row"><label for="country">Country</label>
+    <select id="country"><option value="">Choose</option><option value="tr">Turkey</option><option value="de">Germany</option></select></div>
+  <div class="row"><label><input id="agree" type="checkbox"> I agree</label></div>
+  <div class="row"><label><input type="radio" name="plan" value="free" checked> Free plan</label> <label><input type="radio" name="plan" value="pro"> Pro plan</label></div>
+  <div class="row"><div id="bio" contenteditable="true" aria-label="Bio" style="border:1px solid #999;min-height:20px"></div></div>
+  <div class="row"><input id="file" type="file" aria-label="Attachment"></div>
+  <div class="row"><textarea id="notes" aria-label="Notes"></textarea></div>
+  <div class="row"><button id="submit" onclick="submitForm()">Send form</button> <span id="out"></span></div>
+  <div class="row"><a href="/second.html" id="link">Go to second page</a> · <a href="/second.html" target="_blank" id="newtab">Open in new tab</a></div>
+  <div class="row"><button id="dbl" ondblclick="this.textContent='double clicked'">Double click me</button>
+    <span id="keys"></span></div>
+  <div id="spacer"></div>
+  <button id="bottom" onclick="this.textContent='bottom clicked'">Bottom button</button>
+</main>
+<script>
+  console.log("page loaded", 42);
+  console.error("test error from page");
+  fetch("/api/ping?token=abc123").then(r => r.text()).then(t => console.log("ping", t));
+  document.addEventListener("keydown", e => { document.getElementById("keys").textContent += e.key + ","; });
+  function submitForm() {
+    const f = document.getElementById("file").files[0];
+    document.getElementById("out").textContent =
+      `sent:${document.getElementById("name").value}|${document.getElementById("country").value}|${document.getElementById("agree").checked}|${f ? f.name + ":" + f.size : "nofile"}|${document.getElementById("notes").value}`;
+  }
+</script>
+</body></html>

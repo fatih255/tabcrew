@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/banner.png" alt="tabcrew: AI chat tabs, working as one crew" width="100%">
+  <img src="docs/banner.png" alt="tabcrew: AI chat tabs, working as one crew" width="100%">
 </p>
 
 # tabcrew
@@ -14,7 +14,7 @@ Website: **[tabcrew.fatihinci.com](https://tabcrew.fatihinci.com)**
 
 How it works and why I built it: [How to Make Claude Code Chat With ChatGPT in Your Browser](https://fatihinci.com/blog/claude-code-skill-browser-ai-chats/)
 
-![tabcrew demo: one prompt, DeepSeek, ChatGPT and Gemini research in parallel, Claude Code writes the code and 33 tests pass](assets/demo.gif)
+![tabcrew demo: one prompt, DeepSeek, ChatGPT and Gemini research in parallel, Chrome follows the agent, Claude Code writes slug.py and 8 tests pass](docs/assets/demo.gif)
 
 <sub>A real fanout run, sped up where marked (×).</sub>
 
@@ -32,7 +32,37 @@ Or clone it into your skills folder yourself:
 git clone https://github.com/fatih255/tabcrew ~/.claude/skills/tabcrew
 ```
 
-You also need the [Claude in Chrome](https://claude.ai/chrome) extension, signed in with the same account as Claude Code, and you need to be logged in to the chat sites you want to use.
+tabcrew drives Chrome through **tabcrew Chrome Agent**, an open-source Chrome extension that comes with the skill (folder [`src/chrome-agent/`](src/chrome-agent/)). It needs no account and no cloud: it runs on your computer, and your messages go only to the chat sites. Set it up once (Node.js 18+):
+
+1. Run its installer (or ask Claude Code: *"Set up tabcrew's Chrome extension"*):
+
+   ```bash
+   node ~/.claude/skills/tabcrew/src/chrome-agent/install/install.mjs
+   ```
+
+   It copies the extension and its helper to a folder in your user profile, connects them to Chrome, and adds them to Claude Code for all projects. No admin rights needed.
+2. In Chrome, open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and choose the folder the installer printed (on Windows it is already on your clipboard).
+3. Click the tabcrew Chrome Agent icon in the toolbar. The popup should say **Connected**.
+4. Start a new Claude Code session, and log in to the chat sites you want to use.
+
+**Several Chrome profiles.** Load the extension in each profile you want to use. tabcrew checks which profile is logged in to the chat you picked and uses that one; if several are, it asks.
+
+**Update.** `git -C ~/.claude/skills/tabcrew pull`, run the installer again, then click the reload icon on the extension in `chrome://extensions`.
+
+tabcrew Chrome Agent also works on its own with any MCP client (Codex CLI, Gemini CLI, Cursor, VS Code…): see [src/chrome-agent/README.md](src/chrome-agent/README.md).
+
+### What you see in Chrome
+
+While the agent works in a tab, a black cursor shows where it points and clicks, with a short caption of what it is doing, and a soft black frame marks the tab. The tab title shows ⏳ while it works and ✅ when it is done, until you look at the tab. The agent only uses tabs in its own grey "tabcrew" tab group.
+
+![The agent searching Wikipedia: cursor, captions and the tab frame](docs/assets/chrome-agent-demo.gif)
+
+Click the toolbar icon for the popup: connection, this browser's name, the agent's tabs with their state, and the latest tool calls (click a failed one to read the error). The agent tabs are listed per agent (for example *Claude Code · my-repo*), so several agents can share the browser. Click the eye next to an agent to follow it: the window then shows the tab that agent is working in, and you can watch it move between the chats. Only the agent you follow moves the view; switching tabs yourself stops following. The gear opens the site permissions.
+
+<p>
+  <img src="docs/assets/popup-light.png" alt="tabcrew Chrome Agent popup, light theme" width="49%">
+  <img src="docs/assets/popup-dark.png" alt="tabcrew Chrome Agent popup, dark theme" width="49%">
+</p>
 
 ## Use it
 
@@ -147,12 +177,12 @@ Chat sites change their pages and have limits. tabcrew deals with them so a run 
 | A reply is read incompletely, for example after a site redesign | Tells you the reply may be incomplete; if text is missing, uses the page's plain text instead |
 | Gemini puts code in its Canvas side panel | Asks Gemini to paste it into the chat |
 | A chat is logged out | Asks you to log in; it never types passwords |
-| A chat generates images (ChatGPT, Gemini) | Saves them straight into a folder you choose, with no download dialog, through a small local receiver that only accepts image files on a random, per-run address. Gemini images are saved at full size |
+| A chat generates images (ChatGPT, Gemini) | Saves them straight into a folder you choose, at full size, with no download dialog and without overwriting files |
 
 To check that all three chats still work, run the smoke tests (about 10 minutes, real chats, 5 sessions at once):
 
 ```bash
-bash tools/e2e.sh
+bash src/tools/e2e.sh
 ```
 
 ## What has been tested
@@ -166,7 +196,8 @@ Every run below was a fresh `claude -p` session in an empty folder, driving real
 | debate | every pair, and a chat against itself | palindrome rules, retry/backoff, LRU cache, duration parser, rate limiter, config loading, JSON-lines reader | all tests pass |
 | fanout | 2 or 3 chats, mixed | Unicode edge cases, password checker, SemVer, `slugify()` for 5 scripts | wrong claims caught and corrected, all tests pass |
 | auto mode | DeepSeek, ChatGPT | the chats asked design questions first | all answered by Claude Code, none needed you |
-| `tools/e2e.sh` | all three | one solo per chat, a debate, a three-chat fanout | 5 of 5 pass |
+| `src/tools/e2e.sh full` | all three | every test above in one matrix (2026-11-27, tabcrew Chrome Agent) | 13 of 13 pass |
+| images | ChatGPT, Gemini | generate an icon and save it at full size | saved and checked |
 
 ## Memory
 
@@ -190,8 +221,8 @@ When you attach to a chat you have been using for a while, tabcrew first asks th
 - Messages to the chats never include `.env` values, keys or tokens.
 - Every workflow has a round limit or, if you choose "until done", a check that pauses the run when it stops making progress. You can say stop at any time.
 - It never types passwords. If a chat is logged out, you log in.
-- To save generated images it runs `tools/save_server.py` only while needed. It listens on `127.0.0.1` alone, accepts files only on a random address it prints at start, stores only real PNG, JPEG or WebP data, and never overwrites a file. On Gemini a large image waits in the site's browser storage (IndexedDB `tabcrew_save`) between its parts and is deleted after the last one.
-- To avoid sending its page code again on every page load, tabcrew keeps a copy of its own code (10–17 KB) in each chat site's browser storage (`localStorage`, keys starting with `__tc_src_`). It holds no chat content, and older copies are removed when tabcrew updates.
+- tabcrew Chrome Agent runs on your computer only: the extension talks to a local helper program, and the MCP server reaches it through a local pipe. It has no account, no server and no analytics. It stores nothing in the chat sites.
+- The agent acts only in tabs inside its own grey "tabcrew" tab group. In its popup you can block sites, or make it ask before it acts on a new site.
 
 ## Supported chats
 

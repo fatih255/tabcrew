@@ -1,0 +1,170 @@
+/* tabcrew Chrome Agent popup. Black and white only: contrast, weight and shape carry meaning. */
+:root{
+  --bg:#0b0b0c;--surface:#151517;--hover:#1e1e21;--line:#2a2a2e;--text:#f2f2f3;--muted:#9b9ba1;
+  --inv-bg:#f2f2f3;--inv-fg:#0b0b0c;--thumb:rgba(255,255,255,.18);--thumb-hover:rgba(255,255,255,.32);--ring:rgba(255,255,255,.035);--edit:rgba(255,255,255,.28);
+  --r:12px;--r2:8px;color-scheme:dark;
+}
+@media (prefers-color-scheme:light){:root{
+  --bg:#fff;--surface:#f6f6f7;--hover:#ececee;--line:#e3e3e6;--text:#0b0b0c;--muted:#6b6b72;
+  --inv-bg:#0b0b0c;--inv-fg:#fff;--thumb:rgba(0,0,0,.16);--thumb-hover:rgba(0,0,0,.3);--ring:rgba(0,0,0,.035);--edit:rgba(0,0,0,.24);color-scheme:light;
+}}
+*{box-sizing:border-box}
+/* Only the body scrolls (and only if Chrome makes the popup shorter than its content): the html
+   element must not reserve a scrollbar gutter, or Chrome sizes the popup wider and leaves a strip. */
+html{overflow:hidden;width:420px}
+body{margin:0;background:var(--bg);color:var(--text);font:13px/1.45 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+body.popup{width:420px;max-height:600px;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--thumb) transparent}
+[hidden]{display:none!important}
+p{margin:0}
+.muted{color:var(--muted)}.small{font-size:12px}.strong{font-weight:600}.grow{flex:1;min-width:0}
+.ell{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mono,code{font:12px ui-monospace,"Cascadia Mono",Consolas,monospace}
+.i{width:16px;height:16px;flex:none}
+
+/* thin, quiet scrollbars (outer page and the inner lists) */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--thumb);border-radius:8px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:var(--thumb-hover);background-clip:padding-box;border:2px solid transparent}
+.scroll{overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--thumb) transparent}
+.scroll::-webkit-scrollbar{width:6px}
+
+/* header */
+header{position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+.logo{width:28px;height:28px;border-radius:7px;flex:none;box-shadow:0 0 0 1px var(--line)}
+h1{flex:1;min-width:0;margin:0;font-size:15px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+h1 span{font-weight:400;color:var(--muted)}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 8px;border:1px solid var(--line);border-radius:999px;font-size:12px;font-weight:500;color:var(--muted);white-space:nowrap}
+.chip .dot,.live .dot{width:7px;height:7px;border-radius:50%;border:1.5px solid currentColor}
+.chip.on{color:var(--text);border-color:var(--text)}
+.chip.on .dot{background:currentColor}
+.chip.off{color:var(--text)}
+.chip.wait .dot{animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+
+main{padding:4px 16px 16px}
+section{padding:14px 0 0}
+h2{display:flex;align-items:center;gap:8px;margin:0 0 8px;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h2 .i{width:15px;height:15px}
+h3{margin:12px 0 6px;font-size:12px;font-weight:600}
+.count{min-width:18px;padding:0 6px;border-radius:5px;background:var(--hover);color:var(--text);font-size:11px;letter-spacing:0;text-align:center}
+.live{margin-left:auto;display:inline-flex;align-items:center;gap:5px;font-size:11px;letter-spacing:.02em;text-transform:none;color:var(--text)}
+.live .dot{background:currentColor;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;box-shadow:0 0 0 4px var(--ring)}
+
+/* buttons and inputs */
+button{font:inherit;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--text);cursor:pointer}
+button:hover{background:var(--hover)}
+button .i{width:14px;height:14px}
+button.primary{background:var(--inv-bg);color:var(--inv-fg);border-color:var(--inv-bg);border-radius:8px}
+button.primary:hover{opacity:.88}
+button.ghost{border-color:var(--line)}
+button.link{border:0;padding:2px 4px;color:var(--muted);text-decoration:underline;text-underline-offset:2px;border-radius:4px}
+.iconbtn{width:32px;height:32px;padding:0;justify-content:center;border-radius:9px}
+.iconbtn .i{width:16px;height:16px}
+.iconbtn[aria-expanded=true]{background:var(--inv-bg);color:var(--inv-fg);border-color:var(--inv-bg)}
+:focus-visible{outline:2px solid var(--text);outline-offset:2px}
+textarea{font:inherit;width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--text)}
+textarea:focus{border-color:var(--text);outline:0}
+textarea{font:12px ui-monospace,Consolas,monospace;resize:vertical;margin-bottom:8px}
+.row{display:flex;align-items:center;gap:8px}
+
+/* problem + settings */
+.problem{display:grid;gap:8px;margin-top:12px}
+.problem .strong{display:flex;align-items:center;gap:8px}
+.problem button.primary{justify-self:start}
+.cmd{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--bg);border:1px solid var(--line);border-radius:8px}
+.cmd code{flex:1;overflow-wrap:anywhere}
+/* settings: opens and closes with a soft height animation */
+section.collapse{padding:0}
+.collapse{display:grid;grid-template-rows:0fr;opacity:0;transition:grid-template-rows .26s ease,opacity .2s ease}
+.collapse.open{grid-template-rows:1fr;opacity:1}
+.collapse-inner{min-height:0;overflow:hidden;padding:0 4px;margin:0 -4px}
+.collapse.open .collapse-inner{padding-bottom:4px}
+.settings{margin-top:12px}
+.settings .head{display:flex;align-items:center;justify-content:space-between;margin:-4px -4px 4px 0}
+.settings .head h2{margin:0}
+.iconbtn.sm{width:26px;height:26px;border-color:transparent;color:var(--muted)}
+.iconbtn.sm:hover{color:var(--text);background:var(--hover)}
+@media (prefers-reduced-motion:reduce){.collapse{transition:none}}
+.opt{display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer}
+.opt input{accent-color:var(--text);margin:0}
+
+/* browser card: one fixed-height row; renaming swaps the name for an input in place (no layout shift) */
+.browser{display:flex;align-items:center;gap:10px;height:52px;padding:0 8px 0 10px}
+.badge{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--bg);border:1px solid var(--line);flex:none}
+.badge .i{width:16px;height:16px}
+/* The name is always the same input: read-only it looks like text, renaming only shows its border. */
+.browser .field{field-sizing:content;min-width:6ch;max-width:200px;height:30px;padding:0 7px;border:1px solid transparent;border-radius:8px;
+  background:transparent;color:var(--text);font:600 13px/28px Inter,system-ui,-apple-system,"Segoe UI",sans-serif;text-overflow:ellipsis}
+.browser .field[readonly]{cursor:default}
+.browser .field:focus,.browser .field:focus-visible{outline:0}
+/* editing: a quiet border instead of a loud focus ring */
+.browser .field:not([readonly]){border-color:var(--edit);background:var(--bg);box-shadow:0 0 0 3px var(--ring)}
+.actions{display:flex;justify-content:flex-end;gap:6px;width:136px;flex:none;margin-left:auto}
+.actions button{height:30px}
+/* next to the name while reading; slides right a little when the name becomes an input */
+.tip{position:relative;display:grid;place-items:center;width:22px;height:22px;margin-left:-14px;border-radius:50%;color:var(--muted);cursor:help;flex:none;transition:margin-left .2s ease}
+.browser.editing .tip{margin-left:-2px}
+@media (prefers-reduced-motion:reduce){.tip{transition:none}}
+.tip .i{width:15px;height:15px}
+.tip:hover,.tip:focus-visible{color:var(--text)}
+.tip::after{content:attr(data-tip);position:absolute;left:-8px;top:calc(100% + 6px);width:220px;padding:7px 9px;border-radius:8px;background:var(--inv-bg);color:var(--inv-fg);
+  font-size:12px;line-height:1.4;font-weight:400;text-align:left;opacity:0;transform:translateY(-2px);pointer-events:none;transition:opacity .12s,transform .12s;z-index:3}
+.tip:hover::after,.tip:focus-visible::after{opacity:1;transform:none}
+
+/* rows (tabs, activity): one bordered list with row separators */
+.rows{list-style:none;margin:0;padding:0}
+.list{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:2px 10px;box-shadow:0 0 0 4px var(--ring)}
+.list > li{box-sizing:border-box;border-bottom:1px solid var(--line)}
+.list > li:last-child{border-bottom:0}
+/* Fixed row heights (separator included), so a list shows exactly N rows: N x row + 2 px top padding
+   + 2 px borders, minus 1 px so the last visible separator hides under the frame instead of doubling it. */
+.tabs{--row:35px;max-height:calc(4 * var(--row) + 3px)}
+.tabs li{display:flex;align-items:center;gap:10px;height:var(--row);min-width:0}
+.where{display:flex;align-items:center;gap:6px;max-width:42%;min-width:0;color:var(--muted);font-size:12px}
+.state{width:15px;height:15px;flex:none;color:var(--muted)}
+.state.done{color:var(--text)}
+.state.idle{display:grid;place-items:center}
+.state.idle::after{content:"";width:8px;height:8px;border-radius:50%;border:1.5px solid var(--muted);box-sizing:border-box}
+.spin{animation:spin .85s linear infinite;transform-origin:center}
+@keyframes spin{to{transform:rotate(360deg)}}
+.title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.host{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.go{width:26px;height:26px;padding:0;justify-content:center;border:0;border-radius:6px;color:var(--muted)}
+.go:hover{color:var(--text)}
+/* One header row taller than the plain list: the popup stays within Chrome's 600 px, only the list scrolls. */
+.tabs.grouped{max-height:calc(4 * var(--row) + 33px)}
+.tabs li.agent{font-weight:600;font-size:12px;gap:8px;height:30px}
+.tabs.grouped li:not(.agent){padding-left:22px}
+.tabs li.agent.loose{font-weight:400}
+.eye{width:24px;height:24px;padding:0;display:grid;place-items:center;border:0;border-radius:6px;background:none;color:var(--muted);cursor:pointer;flex:none}
+.eye svg{width:16px;height:16px}
+.eye:hover{color:var(--text);background:var(--hover)}
+.eye.on{color:var(--bg);background:var(--text)}
+
+.log{--row:33px;max-height:calc(5 * var(--row) + 3px)}
+.log li{display:grid;grid-template-columns:18px 62px 1fr auto;grid-template-rows:calc(var(--row) - 1px);align-items:center;column-gap:10px;height:var(--row)}
+.log li.open{height:auto;grid-template-rows:calc(var(--row) - 1px) auto}
+.log .op{color:var(--muted)}
+.log .time{font:11.5px ui-monospace,Consolas,monospace;color:var(--muted);font-variant-numeric:tabular-nums}
+.log .tool{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.log .ms{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;text-align:right;display:flex;align-items:center;gap:6px;justify-content:flex-end}
+.log li.fail{cursor:pointer}
+.log li.fail .op,.log li.fail .tool{color:var(--text)}
+.log .msg{grid-column:1/-1;margin:0 0 8px;padding:6px 8px;border-left:2px solid var(--text);background:var(--bg);font:11.5px/1.4 ui-monospace,Consolas,monospace;white-space:pre-wrap;word-break:break-word}
+.empty{color:var(--muted);font-size:12px;padding:10px 12px;border:1px dashed var(--line);border-radius:var(--r2)}
+
+.toast{position:fixed;left:50%;bottom:16px;transform:translate(-50%,8px);opacity:0;background:var(--inv-bg);color:var(--inv-fg);padding:6px 12px;border-radius:8px;font-size:12px;transition:.15s;pointer-events:none}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){.spin,.live .dot,.chip.wait .dot{animation:none}.scroll{scroll-behavior:auto}}
+
+/* permission popup (permission/permission.html) */
+.perm{padding:20px}
+.perm h1{font-size:16px;margin:0 0 10px;white-space:normal}
+.perm p{margin:0 0 10px}
+.perm #detail{color:var(--muted);word-break:break-all}
+.perm .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.perm .row button{flex:1;justify-content:center;padding:8px 10px;border-radius:8px}

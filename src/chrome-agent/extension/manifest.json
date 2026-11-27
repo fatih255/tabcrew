@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "tabcrew Chrome Agent",
+  "version": "0.2.5",
+  "description": "Lets Claude Code and other MCP agents use your own Chrome, including AI chats such as ChatGPT, Gemini and DeepSeek. Runs locally.",
+  "minimum_chrome_version": "116",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1mbL1I4hzbxVXWbH2K78VbaDcfRJ4JXrSkVA2yThBIwrvHkcpwV6AHVdvdd+tMIirCgJjlPvqORusjCRMMuo1/9LGhPNvy2tYXrqZ9RQImNLwUZa5ihr2ojcZijwkcJSkUTFUKHskJ70HtPXWixSG5tXJ6SNTijVLWkatQlSws/GDC9JFDbZN+6gvG897LGUFl5WWNioONbgP8kA+JCV3l0QKbOhNpdrytzzwAc1PO4WQTrbvhCYaPC7FqGaqp+0E9kv+x2JbdckdgwlwI3hwrbzI5fhEupLh/GiqZ0RrdH5qi61QKD1i47p7J2p0AwMmNz2kDvjsie62WK5jzCOMQIDAQAB",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "action": {
+    "default_title": "tabcrew Chrome Agent",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    },
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "debugger",
+    "tabGroups",
+    "tabs",
+    "webNavigation",
+    "nativeMessaging",
+    "notifications",
+    "unlimitedStorage",
+    "alarms"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "content_scripts": [
+    {
+      "js": [
+        "content/a11y.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_idle",
+      "all_frames": true,
+      "match_origin_as_fallback": true
+    },
+    {
+      "js": [
+        "content/indicator.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ],
+      "run_at": "document_end",
+      "all_frames": false
+    }
+  ]
+}

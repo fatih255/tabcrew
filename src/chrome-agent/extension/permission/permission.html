@@ -1,0 +1,16 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Allow browser agent?</title><link rel="stylesheet" href="../popup/popup.css"></head>
+<body class="perm">
+  <h1>Allow the agent?</h1>
+  <p>An MCP client wants to <b id="type"></b> on <b id="host"></b>.</p>
+  <p class="muted" id="detail"></p>
+  <div class="row">
+    <button id="once" class="primary">Allow once</button>
+    <button id="always">Always for this action</button>
+  </div>
+  <div class="row">
+    <button id="always_site">Always allow this site</button>
+    <button id="deny" class="danger">Deny</button>
+  </div>
+  <script src="permission.js" type="module"></script>
+</body></html>
