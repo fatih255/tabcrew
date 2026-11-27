@@ -134,7 +134,7 @@ section[id]{scroll-margin-top:72px}
 .install .foot a{color:var(--inv-ink)}
 
 .hero-fig{margin:0;position:relative}
-.hero-pop{position:absolute;right:-4%;top:17%;width:38%;height:auto;border:1px solid var(--line);border-radius:12px;box-shadow:0 22px 44px -18px rgba(0,0,0,.35);background:#fff}
+.hero-pop{position:absolute;right:-3%;top:17%;width:38%;height:auto;border:1px solid var(--line);border-radius:12px;box-shadow:0 22px 44px -18px rgba(0,0,0,.35);background:#fff}
 .demo{margin:48px 0 0;max-width:960px}
 .video-frame{position:relative;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--inv);box-shadow:0 24px 48px -28px rgba(0,0,0,.45)}
 .video-frame video{display:block;width:100%;height:auto;aspect-ratio:16/9;cursor:pointer}
@@ -335,6 +335,45 @@ footer :focus-visible{outline-color:var(--inv-ink)}
   </section>
 </div>
 
+<section class="band" id="extension">
+  <div class="wrap">
+    <h2>See what the agent does</h2>
+    <p class="muted" style="margin-top:16px;max-width:56ch">tabcrew drives Chrome through tabcrew Chrome Agent, an open-source extension that ships with the skill. It runs on your computer only: no account, no server, no analytics.</p>
+    <figure style="margin:40px auto 0;max-width:1100px">
+      <img src="assets/extension.png" width="1910" height="1320" alt="tabcrew Chrome Agent popup in light and dark themes: connected, agent tabs grouped per agent (the eye follows Claude Code · my-app), and the latest tool calls" style="display:block;width:100%;height:auto">
+      <figcaption class="cap">The toolbar popup, light and dark: the eye follows <i>Claude Code · my-app</i>, and every tool call is listed live.</figcaption>
+    </figure>
+  </div>
+  <div class="wrap benefits" style="margin-top:64px">
+    <div>
+      <div class="reasons">
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l7 16 2-7 7-2z"/></svg>
+          <div><h3>A cursor and a caption</h3><p>While the agent works in a tab, a black cursor shows where it points and clicks, with a short caption of what it is doing. The tab title shows ⏳ while it works and ✅ when it is done.</p></div>
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          <div><h3>Follow one agent</h3><p>The popup lists the agent tabs per agent, for example <i>Claude Code · my-app</i>. Click the eye and the window shows the tab that agent is working in. Other agents never move the view.</p></div>
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
+          <div><h3>Its own tab group</h3><p>The agent only acts in tabs inside its grey “tabcrew” group, never in yours. Block sites, or make it ask before it acts on a new one.</p></div>
+        </div>
+        <div>
+          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
+          <div><h3>Several profiles, any MCP client</h3><p>Load it in each Chrome profile you use; tabcrew picks the one logged in to your chat. Codex CLI, Gemini CLI, Cursor and other MCP clients can use it too.</p></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <figure style="margin:0">
+      <img src="assets/chrome-agent-demo.gif" width="640" height="361" alt="The agent searching Wikipedia: the cursor, captions and the tab frame" loading="lazy" style="display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:14px">
+      <figcaption class="cap">The agent searching Wikipedia, as you see it in Chrome.</figcaption>
+    </figure>
+    </div>
+  </div>
+</section>
+
 <section class="band alt" id="about">
   <div class="wrap">
     <p class="lead">If you copy prompts from a chat into Claude Code and paste the results back, tabcrew does that loop for you.</p>
@@ -473,43 +512,6 @@ footer :focus-visible{outline-color:var(--inv-ink)}
       </article>
     </div>
     <p class="ctab-next"><span class="status">Not yet</span> Claude.ai, Grok, Perplexity and others. An adapter is three small scripts: status, send and read. <a href="https://github.com/fatih255/tabcrew/blob/main/CONTRIBUTING.md">Add one →</a></p>
-  </div>
-</section>
-
-<section class="band alt" id="extension">
-  <div class="wrap benefits">
-    <div>
-      <h2>See what the agent does</h2>
-      <p class="muted" style="margin-top:16px;max-width:56ch">tabcrew drives Chrome through tabcrew Chrome Agent, an open-source extension that ships with the skill. It runs on your computer only: no account, no server, no analytics.</p>
-      <div class="reasons">
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4l7 16 2-7 7-2z"/></svg>
-          <div><h3>A cursor and a caption</h3><p>While the agent works in a tab, a black cursor shows where it points and clicks, with a short caption of what it is doing. The tab title shows ⏳ while it works and ✅ when it is done.</p></div>
-        </div>
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
-          <div><h3>Follow one agent</h3><p>The popup lists the agent tabs per agent, for example <i>Claude Code · my-app</i>. Click the eye and the window shows the tab that agent is working in. Other agents never move the view.</p></div>
-        </div>
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18"/></svg>
-          <div><h3>Its own tab group</h3><p>The agent only acts in tabs inside its grey “tabcrew” group, never in yours. Block sites, or make it ask before it acts on a new one.</p></div>
-        </div>
-        <div>
-          <svg viewBox="0 0 24 24" fill="none" stroke="#131313" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="9"/></svg>
-          <div><h3>Several profiles, any MCP client</h3><p>Load it in each Chrome profile you use; tabcrew picks the one logged in to your chat. Codex CLI, Gemini CLI, Cursor and other MCP clients can use it too.</p></div>
-        </div>
-      </div>
-    </div>
-    <figure style="margin:0;justify-self:center">
-      <img src="assets/popup-light.png" width="420" height="590" alt="tabcrew Chrome Agent popup: connected, agent tabs grouped per agent with an eye to follow one, and the latest tool calls" loading="lazy" style="display:block;max-width:100%;height:auto;border:1px solid var(--line);border-radius:14px;box-shadow:0 18px 40px -24px rgba(0,0,0,.25)">
-      <figcaption class="cap">The toolbar popup: the eye follows <i>Claude Code · my-app</i></figcaption>
-    </figure>
-  </div>
-  <div class="wrap">
-    <figure class="demo" style="margin-left:auto;margin-right:auto">
-      <img src="assets/chrome-agent-demo.gif" width="640" height="361" alt="The agent searching Wikipedia: the cursor, captions and the tab frame" loading="lazy" style="display:block;width:100%;height:auto;border:1px solid var(--line);border-radius:14px">
-      <figcaption class="cap">The agent searching Wikipedia, as you see it in Chrome.</figcaption>
-    </figure>
   </div>
 </section>
 

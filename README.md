@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/banner.png" alt="tabcrew: AI chat tabs, working as one crew" width="100%">
+  <img src="docs/favicon-512.png" alt="tabcrew logo" width="96">
 </p>
 
 # tabcrew
@@ -11,6 +11,8 @@ If you copy prompts from a chat into Claude Code and paste the results back, thi
 It runs on your own browser sessions. No API keys, no extra subscriptions.
 
 It comes with its own browser agent: **[tabcrew Chrome Agent](#tabcrew-chrome-agent)**, an open-source Chrome extension and MCP server in this repo. You can watch it work in your Chrome, follow one agent while several share the browser, and use it on its own with any MCP client.
+
+![tabcrew Chrome Agent popup in light and dark themes: connected, agent tabs grouped per agent (the eye follows Claude Code · my-app), and the latest tool calls](docs/assets/extension.png)
 
 Website: **[tabcrew.fatihinci.com](https://tabcrew.fatihinci.com)**
 
@@ -33,12 +35,7 @@ tabcrew drives Chrome through **tabcrew Chrome Agent**, its own open-source (MIT
 - **Several Chrome profiles.** Every profile with the extension connects; tabcrew uses the one logged in to the chat you picked.
 - **Works on its own.** 26 browser tools for any MCP client: Claude Code, Codex CLI, Gemini CLI, Cursor, VS Code and others. See [src/chrome-agent/README.md](src/chrome-agent/README.md).
 
-Click the toolbar icon for the popup: the connection, this browser's name, the agent tabs per agent with their state, and the latest tool calls (click a failed one to read the error). The gear opens the site permissions.
-
-<p>
-  <img src="docs/assets/popup-light.png" alt="tabcrew Chrome Agent popup, light theme: agent tabs grouped per agent, the eye follows Claude Code · my-app" width="49%">
-  <img src="docs/assets/popup-dark.png" alt="tabcrew Chrome Agent popup, dark theme" width="49%">
-</p>
+Click the toolbar icon for the popup (pictured at the top): the connection, this browser's name, the agent tabs per agent with their state, and the latest tool calls (click a failed one to read the error). The gear opens the site permissions.
 
 ## Install
 
