@@ -146,28 +146,8 @@ section[id]{scroll-margin-top:72px}
 .cap{font-size:13px;color:var(--muted);margin-top:10px;text-align:center}
 
 /* hero: the extension popup follows the agent */
-.hp{position:relative;padding:0 0 44px;min-height:650px}
-.hp .cap{position:absolute;left:0;right:0;bottom:0}
-.hp-win{position:relative;width:70%;border:1px solid var(--line);border-radius:14px;background:#fbfaf7;box-shadow:0 18px 40px -26px rgba(0,0,0,.3);overflow:hidden}
-.hp-bar{display:flex;align-items:center;gap:6px;padding:10px 12px;background:var(--alt);border-bottom:1px solid var(--line);font:500 12px/1 var(--body)}
-.hp-bar i{flex:none;width:9px;height:9px;border-radius:50%;background:#bdbcb8}
-.hp-group{margin-left:8px;padding:4px 9px;border-radius:999px;background:#d6d5d2;color:#131313}
-.hp-wt{padding:6px 10px;border-radius:7px 7px 0 0;color:var(--muted);transition:background .35s,color .35s}
-.hp-wt.on{background:#fbfaf7;color:var(--ink);box-shadow:0 -1px 0 var(--line) inset}
-.hp-page{position:relative;height:250px;padding:16px 18px 0}
-.hp-msg{display:grid;gap:7px;padding:10px 12px;border-radius:12px;margin-bottom:10px}
-.hp-msg b{display:block;height:8px;border-radius:4px;background:#131313;opacity:.16}
-.hp-me{width:38%;background:var(--alt)}
-.hp-me b:last-child{width:60%}
-.hp-bot b{opacity:0;transform:scaleX(.2);transform-origin:left;transition:opacity .4s,transform .6s}
-.hp-bot{width:46%;padding-left:0}.hp-bot b:nth-child(2){width:86%}.hp-bot b:nth-child(3){width:94%}.hp-bot b:nth-child(4){width:58%}
-.hp.reading .hp-bot b{opacity:.16;transform:none}
-.hp.reading .hp-bot b:nth-child(2){transition-delay:.15s}.hp.reading .hp-bot b:nth-child(3){transition-delay:.3s}.hp.reading .hp-bot b:nth-child(4){transition-delay:.45s}
-.hp-cursor{position:absolute;left:36%;top:22px;display:flex;align-items:flex-start;gap:6px;transition:left .7s cubic-bezier(.5,0,.2,1),top .7s cubic-bezier(.5,0,.2,1)}
-.hp.reading .hp-cursor{left:30%;top:66px}
-.hp-cursor svg{flex:none;width:22px;height:22px;fill:#131313;stroke:#fcfcfd;stroke-width:1.5;filter:drop-shadow(0 2px 3px rgba(0,0,0,.25))}
-.hp-cap{margin-top:14px;padding:4px 9px;border-radius:999px;background:#131313;color:#fcfcfd;font:500 12px/1.2 var(--body);white-space:nowrap}
-.hp-pop{position:absolute;right:-3%;top:150px;width:68%;min-width:330px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 28px 56px -22px rgba(0,0,0,.38);padding:14px 14px 12px;font:400 13px/1.35 var(--body);color:#0b0b0c}
+.hp{display:flex;flex-direction:column;align-items:center}
+.hp-pop{width:100%;max-width:380px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 20px 40px -24px rgba(0,0,0,.22);padding:14px 14px 12px;font:400 13px/1.35 var(--body);color:#0b0b0c}
 .hp-head{display:flex;align-items:center;gap:7px;padding-bottom:12px;margin-bottom:10px;border-bottom:1px solid #e3e3e6}
 .hp-logo{display:grid;place-items:center;width:26px;height:26px;border-radius:7px;background:#131313;color:#fcfcfd;font:700 11px/1 var(--mono)}
 .hp-head b{font-weight:700;font-size:14px}.hp-sub{color:#6b6b72;font-size:14px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -199,8 +179,7 @@ section[id]{scroll-margin-top:72px}
 @keyframes hp-spin{to{transform:rotate(360deg)}}
 @keyframes hp-pulse{50%{opacity:.25}}
 @keyframes hp-in{from{opacity:0;transform:translateY(-10px)}}
-@media (max-width:1020px){.hp-win{width:72%}.hp-pop{width:62%}}
-@media (max-width:560px){.hp{padding-bottom:0;min-height:0}.hp .cap{position:static}.hp-win{width:100%}.hp-page{height:190px}.hp-pop{position:relative;right:auto;top:auto;width:94%;min-width:0;margin:-70px 0 0 auto}.hp-page{height:170px}.hp-sub{display:none}}
+@media (max-width:560px){.hp-sub{display:none}}
 @media (prefers-reduced-motion:reduce){.hp *{animation:none!important;transition:none!important}}
 
 
@@ -351,16 +330,7 @@ footer :focus-visible{outline-color:var(--inv-ink)}
       <p class="more"><a href="https://github.com/fatih255/tabcrew">Read the docs on GitHub →</a><span>Free and open source (MIT) · No API keys</span></p>
     </div>
 
-    <figure class="hero-fig hp" aria-label="Animation: Claude Code works through DeepSeek, ChatGPT and Gemini; the tabcrew Chrome Agent popup follows the agent and lists each tool call">
-      <div class="hp-win" aria-hidden="true">
-        <div class="hp-bar"><i></i><i></i><i></i><span class="hp-group">tabcrew</span>
-          <span class="hp-wt" data-i="0">DeepSeek</span><span class="hp-wt" data-i="1">ChatGPT</span><span class="hp-wt" data-i="2">Gemini</span></div>
-        <div class="hp-page">
-          <div class="hp-msg hp-me"><b></b><b></b></div>
-          <div class="hp-msg hp-bot"><b></b><b></b><b></b><b></b></div>
-          <div class="hp-cursor"><svg viewBox="0 0 24 24"><path d="M4 3l7 18 2.5-7.5L21 11z"/></svg><span class="hp-cap">Sending the message</span></div>
-        </div>
-      </div>
+    <figure class="hero-fig hp" aria-label="Animation: the tabcrew Chrome Agent popup follows Claude Code from chat to chat and lists each tool call">
       <div class="hp-pop" aria-hidden="true">
         <div class="hp-head"><span class="hp-logo">&gt;_</span><b>tabcrew</b><span class="hp-sub">Chrome Agent</span><span class="hp-chip"><i></i>Connected</span><span class="hp-gear"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></span></div>
         <div class="hp-h2">Agent tabs <span class="hp-n">3</span></div>
@@ -694,7 +664,7 @@ document.querySelectorAll('[data-copy]').forEach(function (b) {
 (function () {
   var fig = document.querySelector('.hp');
   if (!fig) return;
-  var tabs = fig.querySelectorAll('.hp-tab'), wt = fig.querySelectorAll('.hp-wt'), log = fig.querySelector('.hp-log'), cap = fig.querySelector('.hp-cap');
+  var tabs = fig.querySelectorAll('.hp-tab'), log = fig.querySelector('.hp-log');
   var steps = [
     ['navigate', 'chat.deepseek.com', 'Opening the chat'], ['chat_send', '2.1k chars', 'Sending the message'], ['chat_read', 'done · 6.4k', 'Reading the reply'],
     ['navigate', 'chatgpt.com', 'Opening the chat'], ['chat_send', '1.8k chars', 'Sending the message'], ['chat_read', 'done · 5.2k', 'Reading the reply'],
@@ -717,9 +687,6 @@ document.querySelectorAll('[data-copy]').forEach(function (b) {
       if (j === i && s[0] === 'chat_read') el.classList.add('done');
       if (k % 9 === 0) el.classList.remove('done');
     });
-    wt.forEach(function (el, j) { el.classList.toggle('on', j === i); });
-    fig.classList.toggle('reading', s[0] === 'chat_read');
-    cap.textContent = s[2];
     add(s[0], s[1]);
   }
   ['tabs_context_mcp', 'tabs_create_mcp', 'tabs_create_mcp', 'chat_status'].forEach(function (o, n) { add(o, ['1 tab', 'DeepSeek', 'ChatGPT', 'logged in'][n]); });
