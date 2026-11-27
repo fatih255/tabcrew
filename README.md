@@ -1,8 +1,4 @@
-<p align="center">
-  <img src="docs/favicon-512.png" alt="tabcrew logo" width="96">
-</p>
-
-# tabcrew
+<h1 align="center"><img src="docs/favicon-512.png" alt="" width="44" align="middle">&nbsp;tabcrew</h1>
 
 tabcrew is a Claude Code skill that lets Claude Code work with the AI chats you already use in Chrome: DeepSeek, ChatGPT and Gemini. Claude Code writes to the chats, waits for their answers, passes the right parts between them, and does the actual work in your repo.
 
